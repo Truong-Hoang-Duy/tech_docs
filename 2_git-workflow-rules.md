@@ -6,8 +6,9 @@
 
 - **Không tự ý commit.**
 - **Không tự ý push.**
-- Chỉ thực hiện commit/push khi người dùng **xác nhận rõ ràng** (VD: "commit đi", "ok commit", "push lên đi").
+- Chỉ thực hiện commit/push khi người dùng **xác nhận rõ ràng** (VD: "commit đi", "ok commit", "push lên đi", "ok push", "push commit").
 - Nếu không chắc người dùng đã xác nhận hay chưa, hỏi lại trước khi thực hiện.
+- Không được tự tạo các file ".md" hoặc docs liên quan đến việc đã làm, trừ khi có yêu cầu từ người dùng.
 
 ## 2. Quy tắc viết commit message
 
