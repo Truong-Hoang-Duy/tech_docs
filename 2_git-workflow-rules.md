@@ -14,15 +14,23 @@
 
 - Ngôn ngữ: **Tiếng Anh**.
 - Văn phong: **ngắn gọn, xúc tích**, mô tả đúng việc đã làm — không lan man.
-- Format bắt buộc:
-  - Tính năng mới: `feat: <mô tả việc đã làm>`
-  - Sửa lỗi: `fix: <mô tả việc đã làm>`
-- Trước khi soạn message, **tham khảo các commit gần nhất** (`git log --oneline -10`) để đồng bộ cú pháp/văn phong với repo hiện tại.
+- Format bắt buộc: `<type>(<scope>): <mô tả việc đã làm>`
+  - `<scope>` là bắt buộc, không để trần `feat:`/`fix:` — repo dùng scope để biết thay đổi thuộc vùng nào (module, service, hoặc khu vực tài liệu) mà không cần mở diff.
+  - `<type>` theo đúng việc đã làm:
+    - Tính năng mới: `feat`
+    - Sửa lỗi: `fix`
+    - Tài liệu (spec, plan, ghi chép vận hành...), không đổi code: `docs`
+    - Thêm/sửa test, không đổi hành vi: `test`
+    - Merge nhánh: `merge`
+  - `<scope>` là tên module/service/khu vực bị thay đổi, viết thường, ngắn gọn (VD: `api`, `ops`, `chat`, `ingest`, `question-bank`, `preview`, `caddy`).
+- Trước khi soạn message, **tham khảo các commit gần nhất** (`git log --oneline -10`) để chọn `type` và `scope` khớp với cách repo đang dùng cho vùng code/tài liệu tương ứng.
 
 **Ví dụ:**
 ```
-feat: add user authentication with JWT
-fix: resolve null pointer on empty cart checkout
+feat(api): add user authentication with JWT
+fix(cart): resolve null pointer on empty cart checkout
+docs(question-bank): spec exam extract v2 for question types
+test(auth): lock per-IP login limiter and ignore client XFF
 ```
 
 ## 3. Không thêm các nội dung sau
