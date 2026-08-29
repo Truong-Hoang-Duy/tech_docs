@@ -29,20 +29,33 @@ câu và do tín hiệu nào gây ra.
 
 ## Chạy ngay
 
+**macOS / Linux** (dùng `run.sh`):
 ```bash
 cd bookforge
-./tech_docs/research/pdf-figure-debug/run.sh path/to/de-thi.pdf
+./tech_docs/research/pdf-figure-debug/run.sh tech_docs/pdf/bo_de_1.pdf
 ```
 
-- Nhiều file / cả thư mục: `run.sh` nhận nhiều tham số hoặc một thư mục chứa `.pdf`:
+**Windows** (dùng `run.ps1`, chạy trong PowerShell):
+```powershell
+cd bookforge
+.\tech_docs\research\pdf-figure-debug\run.ps1 tech_docs\pdf\bo_de_1.pdf
+```
+
+- Repo có sẵn 7 đề mẫu ở [tech_docs/pdf/](../../pdf/) (`bo_de_1.pdf` → `bo_de_7.pdf`), dùng
+  ngay để test thủ công mà không cần chuẩn bị file riêng.
+- Nhiều file / cả thư mục: script nhận nhiều tham số hoặc một thư mục chứa `.pdf`:
   ```bash
-  ./tech_docs/research/pdf-figure-debug/run.sh de1.pdf de2.pdf hoac/thu-muc-de/
+  ./tech_docs/research/pdf-figure-debug/run.sh tech_docs/pdf/
+  # hoặc chỉ định từng file
+  ./tech_docs/research/pdf-figure-debug/run.sh tech_docs/pdf/bo_de_1.pdf tech_docs/pdf/bo_de_2.pdf
   ```
+  (Windows: thay `run.sh` bằng `run.ps1` và dấu `\` cho đường dẫn như ví dụ trên.)
 - Báo cáo ghi ra `tech_docs/research/pdf-figure-debug/out/<tên-file>__<thời-gian>.txt`
   (thư mục `out/` đã được `.gitignore`, không lo vô tình commit).
-- `run.sh` tự dùng đúng venv của backend (`backend/services/api/.venv`) — cần venv
+- Cả hai script tự dùng đúng venv của backend (`backend/services/api/.venv`) — cần venv
   này đã cài dependency như bình thường (`uv sync` trong `backend/services/api`
-  nếu chưa có).
+  nếu chưa có). `run.sh` tìm venv ở `.venv/bin/python` (macOS/Linux), `run.ps1` tìm ở
+  `.venv\Scripts\python.exe` (Windows) — đúng theo cấu trúc venv của từng hệ điều hành.
 
 Cờ tuỳ chọn:
 - `--no-llm`: chỉ chạy tầng hình học (mục 1 ở trên) — **miễn phí, không gọi LLM**,
@@ -98,7 +111,8 @@ lỗi không làm dừng cả lô (báo cáo file đó sẽ ghi lại traceback 
 
 ```
 debug_figure_matching.py   # script chính, tự chứa, không sửa code backend
-run.sh                      # chạy bằng đúng venv backend
+run.sh                      # chạy bằng đúng venv backend (macOS / Linux)
+run.ps1                     # chạy bằng đúng venv backend (Windows / PowerShell)
 sample_test.pdf             # PDF mẫu tự sinh để smoke-test (xoá được)
 out/                         # báo cáo .txt sinh ra (gitignore)
 ```
