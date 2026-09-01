@@ -44,6 +44,8 @@ Backend và frontend là **hai repo riêng, hai quy ước riêng** — §1 và 
 Quy tắc rút ra: **`docs/` root dùng `UPPER_SNAKE`, mọi thư mục con dùng `kebab-case`.**
 Thư mục có vòng đời theo thời gian (`tasks/`, `specs/`, `plans/`, `audits/`) tiền tố `YYYY-MM-DD-`; thư mục mô tả trạng thái hiện tại (`backend/`, `product/`, `api/`, `architecture/`) không có ngày.
 
+**Slug ngắn gọn (quy định, áp dụng cho file tạo mới):** phần `<slug>` chỉ nêu đúng chủ đề chính bằng 2–4 từ khoá nối gạch ngang, không nhồi thêm phạm vi/ngữ cảnh phụ vào tên file — những chi tiết đó thuộc nội dung bên trong file (banner, mục Bối cảnh/Phạm vi), không thuộc tên file. Tên file kể cả ngày và hậu tố (`-frontend`/`-fe`/`-design`) phải đọc gọn trong một dòng, không phải bản tóm tắt lại toàn bộ tiêu đề.
+
 ### 1.2 Khung heading theo từng loại
 
 **a) File giao việc — `docs/tasks/`** (khuôn mẫu bắt buộc, do `TASK_HANDOFF.md` §"The task spec" quy định)
@@ -182,6 +184,7 @@ Ngôn ngữ: task doc FE viết **tiếng Việt** (`2026-06-24-…-frontend.md`
 
 - **Git**: [`tech_docs/rules/2_git-workflow-rules.md`](../rules/2_git-workflow-rules.md) — commit tài liệu dùng `docs(<scope>): …`, không tự commit/push, không thêm attribution AI. Áp cho cả hai repo.
 - **Không tự sinh file .md** ghi lại việc đã làm nếu người dùng không yêu cầu (cùng file trên, §1).
+- **Không tự tạo file trong `docs/superpowers/specs/` và `docs/audits/`** — hai loại này do người dùng (vai trò reviewer/kiểm duyệt) tự viết, trừ khi được yêu cầu rõ ràng. Khi cần mô tả việc cần làm, viết vào `docs/tasks/` (task spec, §1.2a) thay vì tự soạn spec hoặc audit.
 - **Khung báo cáo kỹ thuật**: [`tech_docs/rules/1_technical-spec-template.md`](../rules/1_technical-spec-template.md) — 10 mục tiếng Việt (Tổng quan → Câu hỏi mở), tự khai là "khung tham khảo, không phải form bắt buộc điền đủ 100%". Một số doc dài trong `docs/tasks/` và `docs/product/` theo khung này.
 - **Nhánh**: [`backend/CLAUDE.md`](../../backend/CLAUDE.md) — giữ nhánh sau khi merge, ưu tiên `git merge --no-ff`, áp cho cả repo API lẫn `bookforge-fe`.
 
@@ -198,7 +201,8 @@ Nội dung là gì?
 ├─ Kế hoạch thi hành từng bước cho agent ──────► backend/docs/superpowers/plans/YYYY-MM-DD-<slug>[-fe].md
 │                                                (Goal/Architecture/Tech Stack + Task N + Step checkbox)
 │
-├─ Chốt thiết kế trước khi code ───────────────► backend/docs/superpowers/specs/YYYY-MM-DD-<slug>-design.md
+├─ Chốt thiết kế trước khi code ───────────────► KHÔNG tự tạo — specs/ do người dùng (reviewer) viết (§3);
+│                                                nếu cần mô tả việc cần làm thì viết task doc ở docs/tasks/
 │
 ├─ Hợp đồng API để FE tích hợp ────────────────► backend/docs/api/<kebab>.md
 │                                                hoặc backend/handoff/frontend/<UPPER_SNAKE>.md
@@ -208,6 +212,8 @@ Nội dung là gì?
 ├─ Nghiệp vụ / sản phẩm ───────────────────────► backend/docs/product/<kebab>.md
 │
 ├─ Vận hành, deploy, sự cố ────────────────────► backend/docs/ops/[YYYY-MM-DD-]<kebab>.md
+│
+├─ Rà soát chất lượng (audit) ──────────────────► KHÔNG tự tạo — audits/ do người dùng (reviewer) viết (§3)
 │
 └─ Ghi chú chỉ có ý nghĩa cạnh code ───────────► services/**/README.md  (ngắn, ≤ 20 dòng)
 ```
@@ -253,10 +259,13 @@ Repo `bookforge-fe` không có `docs/`. Mọi tài liệu về FE phải đặt 
 ## 6. Checklist tự kiểm khi viết một file docs mới
 
 - [ ] Đặt đúng thư mục theo §1.1/§4, tên file đúng kiểu chữ của thư mục đó (`UPPER_SNAKE` ở `docs/` root, `kebab-case` ở thư mục con) và có `YYYY-MM-DD-` nếu là `tasks`/`specs`/`plans`/`audits`.
+- [ ] Slug ngắn gọn: 2–4 từ khoá nêu đúng chủ đề chính, không nhồi thêm phạm vi/chi tiết phụ vào tên file (chi tiết đó để trong nội dung file).
+- [ ] Không tự tạo file trong `docs/superpowers/specs/` hoặc `docs/audits/` trừ khi được yêu cầu rõ ràng (§3) — cần mô tả việc cần làm thì viết task doc ở `docs/tasks/` thay vào đó.
 - [ ] Dùng đúng khung heading của loại doc đó (§1.2), không tự chế mục mới khi khuôn mẫu đã có.
 - [ ] Ngôn ngữ khớp thư mục: `tasks/` và `handoff/frontend/` viết tiếng Việt; `architecture/` và `backend/` viết tiếng Anh; định danh code luôn để nguyên trong backtick.
 - [ ] Mọi link file là **đường dẫn tương đối tính từ chính file doc** và bấm được; trỏ code kèm `file:line`.
 - [ ] Không frontmatter, không mục changelog, không trường người được giao; code block nào cũng gắn ngôn ngữ; sơ đồ vẽ bằng ASCII.
 - [ ] Nếu là file giao việc: có banner "Cách đọc tài liệu này", mục "Quyết định đã chốt", và **DoD dạng checkbox kiểm chứng được đã gộp phần test vào**.
+- [ ] Sau khi tự kiểm DoD (đạt, thiếu, hay có thay đổi so với lúc viết): **sửa ngay trong chính file đó** — tick `- [x]` cho mục đã đạt, cập nhật lại nội dung/trạng thái không còn đúng. Không tạo file `.md` mới hay báo cáo riêng chỉ để ghi lại kết quả kiểm tra (xem §3 — không tự sinh file ghi lại việc đã làm nếu không được yêu cầu).
 - [ ] Độ dài nằm trong khoảng của loại đó (§1.4); file giao việc vượt ~300 dòng thì tách phần thiết kế ra `specs/`.
 - [ ] Nếu doc đáng để người khác tìm thấy: thêm một dòng mô tả vào [`backend/docs/README.md`](../../backend/docs/README.md).
