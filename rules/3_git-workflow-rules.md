@@ -9,6 +9,7 @@
 - Chỉ thực hiện commit/push khi người dùng **xác nhận rõ ràng** (VD: "commit đi", "ok commit", "push lên đi", "ok push", "push commit").
 - Nếu không chắc người dùng đã xác nhận hay chưa, hỏi lại trước khi thực hiện.
 - Không được tự tạo các file ".md" hoặc docs liên quan đến việc đã làm, trừ khi có yêu cầu từ người dùng.
+- **File `.md` commit vào `bookforge` / `bookforge-fe` không được chứa chuỗi `tech_docs`.** Ba repo là ba repo riêng: người clone repo code không có `tech_docs/`, nên mọi đường dẫn tới đó là link chết. Cần nội dung gì thì chép vào chính file đó (`docs-convention.md` §3.1).
 
 ## 2. Quy tắc viết commit message
 
@@ -49,6 +50,7 @@ test(auth): lock per-IP login limiter and ignore client XFF
 
 1. Chạy `git log --oneline -10` để tham khảo cú pháp commit trước đó trong repo.
 2. Chạy `git status` / `git diff` để xác nhận đúng phạm vi thay đổi sẽ commit.
+   - Nếu có file `.md`: soát `grep -n "tech_docs" <file>` — có kết quả thì sửa trước khi commit (§1).
 3. Soạn commit message theo format `feat: ...` hoặc `fix: ...` tương ứng, không có dòng Co-Authored-By hay attribution.
 4. Chỉ thực hiện `git commit` khi người dùng đã xác nhận.
 5. Chỉ thực hiện `git push` khi người dùng yêu cầu riêng (không tự động push sau khi commit).

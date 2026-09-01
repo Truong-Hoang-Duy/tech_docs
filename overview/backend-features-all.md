@@ -2,6 +2,8 @@
 
 > Nguồn: `backend/services/api` (FastAPI + RQ worker + cron), cùng 3 dịch vụ phụ trợ: `knowledge-ingestion`, `knowledge-retrieval`, `gotenberg`.
 > Tài liệu mô tả logic xử lý ở mức tổng quan, không đi sâu kỹ thuật.
+> Mốc SHA: **chưa ghi** (soạn 2026-08-24) — lần cập nhật tới theo [`rules/2_web-code-handoff.md`](../rules/2_web-code-handoff.md) §3 sẽ đặt mốc, lấy từ ref bạn chỉ định lúc đó.
+> File này chỉ cập nhật khi có **tính năng mới hoặc luồng đổi bản chất**, không cập nhật theo refactor.
 
 ---
 

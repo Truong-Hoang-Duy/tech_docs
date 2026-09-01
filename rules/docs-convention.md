@@ -182,11 +182,30 @@ Ngôn ngữ: task doc FE viết **tiếng Việt** (`2026-06-24-…-frontend.md`
 
 ## 3. Quy ước áp cho cả hai bên
 
-- **Git**: [`tech_docs/rules/2_git-workflow-rules.md`](../rules/2_git-workflow-rules.md) — commit tài liệu dùng `docs(<scope>): …`, không tự commit/push, không thêm attribution AI. Áp cho cả hai repo.
+- **Tài liệu trong `backend/` và `frontend/` phải tự đứng, không dính gì tới `tech_docs/`** — xem §3.1 ngay dưới. Đây là ràng buộc cứng, vi phạm là link chết.
+- **Git**: [`tech_docs/rules/3_git-workflow-rules.md`](../rules/3_git-workflow-rules.md) — commit tài liệu dùng `docs(<scope>): …`, không tự commit/push, không thêm attribution AI. Áp cho cả hai repo.
 - **Không tự sinh file .md** ghi lại việc đã làm nếu người dùng không yêu cầu (cùng file trên, §1).
 - **Không tự tạo file trong `docs/superpowers/specs/` và `docs/audits/`** — hai loại này do người dùng (vai trò reviewer/kiểm duyệt) tự viết, trừ khi được yêu cầu rõ ràng. Khi cần mô tả việc cần làm, viết vào `docs/tasks/` (task spec, §1.2a) thay vì tự soạn spec hoặc audit.
-- **Khung báo cáo kỹ thuật**: [`tech_docs/rules/1_technical-spec-template.md`](../rules/1_technical-spec-template.md) — 10 mục tiếng Việt (Tổng quan → Câu hỏi mở), tự khai là "khung tham khảo, không phải form bắt buộc điền đủ 100%". Một số doc dài trong `docs/tasks/` và `docs/product/` theo khung này.
+- **Khung báo cáo kỹ thuật**: [`tech_docs/rules/technical-spec-template.md`](../rules/technical-spec-template.md) — 10 mục tiếng Việt (Tổng quan → Câu hỏi mở), tự khai là "khung tham khảo, không phải form bắt buộc điền đủ 100%". Một số doc dài trong `docs/tasks/` và `docs/product/` theo khung này.
 - **Nhánh**: [`backend/CLAUDE.md`](../../backend/CLAUDE.md) — giữ nhánh sau khi merge, ưu tiên `git merge --no-ff`, áp cho cả repo API lẫn `bookforge-fe`.
+
+### 3.1 Docs của `backend/` và `frontend/` không được tham chiếu `tech_docs/`
+
+`bookforge`, `bookforge-fe` và `tech_docs` là **ba repo git riêng biệt**.
+Người clone repo backend **không có** thư mục `tech_docs/` trên máy, nên mọi đường dẫn trỏ tới đó là link chết và mọi câu "xem chi tiết ở …" là ngõ cụt.
+
+**Cấm trong mọi file `.md` thuộc `backend/` và `frontend/`:**
+
+- Đường dẫn `tech_docs/…`, và link tương đối vượt ra ngoài repo: `../tech_docs/…`, `../../tech_docs/…`.
+- Câu dẫn kiểu "xem `tech_docs/rules/…`", "theo bản đồ trong `tech_docs/overview/…`".
+- Nhắc tên các file nháp của quy trình nghiên cứu: `00-mo-ta.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `trang-thai.md`, `repo-map.md`, `backend-features-all.md`.
+
+**Thay vì link thì chép nội dung.** Tài liệu phải đọc được trọn vẹn bởi người chỉ có repo đó — quyết định, ràng buộc, hợp đồng API cần thiết đều viết thẳng vào file.
+
+**Trường `**Thiết kế gốc (đọc trước):**` của khuôn task doc** (§1.2a) chỉ được trỏ tới file **trong cùng repo** (`docs/superpowers/specs/…`).
+Nếu thiết kế chỉ tồn tại ở `tech_docs/research/`, **bỏ hẳn trường đó** và viết phần cần thiết vào mục "Quyết định đã chốt".
+
+**Chiều ngược lại vẫn được:** file trong `tech_docs/` trỏ sang `backend/`, `frontend/` thoải mái — `tech_docs` là nơi tổng hợp, và nó nằm cạnh hai repo kia trên máy bạn.
 
 ---
 
@@ -223,7 +242,7 @@ Nội dung là gì?
 ## 5. Ngoại lệ & điểm không nhất quán (ghi nhận, không tự sửa)
 
 **5.1 `docs/tasks/` có hai khuôn mẫu không tương thích nhau.**
-Bản ngắn theo `TASK_HANDOFF.md` (`## Bối cảnh` → `## Việc cần làm` → `## DoD`, 50–140 dòng, ví dụ `2026-06-19-reindex-tier1-debounce.md`) và bản dài theo `tech_docs/rules/1_technical-spec-template.md` (`## 1. Tổng quan` → `## 13.`, 300–959 dòng, ví dụ `2026-08-12-chat-inline-images.md`).
+Bản ngắn theo `TASK_HANDOFF.md` (`## Bối cảnh` → `## Việc cần làm` → `## DoD`, 50–140 dòng, ví dụ `2026-06-19-reindex-tier1-debounce.md`) và bản dài theo `tech_docs/rules/technical-spec-template.md` (`## 1. Tổng quan` → `## 13.`, 300–959 dòng, ví dụ `2026-08-12-chat-inline-images.md`).
 Ngoài ra `REVIEW_STANDARDS.md` yêu cầu **gộp "test cái gì" vào DoD**, nhưng `2026-06-19-reindex-tier1-debounce.md` vẫn để mục `## Cần test gì` rời — quy ước viết ra sau, file cũ chưa cập nhật.
 
 **5.2 Khối metadata đầu file có ít nhất bốn biến thể.**
@@ -264,6 +283,7 @@ Repo `bookforge-fe` không có `docs/`. Mọi tài liệu về FE phải đặt 
 - [ ] Dùng đúng khung heading của loại doc đó (§1.2), không tự chế mục mới khi khuôn mẫu đã có.
 - [ ] Ngôn ngữ khớp thư mục: `tasks/` và `handoff/frontend/` viết tiếng Việt; `architecture/` và `backend/` viết tiếng Anh; định danh code luôn để nguyên trong backtick.
 - [ ] Mọi link file là **đường dẫn tương đối tính từ chính file doc** và bấm được; trỏ code kèm `file:line`.
+- [ ] **Không có chuỗi `tech_docs` nào trong file** (§3.1) — doc trong `backend/`/`frontend/` phải tự đứng, cần gì thì chép nội dung vào thay vì link ra ngoài repo.
 - [ ] Không frontmatter, không mục changelog, không trường người được giao; code block nào cũng gắn ngôn ngữ; sơ đồ vẽ bằng ASCII.
 - [ ] Nếu là file giao việc: có banner "Cách đọc tài liệu này", mục "Quyết định đã chốt", và **DoD dạng checkbox kiểm chứng được đã gộp phần test vào**.
 - [ ] Sau khi tự kiểm DoD (đạt, thiếu, hay có thay đổi so với lúc viết): **sửa ngay trong chính file đó** — tick `- [x]` cho mục đã đạt, cập nhật lại nội dung/trạng thái không còn đúng. Không tạo file `.md` mới hay báo cáo riêng chỉ để ghi lại kết quả kiểm tra (xem §3 — không tự sinh file ghi lại việc đã làm nếu không được yêu cầu).
