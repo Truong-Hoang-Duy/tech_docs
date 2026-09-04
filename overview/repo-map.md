@@ -2,7 +2,7 @@
 
 > **Đây là MỤC LỤC, không phải tài liệu thiết kế.** Mỗi mục một dòng, đủ để hỏi cho trúng chỗ, không đủ để kết luận về cách code chạy.
 > Dùng kèm [`backend-features-all.md`](backend-features-all.md) làm gói ngữ cảnh dán vào Claude Web — xem [`rules/2_web-code-handoff.md`](../rules/2_web-code-handoff.md) §3.
-> Nguồn: `bookforge@e54f743` (feat/geometry-editor) · `bookforge-fe@5325a54` (feat/geometry-editor) — **2026-09-01**.
+> Nguồn: `bookforge@e177816` (origin/dev) · `bookforge-fe@73812fd` (origin/dev) — **2026-09-04**.
 > Đây là mốc để tính diff ở lần cập nhật sau; **ref quét do bạn chỉ định mỗi lần** — xem [`rules/2_web-code-handoff.md`](../rules/2_web-code-handoff.md) §3.
 > Đường dẫn BE tính từ gốc repo `bookforge`, FE tính từ gốc repo `bookforge-fe`.
 
@@ -26,7 +26,7 @@ Middleware theo thứ tự vào: CORS → `RequestIdMiddleware` (`main.py:70-78`
 
 ## 2. Endpoint
 
-230 endpoint, nhóm theo router trong `services/api/src/bookforge_api/api/`.
+234 endpoint, nhóm theo router trong `services/api/src/bookforge_api/api/`.
 Router có ghi **[gate question_bank]** bị chặn bởi `Depends(require_feature('question_bank'))` (`main.py:87`) — xem §6.
 
 **`auth.py`** — `/api/auth`
@@ -107,8 +107,7 @@ POST   /{document_id}/shares           DELETE /{document_id}/shares/{user_id}
 GET    ""   (nội dung)                 PUT    ""   (lưu)
 GET    /session                        GET    /assets/{asset_path:path}
 POST   /jsxgraph/preview               POST   /jsxgraph
-GET    /jsxgraph/{asset_id}            PUT    /jsxgraph/{asset_id}
-GET    /geometry/{asset_id}            PUT    /geometry/{asset_id}
+PUT    /jsxgraph/{asset_id}            GET    /geometry/{asset_id}
 GET    /chat/sessions                  POST   /chat/sessions
 GET    /chat/sessions/{session_id}     DELETE /chat/sessions/{session_id}
 POST   /assistant                      POST   /assistant/stream   (SSE)
@@ -125,7 +124,6 @@ POST   /api/chat/sessions/{session_id}/ask-back
 POST   /api/chat/sessions/{session_id}/ask-back/stream      (SSE)
 POST   /api/chat/sessions/{session_id}/messages
 POST   /api/chat/sessions/{session_id}/messages/stream      (SSE)
-PUT    /api/chat/sessions/{session_id}/messages/{message_id}/geometry
 GET    /api/documents/{document_id}/tree
 GET    /api/documents/{document_id}/pages
 GET    /api/documents/{document_id}/search
@@ -367,7 +365,7 @@ Route khai báo tập trung ở `src/App.tsx`. `protectedRoute` = bọc `Require
 | File | Số export | Phủ endpoint |
 |---|---|---|
 | `question-bank-api.ts` | 216 | toàn bộ `/api/question-*`, `/api/test-papers` |
-| `bookforge-api.ts` | 128 | auth, tổ chức, năm học, chat, trình chiếu, asset library |
+| `bookforge-api.ts` | 122 | auth, tổ chức, năm học, chat, trình chiếu, asset library |
 | `document-api.ts` | 44 | `/api/documents`, `/api/document-folders` |
 | `assistant-tools-api.ts` | 19 | `/api/assistant-tools/*` |
 | `overview-dashboard-api.ts` | 16 | `/api/dashboard/*`, `/api/quota/summary` |
@@ -376,7 +374,7 @@ Route khai báo tập trung ở `src/App.tsx`. `protectedRoute` = bọc `Require
 | `api-error-format.ts`, `api-error-message.ts` | 1, 3 | chuẩn hoá lỗi từ BE |
 | `pagination.ts`, `query-client.ts`, `upload-document-request.ts` | 1 mỗi file | phân trang, React Query, upload |
 
-**Thư mục khác:** `src/components/` (44 thư mục dùng chung — `TiptapEditor`, `Chat`, `GeometryEditor`, `PresentationPreview`, `RequireAuth`, `RequireFeature`, `Toast`…), `src/hooks/` (`use-chat-modes`, `use-feature`, `use-paginated-query`, `use-infinite-scroll`, `use-share-targets-query`…), `src/contexts/auth-context.tsx`, `src/lib/` (`feature-flags`, `read-sse-stream`, `pdfjs`, `load-preview-pdf`, `extract-question-cards`).
+**Thư mục khác:** `src/components/` (42 thư mục dùng chung — `TiptapEditor`, `Chat`, `PresentationPreview`, `RequireAuth`, `RequireFeature`, `Toast`…), `src/hooks/` (`use-chat-modes`, `use-feature`, `use-paginated-query`, `use-infinite-scroll`, `use-share-targets-query`…), `src/contexts/auth-context.tsx`, `src/lib/` (`feature-flags`, `read-sse-stream`, `pdfjs`, `load-preview-pdf`, `extract-question-cards`).
 
 ---
 
@@ -387,11 +385,11 @@ Route khai báo tập trung ở `src/App.tsx`. `protectedRoute` = bọc `Require
 | Job | Nơi gọi enqueue | Hàng đợi |
 |---|---|---|
 | `ingest_document_job` | `api/documents.py:606` (nạp tài liệu) | `BOOKFORGE_INGEST_RQ_QUEUE` (`ingest`) |
-| `reindex_knowledge_job` | `api/documents.py:496,929` · `api/editor.py:1407` · `api/chat.py:1159` · `api/test_papers.py:70` · `workers/jobs.py:66` (nối sau ingest) · `cron/reap_stuck_reindex.py:127` · `services/knowledge_backfill.py:137` | `BOOKFORGE_INDEX_RQ_QUEUE` (`index`) |
+| `reindex_knowledge_job` | `api/documents.py:496,929` · `api/editor.py:1218` · `api/chat.py:1142` · `api/test_papers.py:70` · `workers/jobs.py:66` (nối sau ingest) · `cron/reap_stuck_reindex.py:127` · `services/knowledge_backfill.py:137` | `BOOKFORGE_INDEX_RQ_QUEUE` (`index`) |
 | `run_exam_extract_job` | `api/question_cards.py:1055`, theo dõi qua `GET /extract/{job_id}` | `ingest` |
 | `render_preview_pdf_job` | `services/preview_serve.py:71` | `ingest` |
 | `finalize_generated_deck_job` | `api/presentations.py:451` · `api/standalone_presentations.py:871,988` | `ingest` |
-| `render_inapp_thumbnail_job` | `api/documents.py:491` · `api/editor.py:1387` · `api/chat.py:1153` | `ingest` |
+| `render_inapp_thumbnail_job` | `api/documents.py:491` · `api/editor.py:1198` · `api/chat.py:1136` | `ingest` |
 
 `BOOKFORGE_QUEUE_INLINE=true` (mặc định dev) chạy job **đồng bộ ngay trong request**, không qua Redis.
 
@@ -424,7 +422,7 @@ Cờ chỉ bật bằng env, không có cấp theo tổ chức: `authorization_d
 
 ## 7. Biến môi trường
 
-**Backend** — `core/settings.py`, tiền tố **`BOOKFORGE_`** + tên trường viết hoa (VD trường `database_url` → `BOOKFORGE_DATABASE_URL`). Đọc từ `services/api/.env`. Khoảng 200 trường, nhóm chính:
+**Backend** — `core/settings.py`, tiền tố **`BOOKFORGE_`** + tên trường viết hoa (VD trường `database_url` → `BOOKFORGE_DATABASE_URL`). Đọc từ `services/api/.env`. 183 trường, nhóm chính:
 
 | Nhóm | Trường tiêu biểu |
 |---|---|
@@ -453,7 +451,7 @@ Cờ chỉ bật bằng env, không có cấp theo tổ chức: `authorization_d
 
 Nói rõ để không tưởng là đã đủ — hỏi `[ĐỊNH VỊ]` cho những vùng này:
 
-- **Bên trong `services/` của backend (~85 module)**: chỉ có tên file, chưa có mô tả từng module. Các cụm lớn: `question_*` (14 file), `document_*`/`documents.py`, `quota_*` (7 file), `presentation*`, `geometry/` và `jsxgraph/` (hai stack hình học song song).
+- **Bên trong `services/` của backend (86 module)**: chỉ có tên file, chưa có mô tả từng module. Các cụm lớn: `question_*` (15 file), `document_*`/`documents.py`, `quota_*` (6 file), `presentation*`, `geometry/` và `jsxgraph/` (hai stack hình học song song).
 - **`chat/`**: `adk_agent.py`, `editor_agent.py`, `workspace_tools.py`, `legal_tools.py`, `expert_tools.py` — chưa liệt kê tool nào của agent.
 - **Cột của bảng**: §3 chỉ có tên bảng + khoá ngoại, **không có danh sách cột**. Cần cột thì hỏi.
 - **Shape request/response**: nằm ở `schemas/`, chưa liệt kê.
