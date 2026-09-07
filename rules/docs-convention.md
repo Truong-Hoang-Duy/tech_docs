@@ -198,7 +198,7 @@ Người clone repo backend **không có** thư mục `tech_docs/` trên máy, n
 
 - Đường dẫn `tech_docs/…`, và link tương đối vượt ra ngoài repo: `../tech_docs/…`, `../../tech_docs/…`.
 - Câu dẫn kiểu "xem `tech_docs/rules/…`", "theo bản đồ trong `tech_docs/overview/…`".
-- Nhắc tên các file nháp của quy trình nghiên cứu: `00-mo-ta.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `trang-thai.md`, `repo-map.md`, `backend-features-all.md`.
+- Nhắc tên các file nháp của quy trình nghiên cứu: `00-desc.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `status.md`, `repo-map.md`, `backend-features-all.md`.
 
 **Thay vì link thì chép nội dung.** Tài liệu phải đọc được trọn vẹn bởi người chỉ có repo đó — quyết định, ràng buộc, hợp đồng API cần thiết đều viết thẳng vào file.
 

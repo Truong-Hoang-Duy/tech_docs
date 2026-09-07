@@ -55,9 +55,9 @@ Kết quả: hai file [`overview/repo-map.md`](../../overview/repo-map.md) và [
 
 Ví dụ chạy thật: *"Xuất đề thi ra Word kèm đáp án"*.
 
-### Bước 1 — Bạn viết mô tả (5 phút)
+### Bước 1 — Bạn viết nháp mô tả (5 phút)
 
-Tạo `tech_docs/research/xuat-de-thi-word/00-mo-ta.md`. Viết bằng lời thường, **không cần biết tên hàm hay tên bảng nào**:
+Bạn chưa cần tạo thư mục hay nghĩ tên tính năng vội. Hãy viết nháp mô tả ra một file bất kỳ (ví dụ `tech_docs/research/draft.md`) bằng lời thường, **không cần biết tên hàm hay tên bảng nào**:
 
 ```text
 # 00 — Mô tả: Xuất đề thi ra Word kèm đáp án
@@ -94,11 +94,15 @@ Theo thứ tự:
 | Chỉ FE | `repo-map.md` §4 + `frontend/CONVENTION.md` |
 | Cả hai / chưa rõ | Cả hai file, đầy đủ |
 
-3. **Nội dung `00-mo-ta.md`** bạn vừa viết.
+3. **Nội dung `draft.md`** bạn vừa viết.
 
-Web trả về **một khối markdown**: danh sách câu hỏi khảo sát. Nó sẽ hỏi kiểu:
+Web trả về **một khối markdown**: các gợi ý tên thư mục (`<slug>`) và danh sách câu hỏi khảo sát. Nó sẽ hỏi kiểu:
 
 ```text
+Gợi ý slug:
+1. `xuat-word`
+2. `xuat-de-thi`
+3. `de-thi-docx`
 Q1 [ĐỊNH VỊ][BE] Luồng xuất PDF hiện tại đi qua những hàm nào,
    từ endpoint tới lúc sinh file?
 Q2 [XÁC MINH][BE] Bảng `answer_cards` có phải nơi lưu đáp án của đề thi không,
@@ -108,9 +112,12 @@ Q3 [ĐỊNH VỊ][FE] Nút tải về ở màn hình đề thi gọi hàm nào t
 
 `[XÁC MINH]` = tên đã có trong bản đồ. `[ĐỊNH VỊ]` = chưa ai biết tên, Claude Code phải đi tìm.
 
-### Bước 3 — Lưu câu hỏi vào repo
+### Bước 3 — Tạo thư mục & Lưu file vào repo
 
-Copy khối web vừa trả về, lưu **nguyên văn** thành `tech_docs/research/xuat-de-thi-word/01-brief.md`.
+Chọn một `<slug>` từ gợi ý của web để tạo thư mục `tech_docs/research/<slug>/`.
+Sau đó:
+1. Đổi tên file `draft.md` thành `00-desc.md` và chuyển vào thư mục này.
+2. Copy khối câu hỏi web trả về, lưu **nguyên văn** thành `tech_docs/research/<slug>/01-brief.md`.
 
 ### Bước 4 — Gõ một câu trong Claude Code ← tốn token
 
@@ -206,7 +213,7 @@ Vòng này lặp bao nhiêu lần cũng được — nó rẻ, vì phần giản
 
 ## 6. Web hết token, đổi tài khoản
 
-Mỗi thư mục tính năng có file `trang-thai.md` — **tôi tự cập nhật, bạn không phải viết**. Nó ghi: mục tiêu, phía, quyết định đã chốt, phương án đang theo, danh sách file, câu hỏi mở, bước tiếp theo.
+Mỗi thư mục tính năng có file `status.md` — **tôi tự cập nhật, bạn không phải viết**. Nó ghi: mục tiêu, phía, quyết định đã chốt, phương án đang theo, danh sách file, câu hỏi mở, bước tiếp theo.
 
 Mở chat web mới bằng tài khoản khác, dán 3 thứ:
 
@@ -219,7 +226,7 @@ Dưới đây là prompt giao thức, rồi tới file trạng thái của việ
 ```
 
 2. Prompt giao thức (§6 của file luật).
-3. Nội dung `trang-thai.md`.
+3. Nội dung `status.md`.
 
 Xong. Không phải kể lại từ đầu.
 
@@ -281,8 +288,8 @@ Sinh lại tech_docs/overview/repo-map.md từ <ref> theo §3.
 
 ```text
 tech_docs/research/<slug>/
-├── trang-thai.md     ← Claude Code viết, để hồi phục phiên web
-├── 00-mo-ta.md       ← BẠN viết, bằng lời thường
+├── status.md     ← Claude Code viết, để hồi phục phiên web
+├── 00-desc.md       ← BẠN viết, bằng lời thường
 ├── 01-brief.md       ← Web viết, câu hỏi khảo sát
 ├── 02-findings.md    ← Claude Code viết, sự thật + bằng chứng
 ├── 03-design.md      ← Web viết, phương án
@@ -310,9 +317,9 @@ Bản chốt cuối cùng **không nằm ở đây** mà ở `backend/docs/tasks
 |---|---|
 | Prompt dài dán vào web | §6 |
 | Bảng chọn ref cho bản đồ | §3 |
-| Khuôn `00-mo-ta.md` | §8 |
+| Khuôn `00-desc.md` | §8 |
 | Quy tắc upload file lên web | §11 |
 | Khuôn `qa.md` | §12 |
-| Khuôn `trang-thai.md` | §13 |
+| Khuôn `status.md` | §13 |
 | Luật thi công theo task doc | §16 |
 | Checklist đầy đủ | §15 |

@@ -29,7 +29,7 @@ NHỊP HẰNG NGÀY — mỗi sáng, một câu gõ (§3)
              └─► in ra "hôm nay đổi gì" để bạn dán vào chat web đang mở
 
 GIAI ĐOẠN 1 — KHẢO SÁT      thư mục tech_docs/research/<slug>/
-[Bạn]  ─► 00-mo-ta.md       Mô tả nghiệp vụ + dòng "Phía: BE|FE|cả hai" (§8)
+[Bạn]  ─► 00-desc.md       Mô tả nghiệp vụ + dòng "Phía: BE|FE|cả hai" (§8)
    │
 [Web]  ─► 01-brief.md       Câu hỏi khảo sát + giả định cần kiểm chứng (§9)
    │
@@ -50,7 +50,7 @@ GIAI ĐOẠN 3 — THI CÔNG      vòng lặp ngắn, lặp nhiều lần (§12)
    │
    └─► ghi vào qa.md  +  cập nhật "Quyết định đã chốt" của task doc
 
-XUYÊN SUỐT: trang-thai.md giữ ngữ cảnh để hồi phục khi đổi tài khoản web (§13)
+XUYÊN SUỐT: status.md giữ ngữ cảnh để hồi phục khi đổi tài khoản web (§13)
 ```
 
 Giai đoạn 1–2 bình thường **đúng hai lượt qua lại**. Giai đoạn 3 lặp bao nhiêu lần cũng được — nó rẻ, vì phần nặng nằm ở web.
@@ -127,8 +127,8 @@ Mỗi tính năng một thư mục `tech_docs/research/<feature-slug>/`, đánh 
 
 | File | Ai viết | Nội dung |
 |---|---|---|
-| `trang-thai.md` | **Claude Code** | Ngữ cảnh cô đọng để hồi phục phiên web (§13) — không đánh số, luôn ở đầu |
-| `00-mo-ta.md` | **Bạn** | Mô tả nghiệp vụ, phía, ràng buộc, cái không làm (§8) |
+| `status.md` | **Claude Code** | Ngữ cảnh cô đọng để hồi phục phiên web (§13) — không đánh số, luôn ở đầu |
+| `00-desc.md` | **Bạn** | Mô tả nghiệp vụ, phía, ràng buộc, cái không làm (§8) |
 | `01-brief.md` | Web | Câu hỏi khảo sát (§9) |
 | `02-findings.md` | **Claude Code** | Hiện trạng có bằng chứng (§10) |
 | `03-design.md` | Web | Phương án, đánh đổi, kế hoạch |
@@ -153,7 +153,7 @@ Tài liệu về FE vẫn nằm trong repo backend — repo `bookforge-fe` khôn
 `bookforge`, `bookforge-fe`, `tech_docs` là ba repo riêng; người nhận việc chỉ có repo triển khai, **không có** `tech_docs/`.
 Vì vậy task doc sinh ra ở cuối quy trình này phải **cắt đứt hoàn toàn** với thư mục nghiên cứu đã dùng để tạo ra nó:
 
-- Không có đường dẫn `tech_docs/…` hay `../tech_docs/…`, không nhắc tên `00-mo-ta.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `trang-thai.md`, `repo-map.md`.
+- Không có đường dẫn `tech_docs/…` hay `../tech_docs/…`, không nhắc tên `00-desc.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `status.md`, `repo-map.md`.
 - Trường `**Thiết kế gốc (đọc trước):**` chỉ trỏ file **trong cùng repo**; thiết kế chỉ có ở `research/` thì **bỏ trường đó** và viết thẳng vào "Quyết định đã chốt".
 - Mọi thứ người làm cần biết — quyết định, ràng buộc, hợp đồng API, trích code — **chép vào task doc**, không link ra ngoài.
 
@@ -183,11 +183,18 @@ Vai của bạn: đặt câu hỏi và dựng phương án. Ràng buộc:
   Cái gì đọc code là biết thì hỏi Claude Code, đừng hỏi tôi.
 - Chỉ hỏi tôi những thứ CHỈ tôi trả lời được: mong muốn nghiệp vụ, ưu tiên, phạm vi,
   ai dùng, chấp nhận đánh đổi nào. Hỏi tối đa 5 câu, hỏi một lượt.
+- BẮT BUỘC dùng tiếng Anh ngắn gọn cho các tên file hướng dẫn tạo (VD: `00-desc.md`, `01-plan.md`, `status.md`).
 
 Tôi sẽ mô tả một tính năng. Việc của bạn ở lượt này là xuất ra DUY NHẤT một khối markdown
 theo khuôn dưới đây (không viết thiết kế, không viết code):
 
 # 01 — Brief khảo sát: <tên tính năng>
+
+**Gợi ý thư mục (slug):**
+<Đề xuất 3-5 slug ngắn gọn, súc tích, tiếng Việt không dấu gạch ngang để người dùng chọn>
+1. `<slug-1>`
+2. `<slug-2>`
+3. `<slug-3>`
 
 ## Mục tiêu tính năng
 <3–5 gạch đầu dòng: làm được gì, cho ai, ràng buộc đã biết, cái KHÔNG làm>
@@ -263,9 +270,9 @@ Sinh lại tech_docs/overview/repo-map.md từ <ref> theo §3.
 Không cần mô tả lại tính năng ở bất kỳ câu nào — mô tả đã nằm trong file.
 Muốn gọn hơn nữa thì đặt bốn câu này thành slash command trong `backend/.claude/commands/`.
 
-## 8. Khuôn `00-mo-ta.md` — bạn viết
+## 8. Khuôn `draft.md` (đổi thành `00-desc.md` sau) — bạn viết
 
-Viết **hoàn toàn bằng ngôn ngữ nghiệp vụ**. Không cần một tên kỹ thuật nào; chỗ nào không biết thì tả hiện tượng.
+Bạn chưa cần tạo thư mục vội. Viết nháp **hoàn toàn bằng ngôn ngữ nghiệp vụ**. Không cần một tên kỹ thuật nào; chỗ nào không biết thì tả hiện tượng.
 
 ```text
 # 00 — Mô tả: <tên tính năng>
@@ -310,7 +317,7 @@ Bốn điều quyết định chất lượng vòng lặp:
 <5–10 dòng: điều gì làm thay đổi phương án so với giả định của brief>
 
 ## Phía nào phải sửa
-<kết luận BE / FE / cả hai, kể cả khi 00-mo-ta.md ghi "chưa rõ".
+<kết luận BE / FE / cả hai, kể cả khi 00-desc.md ghi "chưa rõ".
 Liệt kê file phải đụng ở mỗi phía. Nếu cả hai: nói rõ hợp đồng giữa hai bên
 (endpoint nào, shape gì) vì đó là chỗ hai task doc gặp nhau.>
 
@@ -357,7 +364,7 @@ Ràng buộc khi viết file này:
 - **Không thiết kế, không viết code tính năng** ở bước này.
 - Trả lời hết mọi câu, kể cả khi câu trả lời là "chỗ này chưa có gì cả".
 - Nếu phát hiện `repo-map.md` đã lệch thực tế, **sửa luôn dòng sai trong đó** và ghi một dòng vào mục tóm tắt.
-- **Cập nhật `trang-thai.md`** (§13) trước khi kết thúc lượt.
+- **Cập nhật `status.md`** (§13) trước khi kết thúc lượt.
 
 ## 11. Upload file code lên web
 
@@ -410,7 +417,7 @@ Giải thích cho tôi bằng lời dễ hiểu, nêu 2 lựa chọn kèm đánh
 **Luật chống mất mát:** `qa.md` là **nhật ký**, task doc mới là **nguồn sự thật**.
 Mọi quyết định chốt ở web phải được chép về mục "Quyết định đã chốt" của task doc, nếu không vài hôm sau không ai nhớ vì sao làm như vậy.
 
-## 13. `trang-thai.md` — hồi phục khi đổi tài khoản web
+## 13. `status.md` — hồi phục khi đổi tài khoản web
 
 Web hết token, đổi tài khoản, mất sạch ngữ cảnh. File này để dán một lần là chạy tiếp được.
 
@@ -445,7 +452,7 @@ Web hết token, đổi tài khoản, mất sạch ngữ cảnh. File này để
 
 Giữ **dưới 60 dòng** — nó là điểm khởi động lại, không phải bản sao của thiết kế.
 
-**Prompt hồi sức** — mở chat web mới, dán khối này, rồi dán prompt §6, rồi dán `trang-thai.md`:
+**Prompt hồi sức** — mở chat web mới, dán khối này, rồi dán prompt §6, rồi dán `status.md`:
 
 ```text
 Tôi đang tiếp tục một việc dở bằng tài khoản mới, bạn chưa có ngữ cảnh gì.
@@ -475,7 +482,7 @@ Mẹo vận hành: **hỏi câu nặng nhất ngay đầu phiên web**, đừng 
 
 **Mỗi tính năng**
 
-- [ ] Đã tạo `tech_docs/research/<slug>/` và viết `00-mo-ta.md`, có dòng **Phía**.
+- [ ] Đã tạo `tech_docs/research/<slug>/` và viết `00-desc.md`, có dòng **Phía**.
 - [ ] Đã dán gói ngữ cảnh **đúng phạm vi** (§4) vào chat web.
 - [ ] Brief từ web không chứa tên file/hàm/bảng nào ngoài bản đồ đã dán; thứ chưa biết nằm ở câu `[ĐỊNH VỊ]`; có "Cần trích nguyên văn" và "Ngưỡng dừng".
 - [ ] `02-findings.md` có **"Phía nào phải sửa"**, **"Bản đồ vùng liên quan"**, **"File nên upload lên web"**, trả lời đủ số câu, câu nào cũng có `file:line`.
@@ -488,7 +495,7 @@ Mẹo vận hành: **hỏi câu nặng nhất ngay đầu phiên web**, đừng 
 
 - [ ] Câu hỏi của Claude Code **tự chứa**, dán sang web được ngay.
 - [ ] Đã ghi vào `qa.md`, và **quyết định đã chép về task doc**.
-- [ ] `trang-thai.md` được cập nhật ở mọi lượt Claude Code chạy.
+- [ ] `status.md` được cập nhật ở mọi lượt Claude Code chạy.
 - [ ] Không upload file chứa khoá/token lên web (§11).
 - [ ] Không tự tạo file trong `specs/` hoặc `audits/`.
 - [ ] Thi công **bám đúng task doc** (§16), DoD được tick ngay trong file đó.
