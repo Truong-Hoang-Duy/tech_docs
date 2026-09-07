@@ -115,8 +115,8 @@ Web chỉ hỏi trúng khi có bản đồ trong tay. Dán theo **phạm vi**, k
 
 | File | Trả lời câu hỏi |
 |---|---|
-| [`overview/backend-features-all.md`](../overview/backend-features-all.md) | *Hệ thống làm được những gì, logic nằm ở module nào* |
-| [`overview/repo-map.md`](../overview/repo-map.md) | *Có những endpoint / bảng / màn hình / job / env nào* |
+| [`overview/backend-features-all.md`](../../overview/backend-features-all.md) | *Hệ thống làm được những gì, logic nằm ở module nào* |
+| [`overview/repo-map.md`](../../overview/repo-map.md) | *Có những endpoint / bảng / màn hình / job / env nào* |
 | [`frontend/CONVENTION.md`](../../frontend/CONVENTION.md) | *Quy ước đặt tên và giới hạn kích thước file FE* |
 
 Cả hai bản đồ đều là **mục lục**: đủ để hỏi trúng chỗ, không đủ để kết luận code chạy thế nào. Cần sâu hơn thì hỏi ở `01-brief.md`, hoặc upload file thật (§11).
@@ -135,7 +135,7 @@ Mỗi tính năng một thư mục `tech_docs/research/<feature-slug>/`, đánh 
 | `04-…`, `05-…` | luân phiên | Vòng khảo sát bổ sung nếu còn câu hỏi mở |
 | `qa.md` | **Claude Code** + bạn | Nhật ký hỏi–đáp lúc thi công (§12) |
 
-Quy ước áp dụng: tên file `kebab-case`, tiếng Việt, không frontmatter, sơ đồ ASCII — xem [`docs-convention.md`](docs-convention.md).
+Quy ước áp dụng: tên file `kebab-case`, tiếng Việt, không frontmatter, sơ đồ ASCII — xem [`docs-convention.md`](../docs-convention.md).
 `tech_docs/research/` là **nháp nghiên cứu**; bản chốt luôn kết thúc ở `backend/docs/tasks/`.
 
 **Task doc — nơi đặt theo phía:**
@@ -157,7 +157,7 @@ Vì vậy task doc sinh ra ở cuối quy trình này phải **cắt đứt hoà
 - Trường `**Thiết kế gốc (đọc trước):**` chỉ trỏ file **trong cùng repo**; thiết kế chỉ có ở `research/` thì **bỏ trường đó** và viết thẳng vào "Quyết định đã chốt".
 - Mọi thứ người làm cần biết — quyết định, ràng buộc, hợp đồng API, trích code — **chép vào task doc**, không link ra ngoài.
 
-`tech_docs/research/` là nháp của bạn và tôi; task doc là thứ giao cho người khác. Xem `docs-convention.md` §3.1.
+`tech_docs/research/` là nháp của bạn và tôi; task doc là thứ giao cho người khác. Xem [`docs-convention.md`](../docs-convention.md) §3.1.
 
 **Không tự tạo file trong `backend/docs/superpowers/specs/` hay `backend/docs/audits/`** — hai loại đó do bạn (vai trò reviewer) viết.
 
@@ -233,7 +233,7 @@ chỉ dựa trên sự thật trong kết quả đó, và nêu rõ chỗ nào v�
 **Mỗi sáng — cập nhật bản đồ** (điền ref bạn muốn lấy, xem bảng §3):
 
 ```text
-Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/2_web-code-handoff.md.
+Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_web-code-handoff.md.
 ```
 
 Ví dụ: `từ origin/dev` · `từ origin/main` · `từ feat/geometry-editor` · `từ working`
@@ -243,7 +243,7 @@ Bỏ trống ref thì tôi dùng lại đúng ref ghi ở header `repo-map.md` l
 **Mỗi vòng khảo sát:**
 
 ```text
-Đọc tech_docs/rules/2_web-code-handoff.md và tech_docs/research/<slug>/01-brief.md,
+Đọc tech_docs/rules/claude/2_web-code-handoff.md và tech_docs/research/<slug>/01-brief.md,
 trả lời vào tech_docs/research/<slug>/02-findings.md.
 ```
 
@@ -491,3 +491,20 @@ Mẹo vận hành: **hỏi câu nặng nhất ngay đầu phiên web**, đừng 
 - [ ] `trang-thai.md` được cập nhật ở mọi lượt Claude Code chạy.
 - [ ] Không upload file chứa khoá/token lên web (§11).
 - [ ] Không tự tạo file trong `specs/` hoặc `audits/`.
+- [ ] Thi công **bám đúng task doc** (§16), DoD được tick ngay trong file đó.
+
+## 16. Thi công theo task doc
+
+Task doc là **hợp đồng**, không phải gợi ý. Ba luật riêng cho giai đoạn này:
+
+1. **Đúng phạm vi ghi trong doc.** Không thêm tính năng, không refactor kèm, không "tiện tay sửa luôn" chỗ khác.
+2. **Bám mục "Quyết định đã chốt".** Đã chốt thì không tự chọn cách khác, kể cả khi thấy cách khác hay hơn — muốn đổi phải hỏi trước và sửa doc.
+3. **Doc sai hoặc thiếu so với code thật → dừng, báo người dùng, sửa doc trước rồi mới code.** Không im lặng làm khác tài liệu: lệch giữa doc và code là thứ vài tuần sau không ai gỡ được.
+
+Ba luật còn lại đã nằm ở chỗ khác, nhắc để không quên:
+
+- **Tick `- [x]` từng mục DoD ngay trong task doc** khi đạt, và sửa nội dung đã không còn đúng — không tạo file `.md` mới để báo cáo (`docs-convention.md` §6).
+- **Quyết định phát sinh** → `qa.md` + chép về "Quyết định đã chốt" (§12).
+- **Không commit, không push khi chưa được cho phép** (`3_git-workflow-rules.md` §1).
+
+Đụng cả hai phía thì thi công **từng task doc một**, BE trước cho có API thật, và mỗi repo một phiên Claude Code riêng.

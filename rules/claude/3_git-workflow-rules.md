@@ -9,7 +9,7 @@
 - Chỉ thực hiện commit/push khi người dùng **xác nhận rõ ràng** (VD: "commit đi", "ok commit", "push lên đi", "ok push", "push commit").
 - Nếu không chắc người dùng đã xác nhận hay chưa, hỏi lại trước khi thực hiện.
 - Không được tự tạo các file ".md" hoặc docs liên quan đến việc đã làm, trừ khi có yêu cầu từ người dùng.
-- **File `.md` commit vào `bookforge` / `bookforge-fe` không được chứa chuỗi `tech_docs`.** Ba repo là ba repo riêng: người clone repo code không có `tech_docs/`, nên mọi đường dẫn tới đó là link chết. Cần nội dung gì thì chép vào chính file đó (`docs-convention.md` §3.1).
+- **File `.md` commit vào `bookforge` / `bookforge-fe` không được chứa chuỗi `tech_docs`.** Ba repo là ba repo riêng: người clone repo code không có `tech_docs/`, nên mọi đường dẫn tới đó là link chết. Cần nội dung gì thì chép vào chính file đó ([`docs-convention.md`](../docs-convention.md) §3.1).
 
 ## 2. Quy tắc viết commit message
 
