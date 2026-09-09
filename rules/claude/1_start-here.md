@@ -100,9 +100,9 @@ Web trả về **một khối markdown**: các gợi ý tên thư mục (`<slug>
 
 ```text
 Gợi ý slug:
-1. `xuat-word`
-2. `xuat-de-thi`
-3. `de-thi-docx`
+1. `thinking-agent`
+2. `export-pdf`
+3. `question-bank`
 Q1 [ĐỊNH VỊ][BE] Luồng xuất PDF hiện tại đi qua những hàm nào,
    từ endpoint tới lúc sinh file?
 Q2 [XÁC MINH][BE] Bảng `answer_cards` có phải nơi lưu đáp án của đề thi không,
