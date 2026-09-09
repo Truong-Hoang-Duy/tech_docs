@@ -2,7 +2,7 @@
 
 > Nguồn: `backend/services/api` (FastAPI + RQ worker + cron), cùng 3 dịch vụ phụ trợ: `knowledge-ingestion`, `knowledge-retrieval`, `gotenberg`.
 > Tài liệu mô tả logic xử lý ở mức tổng quan, không đi sâu kỹ thuật.
-> Mốc SHA: `bookforge@a62910d` (origin/dev) — đối chiếu **2026-09-07**, nội dung không đổi so với bản soạn 2026-08-24.
+> Mốc SHA: `bookforge@a62910d` (origin/dev) — đối chiếu **2026-09-09**, nội dung không đổi so với bản soạn 2026-08-24.
 > File này chỉ cập nhật khi có **tính năng mới hoặc luồng đổi bản chất**, không cập nhật theo refactor.
 
 ---
