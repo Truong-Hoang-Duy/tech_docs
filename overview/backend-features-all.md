@@ -2,7 +2,7 @@
 
 > Nguồn: `backend/services/api` (FastAPI + RQ worker + cron), cùng 3 dịch vụ phụ trợ: `knowledge-ingestion`, `knowledge-retrieval`, `gotenberg`.
 > Tài liệu mô tả logic xử lý ở mức tổng quan, không đi sâu kỹ thuật.
-> Mốc SHA: `bookforge@a62910d` (origin/dev) — đối chiếu **2026-09-09**, nội dung không đổi so với bản soạn 2026-08-24.
+> Mốc SHA: `bookforge@3cdb8f3` (origin/dev) — đối chiếu **2026-09-11**; §6 bổ sung trích đề thi từ PDF và khung kiến thức/năng lực.
 > File này chỉ cập nhật khi có **tính năng mới hoặc luồng đổi bản chất**, không cập nhật theo refactor.
 
 ---
@@ -107,6 +107,19 @@
 + CRUD thẻ câu hỏi có phân loại theo taxonomy (môn/lớp/chủ đề/mức độ), hỗ trợ 9 dạng câu hỏi, đính kèm ảnh, thùng rác, nhân bản, lọc đa tiêu chí.
 + **Sinh câu hỏi bằng AI** (`/generate`) và **chuyển đổi dạng câu hỏi** (`/convert`) — có validator ép công thức toán phải ở dạng LaTeX hợp lệ.
 + **Phát hiện trùng lặp** (`/check-duplicates`) và **kiểm tra chất lượng** (`/quality-check`).
+
+**Trích đề thi từ PDF** — `api/question_cards.py` (`POST /extract`, `GET /extract/{job_id}`), `services/question_exam_extract.py`, `services/pdf_figures.py`
++ Nộp một file đề thi PDF, hệ thống tự đọc thành thẻ câu hỏi. Chạy trong job nền, cắt tài liệu thành **cửa sổ vài trang có chồng lấn** rồi xử lý song song; trần **300 trang** một file.
++ Mỗi trang tự chọn đường đi: PDF "born-digital" đọc thẳng text và lấy hình theo toạ độ thật trên trang (nên gán đúng hình vào đúng câu, kể cả bảng biến thiên mà OCR hay nuốt mất), chỉ **trang scan mới gọi OCR** và mới bị tính cước OCR.
++ Mỗi cửa sổ được **checkpoint** riêng, nên job chết giữa chừng chạy lại không mất phần đã xong; tiến độ ghi ra cho frontend hiện thanh %.
++ Hậu xử lý: khử trùng lặp ở vùng chồng lấn, nối câu bị cắt ngang cửa sổ, ghép **phiếu đáp án** vào câu tương ứng, nhận biết **nhiều mã đề trong cùng một file**, dò **số câu bị thiếu**, và đánh dấu câu **độ tin cậy thấp** để người dùng soát lại.
++ Câu trắc nghiệm/tự luận **không có đáp án in kèm vẫn được lưu** thay vì bị bỏ, chỉ ghi nhận là thiếu khoá.
++ Có validator LaTeX dùng chung với luồng sinh câu hỏi (`llm/latex_guard.py`): model viết công thức ở dạng text thô thì bị bắt hỏi lại.
+
+**Khung kiến thức và khung năng lực** — `question_knowledge_frameworks.py`, `question_competency_frameworks.py`, `services/question_curriculum_seed.py`
++ Hai hệ cây phân loại song song gắn vào thẻ câu hỏi: **khung kiến thức** (theo bộ sách/chương trình môn) và **khung năng lực** (theo Chương trình GDPT 2018). Tạo, sửa, xoá, **nhân bản** khung; node dạng cây tự trỏ.
++ Khung năng lực có thuộc tính **cấp học** (`cap`): danh sách khung lọc theo môn + cấp suy ra từ lớp, và hệ thống **từ chối gắn node năng lực lệch cấp** so với lớp của thẻ câu hỏi.
++ Dữ liệu khung dựng sẵn nạp qua migration cho các môn Chương trình 2018; đã seed khung kiến thức Cấp 3 (lớp 10–12) cho Toán KNTT, Ngữ văn KNTT, Sinh học KNTT và Tiếng Anh Global Success.
 
 **Quy trình duyệt câu hỏi**
 + Vòng đời: nháp → gán người duyệt → đặt độ ưu tiên → duyệt / từ chối / yêu cầu sửa. Có **phiên duyệt** (review session) để duyệt hàng loạt theo lô, hàng đợi duyệt, dashboard thống kê cho người quản lý và bảng điều khiển riêng cho reviewer.
