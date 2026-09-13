@@ -17,7 +17,7 @@
 6. **Chỗ lưu đã có sẵn**: cả `chat_messages` lẫn `canvas_chat_messages` đều có cột `metadata_json` kiểu JSON tự do, và cả hai đều được trả nguyên vẹn về FE khi mở lại phiên. Không cần bảng mới nếu chấp nhận nhét timeline vào đó.
 7. **`retrieval_traces` không dùng được cho timeline**: nó gắn vào `documents.id`, không gắn message, và mỗi lượt chỉ ghi **một** dòng cho tài liệu đầu tiên — không phải nhật ký từng lần truy hồi.
 8. **Không có công cụ toán (SymPy hay tương đương)**. Công cụ hiện có là truy hồi/đọc tài liệu, tra cứu pháp luật, dựng hình học JSXGraph, và sửa block tài liệu. Ví dụ "Chạy công cụ: Máy tính đại số SymPy" trong mô tả **không phản ánh được** ở vòng này (brief đã ghi rõ không làm — xác nhận là đúng, hiện không có).
-9. `repo-map.md` không có dòng nào sai về vùng này; không sửa gì.
+9. `1_repo-map.md` không có dòng nào sai về vùng này; không sửa gì.
 
 ---
 

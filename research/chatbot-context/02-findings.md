@@ -17,7 +17,7 @@ Nhưng có **ba điều làm đổi phương án** so với giả định của 
 
 Ngoài ra hệ thống **đã coi hai loại chat là một họ ở tầng hiển thị**: `GET /api/chat/sessions` trộn cả hai loại vào một danh sách lịch sử, gắn nhãn `type='canvas'`. Tiền lệ này ủng hộ hướng "một cuộc trò chuyện, hai giao diện" hơn là brief nghĩ.
 
-Đã đối chiếu `repo-map.md` các mục liên quan (endpoint chat/editor, bảng `chat_sessions`, `canvas_chat_sessions`) — **không có dòng nào lệch thực tế**, không phải sửa gì.
+Đã đối chiếu `1_repo-map.md` các mục liên quan (endpoint chat/editor, bảng `chat_sessions`, `canvas_chat_sessions`) — **không có dòng nào lệch thực tế**, không phải sửa gì.
 
 ## Phía nào phải sửa
 

@@ -4,7 +4,7 @@
 > Không phải tài liệu thiết kế — muốn biết *vì sao* một cờ tồn tại thì đọc spec dẫn ở từng mục.
 > Nguồn: `bookforge@60b14b4` (dev) · `bookforge-fe@9bfd2fd` (dev) — **2026-09-11**.
 > Đường dẫn BE tính từ gốc repo `bookforge`, FE tính từ gốc repo `bookforge-fe`.
-> [`repo-map.md` §6](repo-map.md) là bản mục lục một bảng; file này là bản chi tiết của mục đó.
+> [`1_repo-map.md` §6](1_repo-map.md) là bản mục lục một bảng; file này là bản chi tiết của mục đó.
 
 ---
 

@@ -1,25 +1,26 @@
 # Bắt đầu ở đây — cách làm việc mỗi ngày
 
 > File này là **hướng dẫn sử dụng**, đọc để biết làm gì.
-> [`2_web-code-handoff.md`](2_web-code-handoff.md) là **luật chi tiết**, chỉ mở khi cần tra khuôn mẫu.
-> Prompt dài dán vào web nằm ở file luật §6 — cố ý không chép lại ở đây để hai bản không lệch nhau.
+> [`2_workflow-rules.md`](2_workflow-rules.md) là **luật chi tiết**, chỉ mở khi cần tra khuôn mẫu.
+> [`../gemini-assist.md`](../gemini-assist.md) là chỗ tra prompt khi muốn nhờ Gemini đọc hộ cho đỡ tốn hạn mức Claude.
 
 ---
 
-## 1. Ba nhân vật
+## 1. Hai nhân vật rưỡi
 
 ```text
-BẠN            biết muốn gì               không cần biết code nằm đâu
-CLAUDE WEB     nghĩ giỏi, giải thích, rẻ  không nhìn thấy code
-CLAUDE CODE    nhìn thấy code, viết code  đắt — nên chỉ gọi khi cần đọc/sửa repo
+BẠN            biết muốn gì                     không cần biết code nằm đâu
+CLAUDE CODE    đọc repo, viết tài liệu, viết code — người duy nhất được GHI
+GEMINI         đọc hộ, giảng lại, tra tài liệu ngoài — CHỈ ĐỌC, không ghi gì
 ```
 
-Web và Code **không nói chuyện trực tiếp được**. Bạn là người bưng file qua lại.
-Vì vậy mọi thứ trao đổi đều là **file trong repo**, không phải tin nhắn trôi trong chat.
+Claude Code làm trọn một mạch: khảo sát → thiết kế → task doc → code. Bạn **không phải bưng file qua lại** như trước nữa.
 
-Nguyên tắc chi phí: **việc nghĩ và việc giải thích đẩy sang web, việc đọc và sửa code mới gọi Claude Code.**
+Gemini là "nửa nhân vật": nó không tạo ra thứ gì trong repo, chỉ giúp **bạn** hiểu nhanh và giúp Claude Code khỏi phải đọc lan man. Mọi thứ Gemini nói đều là **giả thuyết cho tới khi Claude Code mở file ra xác nhận**.
 
-## 2. Bốn tình huống — mở đúng mục
+Nguyên tắc chi phí: **việc đọc rộng và việc giảng giải đẩy sang Gemini; hạn mức Claude để dành cho đọc chính xác và ghi.**
+
+## 2. Bạn đang ở tình huống nào
 
 | Bạn đang cần | Đọc mục |
 |---|---|
@@ -27,14 +28,14 @@ Nguyên tắc chi phí: **việc nghĩ và việc giải thích đẩy sang web,
 | Bắt đầu một tính năng mới | §4, bước 1–6 |
 | Task doc đã có, muốn bắt tay làm | §4, **bước 7** |
 | Đang code, gặp câu hỏi không hiểu | §5 |
-| Web hết token, phải đổi tài khoản | §6 |
+| Muốn đỡ tốn hạn mức Claude | §6 |
 
 ## 3. Mỗi sáng — 1 phút
 
-Bản đồ dự án phải mới thì web mới hỏi trúng. Gõ vào Claude Code:
+Bản đồ dự án phải mới thì cả bạn lẫn Gemini mới hỏi trúng chỗ. Gõ vào Claude Code:
 
 ```text
-Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_web-code-handoff.md.
+Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_workflow-rules.md.
 ```
 
 Điền `<ref>` là nhánh bạn muốn bản đồ phản ánh:
@@ -46,10 +47,10 @@ Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_web-
 | `feat/abc` | Theo một nhánh cụ thể |
 | *(bỏ trống)* | Dùng lại ref của lần trước |
 
-Kết quả: hai file [`overview/repo-map.md`](../../overview/repo-map.md) và [`overview/backend-features-all.md`](../../overview/backend-features-all.md) được cập nhật, và tôi in ra vài dòng **"hôm nay đổi gì"**.
+Kết quả: hai file [`overview/1_repo-map.md`](../../overview/1_repo-map.md) và [`overview/2_backend-features-all.md`](../../overview/2_backend-features-all.md) được cập nhật, kèm vài dòng **"hôm nay đổi gì"** in ra terminal.
 
-- Không có gì đổi → tôi báo "không đổi" rồi dừng, gần như không tốn token.
-- Có đổi → **copy mấy dòng đó dán vào chat web đang mở dở**, để web không dùng bản đồ cũ.
+- Không có gì đổi → báo "không đổi" rồi dừng, gần như không tốn token.
+- Có đổi → liếc qua để biết ai vừa đụng vào đâu; khi hỏi Gemini thì dán mấy dòng đó kèm theo.
 
 ## 4. Bắt đầu một tính năng mới
 
@@ -57,7 +58,9 @@ Ví dụ chạy thật: *"Xuất đề thi ra Word kèm đáp án"*.
 
 ### Bước 1 — Bạn viết nháp mô tả (5 phút)
 
-Bạn chưa cần tạo thư mục hay nghĩ tên tính năng vội. Hãy viết nháp mô tả ra một file bất kỳ (ví dụ `tech_docs/research/draft.md`) bằng lời thường, **không cần biết tên hàm hay tên bảng nào**:
+Tạo **một file duy nhất**: `tech_docs/research/00-desc.md` (ngay gốc `research/`, chưa cần thư mục, chưa cần nghĩ tên tính năng).
+
+Viết bằng lời thường, **không cần biết tên hàm hay tên bảng nào**. Lủng củng, thiếu mục, gạch đầu dòng rời rạc cũng được — bước 2 tôi dọn. Khuôn dưới đây là đích đến, không phải bài tập bắt bạn điền đủ:
 
 ```text
 # 00 — Mô tả: Xuất đề thi ra Word kèm đáp án
@@ -81,80 +84,94 @@ Không biết xuất PDF hiện chạy bằng gì, và đáp án lưu ở đâu.
 Dòng **Phía** ghi `chưa rõ` cũng được — Claude Code sẽ chốt là sửa BE, FE hay cả hai.
 Mục **"Chỗ tôi không chắc"** không phải điểm trừ, nó là đầu vào để Claude Code đi tìm.
 
-### Bước 2 — Mở chat web mới, dán 3 thứ
-
-Theo thứ tự:
-
-1. **Prompt giao thức** — copy nguyên khối ở [`2_web-code-handoff.md`](2_web-code-handoff.md) §6.
-2. **Bản đồ**, dán theo phạm vi cho đỡ tốn:
-
-| Phía | Dán gì |
-|---|---|
-| Chỉ BE | `repo-map.md` §1,2,3,5,6,7 + `backend-features-all.md` |
-| Chỉ FE | `repo-map.md` §4 + `frontend/CONVENTION.md` |
-| Cả hai / chưa rõ | Cả hai file, đầy đủ |
-
-3. **Nội dung `draft.md`** bạn vừa viết.
-
-Web trả về **một khối markdown**: các gợi ý tên thư mục (`<slug>`) và danh sách câu hỏi khảo sát. Nó sẽ hỏi kiểu:
+### Bước 2 — Tôi chuẩn hoá mô tả và đặt tên thư mục ← rẻ
 
 ```text
-Gợi ý slug:
-1. `thinking-agent`
-2. `export-pdf`
-3. `question-bank`
-Q1 [ĐỊNH VỊ][BE] Luồng xuất PDF hiện tại đi qua những hàm nào,
-   từ endpoint tới lúc sinh file?
-Q2 [XÁC MINH][BE] Bảng `answer_cards` có phải nơi lưu đáp án của đề thi không,
-   gắn với `test_papers` bằng cột nào?
-Q3 [ĐỊNH VỊ][FE] Nút tải về ở màn hình đề thi gọi hàm nào trong src/api/?
+Đọc tech_docs/research/00-desc.md, chuẩn hoá theo §8 của
+tech_docs/rules/claude/2_workflow-rules.md, tự đặt slug rồi chuyển vào đúng thư mục.
 ```
 
-`[XÁC MINH]` = tên đã có trong bản đồ. `[ĐỊNH VỊ]` = chưa ai biết tên, Claude Code phải đi tìm.
+Tôi viết lại cho chuẩn chỉnh theo khuôn, tự đặt slug, tạo `tech_docs/research/<slug>/`, chuyển file vào — **rồi dừng**, in ra đường dẫn mới kèm 3 dòng "đã đổi gì so với bản nháp".
 
-### Bước 3 — Tạo thư mục & Lưu file vào repo
+Ở bước này tôi **không đọc code**: chỉ diễn đạt lại cho rõ, không thêm yêu cầu bạn chưa nói, chỗ nào mơ hồ thì đẩy xuống mục **"Chỗ tôi không chắc"** chứ không tự đoán. Thiếu tới mức không viết nổi thì tôi hỏi tối đa 3 câu nghiệp vụ, hỏi một lượt.
 
-Chọn một `<slug>` từ gợi ý của web để tạo thư mục `tech_docs/research/<slug>/`.
-Sau đó:
-1. Đổi tên file `draft.md` thành `00-desc.md` và chuyển vào thư mục này.
-2. Copy khối câu hỏi web trả về, lưu **nguyên văn** thành `tech_docs/research/<slug>/01-brief.md`.
+**Bạn rà soát:** mở `tech_docs/research/<slug>/00-desc.md`, đọc kỹ. Sai ý thì sửa thẳng vào file hoặc bảo tôi sửa — rẻ nhất là sửa ở đây, trước khi có ai đi đọc repo. Đúng ý rồi mới sang bước 3.
 
-### Bước 4 — Gõ một câu trong Claude Code ← tốn token
+### Bước 3 — Tôi viết `01-brief.md`: sắp đi tìm gì, đang tin gì ← rẻ
 
 ```text
-Đọc tech_docs/rules/claude/2_web-code-handoff.md và
-tech_docs/research/xuat-de-thi-word/01-brief.md,
-trả lời vào tech_docs/research/xuat-de-thi-word/02-findings.md.
+Đọc tech_docs/research/<slug>/00-desc.md, viết 01-brief.md theo §9 của
+tech_docs/rules/claude/2_workflow-rules.md, rồi chờ tôi duyệt.
 ```
 
-Không cần mô tả lại tính năng — mô tả đã nằm trong file.
+Ở bước này tôi **vẫn chưa đọc code**. Tôi chỉ dựa trên mô tả của bạn để viết ra hai thứ:
 
-Tôi trả về `02-findings.md` gồm: **phía nào phải sửa**, tên thật của mọi thứ liên quan, trả lời từng câu kèm `file:line` và trích code, bảng **giả định của web đúng/sai**, và danh sách **file nên upload lên web**.
+- **Câu hỏi khảo sát** — danh sách những gì tôi sẽ đi tìm trong repo. Mỗi câu có nhãn: `[XÁC MINH]` là thứ đã có tên trong bản đồ, chỉ cần kiểm lại; `[ĐỊNH VỊ]` là thứ chưa ai biết tên, tôi phải lần ra.
+- **Giả định cần kiểm chứng** — những điều tôi đang *đoán* là đúng. Đoán sai một cái ở đây thì thiết kế phía sau sai theo, nên nó được viết ra để bạn nhìn thấy.
 
-### Bước 5 — Bưng kết quả về web
+**Vì sao có bước này:** đây là chỗ rẻ nhất để chặn việc tôi đi sai hướng. Bạn đọc xong là biết tôi sắp lục ở đâu và đang tin gì — thấy thừa, thiếu, hoặc trật thì sửa thẳng vào file hoặc bảo tôi sửa. Sai ở đây sửa mất một phút; sai sau khi khảo sát xong thì mất cả một lượt token.
 
-Mở `02-findings.md`, copy **toàn bộ**, dán vào chat web đang mở. Không cần viết gì thêm.
-
-Nếu findings có mục **"File nên upload lên web"** thì kéo thả những file đó từ VS Code vào chat web luôn — web đọc được cả file sẽ chính xác hơn nhiều.
-
-> **Không bao giờ upload:** `.env`, `.env.local`, `*.key`, `*.pem`, dump database, log có dữ liệu người dùng thật.
-> Cần cho web xem cấu hình thì upload `.env.example` hoặc `core/settings.py` — hai file này chỉ có tên biến, không có khoá.
-
-Web viết `03-design.md`: phương án, đánh đổi, kế hoạch — lần này dựa trên tên thật của code.
-**Đây là lúc tranh luận thoải mái**: hỏi tại sao, bắt so sánh hai cách, bắt viết lại. Phía web rẻ.
-
-### Bước 6 — Lưu thiết kế, rồi chốt ← tốn token
-
-Lưu `03-design.md` vào cùng thư mục, rồi gõ:
+**Không hiểu thuật ngữ hay không biết câu hỏi đó nhắm vào gì?** Đừng tốn lượt hỏi tôi — dán sang Gemini:
 
 ```text
-Đọc tech_docs/research/xuat-de-thi-word/03-design.md, kiểm chứng lại trong repo,
-rồi viết task doc theo docs-convention §1.2a.
+[GIẢI NGHĨA — CHỈ ĐỌC]
+Tôi là người ra yêu cầu, không rành kỹ thuật. Dưới đây là danh sách câu hỏi khảo sát
+mà một agent sắp dùng để đọc code dự án BookForge.
+Với mỗi câu: giải thích bằng lời thường nó đang muốn tìm gì và vì sao cần biết.
+Cuối cùng nói câu nào theo bạn là thừa, và thiếu câu nào đáng hỏi.
+Không viết code, không sửa file.
+
+<dán nội dung 01-brief.md>
+```
+
+Gemini chỉ ra chỗ thừa/thiếu hợp lý → bảo tôi sửa `01-brief.md`, đừng tự sửa tay rồi quên mất vì sao.
+
+### Bước 4 — Khảo sát và đọc kết quả ← tốn token nhất
+
+```text
+Đọc tech_docs/rules/claude/2_workflow-rules.md và tech_docs/research/<slug>/01-brief.md,
+khảo sát repo rồi trả lời vào tech_docs/research/<slug>/02-findings.md theo §10.
+```
+
+Giờ tôi mới thật sự mở repo ra đọc. Tôi trả về `02-findings.md` gồm: **phía nào phải sửa**, tên thật của mọi thứ liên quan kèm `file:line` và trích code, **giả định nào trong brief đúng / sai**, và cái gì tôi chưa xác định được.
+
+> **Muốn rẻ hơn:** trước khi gõ câu trên, đưa `01-brief.md` cho Gemini quét khoanh vùng (prompt ở [`../gemini-assist.md`](../gemini-assist.md) §2B), rồi dán kết quả về cho tôi kèm nhãn `[TỪ GEMINI — CHƯA KIỂM CHỨNG]`. Tôi đọc thẳng vào vùng đó thay vì mò cả repo — vẫn kiểm chứng lại từng chỗ trước khi ghi.
+
+**Bạn rà soát findings** — đây là cửa duyệt quan trọng nhất, vì mọi thứ sau đây đều dựng trên nó. Không đọc nổi thì nhờ Gemini đọc hộ:
+
+```text
+[ĐỌC HỘ KẾT QUẢ KHẢO SÁT — CHỈ ĐỌC]
+Đây là kết quả khảo sát code dự án BookForge do một agent khác viết.
+1. Tóm tắt trong 5 dòng cho người không đọc code.
+2. Giải nghĩa các thuật ngữ và tên kỹ thuật xuất hiện trong đó.
+3. Chỉ ra chỗ nào kết luận mà không kèm bằng chứng, hoặc mâu thuẫn nhau.
+4. Nêu 3 câu tôi nên hỏi lại agent đó.
+Không sửa file, không viết code.
+
+<dán nội dung 02-findings.md — hoặc chỉ đường dẫn file nếu Gemini chạy trong IDE>
+```
+
+Thấy tôi hiểu sai ý, hoặc tài liệu viết khó hiểu → nói ngay, tôi khảo sát bổ sung hoặc viết lại file. Muốn Gemini đề xuất câu chữ cụ thể thì dùng prompt §2F ở [`../gemini-assist.md`](../gemini-assist.md) — nó viết ra `<đoạn gốc> → <đoạn đề xuất>`, bạn dán về, **tôi là người ghi vào file**.
+
+### Bước 5 — Thiết kế và tranh luận ← tốn token
+
+```text
+Đọc tech_docs/research/<slug>/02-findings.md, viết 03-design.md theo §17 của
+tech_docs/rules/claude/2_workflow-rules.md, rồi chờ tôi chốt.
+```
+
+**Đây là lúc tranh luận.** Hỏi tại sao, bắt so sánh, bắt viết lại. Chỗ nào đọc không hiểu thì copy đoạn đó sang Gemini nhờ giảng (§6) — phần giảng giải để Gemini làm, đừng bắt Claude Code viết dài.
+
+### Bước 6 — Chốt thành task doc ← tốn token
+
+```text
+Đọc tech_docs/research/<slug>/03-design.md, kiểm chứng lại trong repo, rồi viết task doc
+theo docs-convention §1.2a và §5 của tech_docs/rules/claude/2_workflow-rules.md.
 ```
 
 Tôi kiểm lại phương án có khả thi không, rồi viết file giao việc trong `backend/docs/tasks/`:
 
-- Chỉ BE → một file `YYYY-MM-DD-xuat-de-thi-word.md`
+- Chỉ BE → một file `YYYY-MM-DD-<slug>.md`
 - Chỉ FE → một file `…-frontend.md`
 - Cả hai → **hai file**, mỗi file tự đứng được
 
@@ -163,137 +180,207 @@ Tôi kiểm lại phương án có khả thi không, rồi viết file giao vi�
 > **Task doc không được nhắc tới `tech_docs/`.** `bookforge`, `bookforge-fe`, `tech_docs` là ba repo riêng — người nhận việc chỉ có repo triển khai, không có thư mục nghiên cứu của bạn.
 > Nên task doc phải **chép nội dung cần thiết vào trong nó**, không link ngược về `research/`. Đây là ràng buộc cứng, xem [`docs-convention.md`](../docs-convention.md) §3.1.
 
+Trong task doc có mục **DoD** — danh sách điều kiện nghiệm thu. Tôi viết nó thành hai loại: mục **tự kiểm được** (có lệnh chạy + kết quả mong đợi) và mục **`(kiểm tay)`** (thứ máy không tự khẳng định được). Cách dùng nằm ở bước 7, sau khi code xong.
+
 ### Bước 7 — Giao việc: bảo Claude Code làm theo task doc
 
 Task doc viết xong **không tự chạy**. Bạn phải giao việc bằng một câu:
 
 ```text
-Đọc backend/docs/tasks/<ngày>-<slug>.md và triển khai đúng theo tài liệu đó.
+Đọc backend/docs/tasks/<ngày>-<slug>.md và triển khai đúng theo tài liệu đó,
+theo §16 của tech_docs/rules/claude/2_workflow-rules.md.
 ```
+
+Vế `theo §16` là bắt buộc: phiên Claude Code mới tinh chỉ đọc task doc thì **không tự biết sáu luật thi công** bên dưới. Ngoài vế đó ra bạn không phải dán gì thêm — tài liệu nằm trong repo, tôi tự mở ra đọc.
 
 Đụng cả hai phía thì **giao từng file một, không gộp**: làm BE trước cho có API thật, xong mới giao file `-frontend.md`.
 Hai repo là hai thư mục làm việc khác nhau, nên mở phiên Claude Code riêng cho mỗi repo.
 
-**Sáu luật tôi phải theo khi thi công** — bạn không cần nhắc lại, chúng nằm trong [`2_web-code-handoff.md`](2_web-code-handoff.md) §16; liệt kê ở đây để bạn biết đường soát:
+**Sáu luật tôi phải theo khi thi công** — bạn không cần nhắc lại, chúng nằm trong [`2_workflow-rules.md`](2_workflow-rules.md) §16; liệt kê ở đây để bạn biết đường soát:
 
 1. **Task doc là hợp đồng.** Làm đúng phạm vi trong đó: không thêm tính năng, không refactor kèm, không "tiện tay sửa luôn".
 2. **Bám "Quyết định đã chốt".** Đã chốt rồi thì không tự chọn cách khác, kể cả khi thấy cách khác hay hơn — muốn đổi thì hỏi trước.
-3. **Task doc sai hoặc thiếu so với code thật → dừng, báo bạn, sửa task doc trước.** Không im lặng làm khác tài liệu; sai lệch giữa doc và code là thứ vài tuần sau không ai gỡ được.
+3. **Task doc sai hoặc thiếu so với code thật → dừng, báo bạn, sửa task doc trước.** Không im lặng làm khác tài liệu.
 4. **Xong hạng mục nào thì tick `- [x]` ngay trong DoD của chính file đó**, và sửa luôn nội dung nào đã không còn đúng. Không tạo file `.md` mới để báo cáo việc đã làm.
-5. **Quyết định phát sinh giữa chừng** → ghi vào `qa.md` **và** chép về mục "Quyết định đã chốt" của task doc (§5).
+5. **Quyết định phát sinh giữa chừng** → ghi vào `qa.md` **và** chép về mục "Quyết định đã chốt" của task doc.
 6. **Không commit, không push khi bạn chưa cho phép.**
 
+#### Code xong rồi — soát DoD
+
 **Cách bạn kiểm tra đã xong hay chưa:** mở task doc, đọc mục **DoD**. Mục nào chưa `- [x]` là chưa xong — không cần đọc code.
-Muốn tôi tự soát lại thì gõ:
+
+Hai loại mục trong đó:
+
+| Loại | Trông như thế nào | Ai tick |
+|---|---|---|
+| **Tự kiểm được** | Có lệnh chạy + kết quả mong đợi: `pytest tests/api/test_export.py` xanh, `curl …` trả 200 kèm đúng shape | Tôi chạy, đọc kết quả, tự tick `- [x]` |
+| **`(kiểm tay)`** | Thứ máy không tự khẳng định được: mở màn hình xem bố cục, mở file `.docx` xem có đúng đáp án ở trang cuối, thử trên dữ liệu thật, kiểm trên thiết bị/tài khoản cụ thể | **Bạn** làm rồi báo tôi tick |
+
+Tôi tự soát bất cứ lúc nào bạn muốn:
 
 ```text
-Đọc backend/docs/tasks/<ngày>-<slug>.md, tự kiểm từng mục DoD trong repo,
-tick mục đã đạt và nói rõ mục nào chưa.
+Đọc backend/docs/tasks/<ngày>-<slug>.md, tự kiểm từng mục DoD trong repo theo §16 của
+tech_docs/rules/claude/2_workflow-rules.md, tick mục đã đạt và nói rõ mục nào chưa,
+mục nào phải bạn kiểm tay.
 ```
+
+Tôi chạy test, đọc kết quả thật rồi mới tick — **không tick theo cảm giác**. Mục `(kiểm tay)` tôi để nguyên và nói rõ bạn cần làm gì.
+
+**Không biết kiểm tay thế nào?** Hỏi Gemini, đừng tốn lượt của tôi:
+
+```text
+[HƯỚNG DẪN KIỂM THỬ TAY — CHỈ ĐỌC]
+Dưới đây là các mục nghiệm thu (DoD) mà tôi phải tự kiểm bằng tay trong dự án BookForge.
+Với mỗi mục, viết cho tôi các bước bấm/chạy theo thứ tự: chuẩn bị dữ liệu gì,
+thao tác ở đâu, nhìn vào đâu để biết đạt, dấu hiệu nào là chưa đạt.
+Viết cho người không rành kỹ thuật. Không sửa file, không viết code.
+
+<dán các mục (kiểm tay)>
+```
+
+**Nghi ngờ một mục DoD có đáng làm không?** Cũng hỏi Gemini trước khi bỏ:
+
+```text
+[SOÁT DANH SÁCH DoD — CHỈ ĐỌC]
+Đây là mục DoD của một task trong dự án BookForge.
+Với mỗi mục: nó đang bảo vệ mình khỏi rủi ro gì, chi phí kiểm tốn bao nhiêu công,
+và theo bạn là ĐÁNG GIỮ / CÓ THỂ BỎ / NÊN TÁCH SANG TASK SAU — nói rõ lý do.
+Chỉ ra luôn rủi ro nào chưa có mục DoD nào phủ.
+Không sửa file, không viết code.
+
+<dán mục DoD của task doc>
+```
+
+Gemini trả lời trong chat; thấy hợp lý thì bảo tôi: `Bỏ mục DoD số 3 trong <file> vì <lý do>, ghi lý do vào ngay dưới mục DoD.` — **tôi là người sửa file**, và lý do bỏ phải nằm lại trong task doc để sau này còn biết vì sao.
+
+**Chỉ khi mọi mục đều `- [x]` thì task mới coi là đạt.** Mục bỏ đi phải được xoá kèm ghi lý do, không để lửng `- [ ]` mãi.
 
 ## 5. Đang code mà gặp câu hỏi
 
-Khi tôi đang viết code và gặp ràng buộc hoặc cần bạn quyết, tôi sẽ hỏi bạn bằng một khối **tự chứa** — đủ ngữ cảnh, có trích code, nói rõ đang bị chặn ở đâu.
+Khi tôi đang viết code và gặp ràng buộc hoặc cần bạn quyết, tôi sẽ hỏi bằng một khối **tự chứa** — đủ ngữ cảnh, có trích code, nói rõ đang bị chặn ở đâu, kèm phương án và đánh đổi.
 
-Bạn làm 3 việc:
+- Hiểu rồi → trả lời thẳng, tôi làm tiếp.
+- Không hiểu → copy nguyên khối đó sang Gemini, kèm 2 dòng ở [`../gemini-assist.md`](../gemini-assist.md) §2C, đọc xong quay lại chốt với tôi.
 
-1. Copy nguyên khối đó, dán sang chat web, kèm 2 dòng này ở trên:
-
-```text
-Đây là câu hỏi/ràng buộc do agent đang viết code trong repo BookForge nêu ra.
-Giải thích cho tôi bằng lời dễ hiểu, nêu 2 lựa chọn kèm đánh đổi, rồi khuyến nghị một cái.
-```
-
-2. Đọc, chọn, trả lời tôi.
-3. Tôi ghi vào `qa.md` của tính năng đó **và** chép quyết định về mục "Quyết định đã chốt" của task doc.
-
-Vòng này lặp bao nhiêu lần cũng được — nó rẻ, vì phần giảng giải nằm ở web.
+Chốt xong tôi ghi vào `qa.md` của tính năng đó **và** chép quyết định về mục "Quyết định đã chốt" của task doc.
 
 > `qa.md` là **nhật ký**. Task doc là **nguồn sự thật**. Quyết định nào chỉ nằm ở qa.md mà không chép về task doc thì vài hôm sau sẽ không ai nhớ vì sao làm vậy.
 
-## 6. Web hết token, đổi tài khoản
+## 6. Nhờ Gemini cho đỡ tốn hạn mức
 
-Mỗi thư mục tính năng có file `status.md` — **tôi tự cập nhật, bạn không phải viết**. Nó ghi: mục tiêu, phía, quyết định đã chốt, phương án đang theo, danh sách file, câu hỏi mở, bước tiếp theo.
+Gemini **chỉ đọc và trả lời trong chat** — không ghi file, không sửa code, không git. Bốn lúc nên gọi nó:
 
-Mở chat web mới bằng tài khoản khác, dán 3 thứ:
+| Lúc nào | Nhờ gì |
+|---|---|
+| Đọc `01-brief.md` mà không hiểu câu hỏi nhắm vào đâu | Giải nghĩa từng câu bằng lời thường, chỉ ra câu thừa/thiếu (§4 bước 3) |
+| Trước khi khảo sát, phạm vi còn rộng | Quét khoanh vùng: "chức năng X đi qua những file nào" → dán danh sách về cho Claude Code đọc đúng chỗ |
+| Đọc `02-findings.md` mà thấy khó nuốt | Tóm tắt cho người không đọc code, giải nghĩa thuật ngữ, chỉ chỗ thiếu bằng chứng (§4 bước 4) |
+| Tài liệu viết lủng củng, muốn sửa | Gemini đề xuất `<đoạn gốc> → <đoạn đề xuất>`; **Claude Code là người ghi vào file** |
+| Mục DoD `(kiểm tay)` mà không biết kiểm thế nào | Viết các bước bấm/chạy cụ thể cho người không rành kỹ thuật (§4 bước 7) |
+| Nghi một mục DoD thừa | Đánh giá ĐÁNG GIỮ / CÓ THỂ BỎ / TÁCH SANG TASK SAU kèm lý do (§4 bước 7) |
+| Cần kiến thức ngoài repo | Tra thư viện, API, chuẩn, cách người khác làm |
+| Đọc `03-design.md` hoặc câu hỏi của Claude Code mà không hiểu | Nhờ giảng lại bằng lời dễ hiểu, nêu 2 lựa chọn |
+| Task doc / design vừa viết xong | Nhờ phản biện trước khi bắt tay code |
 
-1. Khối hồi sức:
+**Bưng kết quả về đúng cách:** dán vào Claude Code trong khối có nhãn, đừng dán trần.
 
 ```text
-Tôi đang tiếp tục một việc dở bằng tài khoản mới, bạn chưa có ngữ cảnh gì.
-Dưới đây là prompt giao thức, rồi tới file trạng thái của việc đó.
-Đọc xong, nói lại trong 5 dòng bạn hiểu đang ở đâu và bước tiếp theo là gì, rồi chờ tôi.
+[TỪ GEMINI — CHƯA KIỂM CHỨNG]
+<nội dung Gemini trả lời>
 ```
 
-2. Prompt giao thức (§6 của file luật).
-3. Nội dung `status.md`.
+Thấy nhãn này tôi sẽ tự mở file ra kiểm chứng trước khi dùng, và nói rõ chỗ nào Gemini nói trật. Không có nhãn thì tôi coi đó là lời bạn và tin luôn — dễ lọt giả thuyết vào tài liệu chốt.
 
-Xong. Không phải kể lại từ đầu.
+> **Không đưa cho Gemini:** `.env`, `.env.local`, `*.key`, `*.pem`, dump database, log có dữ liệu người dùng thật.
 
-**Mẹo:** hỏi câu nặng nhất ngay đầu phiên web, đừng để dồn tới lúc sắp hết token.
+Prompt mẫu cho từng tình huống: [`../gemini-assist.md`](../gemini-assist.md).
 
 ## 7. Tra nhanh — các câu gõ vào Claude Code
 
-Sáu câu, sáu thời điểm. Giữa các câu đó Claude Code nằm im, không tốn gì.
-
-**① Cập nhật bản đồ**
-**Khi nào:** mỗi sáng, **trước khi mở chat web**. Gõ thêm giữa ngày nếu bạn vừa merge/pull nhiều thay đổi, hoặc thấy web bắt đầu bịa tên file.
+**① Cập nhật bản đồ** — mỗi sáng, hoặc sau khi vừa merge/pull nhiều thay đổi.
 
 ```text
-Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_web-code-handoff.md.
+Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_workflow-rules.md.
 ```
 
-**② Khảo sát**
-**Khi nào:** ngay sau khi web trả về brief và **bạn đã lưu nó thành `01-brief.md`**. Nếu có vòng bổ sung thì đổi số: `04-brief.md` → `05-findings.md`.
+**② Chuẩn hoá mô tả & tạo thư mục** — sau khi bạn viết nháp `tech_docs/research/00-desc.md`. Tôi làm xong thì dừng cho bạn duyệt.
 
 ```text
-Đọc tech_docs/rules/claude/2_web-code-handoff.md và tech_docs/research/<slug>/01-brief.md,
-trả lời vào tech_docs/research/<slug>/02-findings.md.
+Đọc tech_docs/research/00-desc.md, chuẩn hoá theo §8 của
+tech_docs/rules/claude/2_workflow-rules.md, tự đặt slug rồi chuyển vào đúng thư mục.
 ```
 
-**③ Chốt**
-**Khi nào:** ngay sau khi web trả về thiết kế và **bạn đã lưu nó thành `03-design.md`**. Sau câu này mới bắt đầu code.
+**③ Viết brief** — sau khi bạn đã duyệt `research/<slug>/00-desc.md`. Tôi liệt kê câu hỏi khảo sát + giả định rồi dừng cho bạn duyệt.
 
 ```text
-Đọc tech_docs/research/<slug>/03-design.md, kiểm chứng lại trong repo,
-rồi viết task doc theo docs-convention §1.2a.
+Đọc tech_docs/research/<slug>/00-desc.md, viết 01-brief.md theo §9 của
+tech_docs/rules/claude/2_workflow-rules.md, rồi chờ tôi duyệt.
 ```
 
-**④ Thi công**
-**Khi nào:** sau khi task doc đã có. Đụng cả hai phía thì giao từng file, BE trước rồi mới FE.
+**④ Khảo sát** — sau khi bạn đã duyệt `01-brief.md`.
 
 ```text
-Đọc backend/docs/tasks/<ngày>-<slug>.md và triển khai đúng theo tài liệu đó.
+Đọc tech_docs/rules/claude/2_workflow-rules.md và tech_docs/research/<slug>/01-brief.md,
+khảo sát repo rồi trả lời vào tech_docs/research/<slug>/02-findings.md theo §10.
 ```
 
-**⑤ Tự soát DoD**
-**Khi nào:** khi bạn muốn biết đã xong tới đâu mà không phải đọc code.
+**⑤ Thiết kế** — sau khi đã đọc và đồng ý với findings.
 
 ```text
-Đọc backend/docs/tasks/<ngày>-<slug>.md, tự kiểm từng mục DoD trong repo,
-tick mục đã đạt và nói rõ mục nào chưa.
+Đọc tech_docs/research/<slug>/02-findings.md, viết 03-design.md theo §17 của
+tech_docs/rules/claude/2_workflow-rules.md, rồi chờ tôi chốt.
 ```
 
-**⑥ Sinh lại bản đồ từ đầu**
-**Khi nào:** hiếm — khi đổi sang nhánh rẽ khác hẳn, cấu trúc thư mục đổi lớn, bản đồ quá 14 ngày, hoặc lệch nhiều tới mức vá từng dòng không xuể.
+**⑥ Chốt thành task doc** — sau khi bạn đã chốt phương án trong `03-design.md`.
 
 ```text
-Sinh lại tech_docs/overview/repo-map.md từ <ref> theo §3.
+Đọc tech_docs/research/<slug>/03-design.md, kiểm chứng lại trong repo, rồi viết task doc
+theo docs-convention §1.2a và §5 của tech_docs/rules/claude/2_workflow-rules.md.
 ```
 
-> **Luật chung của ② và ③:** luôn gõ **sau khi đã lưu file**, không bao giờ dán nội dung web vào terminal.
-> Dán vào terminal tốn đúng bằng lúc tôi tự đọc file, nhưng mất lịch sử và không sửa lại được.
+**⑦ Thi công** — giao từng file, BE trước rồi mới FE.
+
+```text
+Đọc backend/docs/tasks/<ngày>-<slug>.md và triển khai đúng theo tài liệu đó,
+theo §16 của tech_docs/rules/claude/2_workflow-rules.md.
+```
+
+**⑧ Tự soát DoD** — khi muốn biết đã xong tới đâu mà không phải đọc code (xem §4 bước 7).
+
+```text
+Đọc backend/docs/tasks/<ngày>-<slug>.md, tự kiểm từng mục DoD trong repo theo §16 của
+tech_docs/rules/claude/2_workflow-rules.md, tick mục đã đạt và nói rõ mục nào chưa,
+mục nào phải bạn kiểm tay.
+```
+
+**⑨ Hồi phục sau khi mất phiên**
+
+```text
+Đọc tech_docs/research/<slug>/status.md và tech_docs/rules/claude/2_workflow-rules.md,
+nói lại trong 5 dòng đang ở đâu và bước tiếp theo là gì, rồi chờ tôi.
+```
+
+**⑩ Sinh lại bản đồ từ đầu** — hiếm: đổi sang nhánh rẽ khác hẳn, cấu trúc thư mục đổi lớn, hoặc bản đồ quá 14 ngày.
+
+```text
+Sinh lại tech_docs/overview/1_repo-map.md từ <ref> theo §3 của
+tech_docs/rules/claude/2_workflow-rules.md.
+```
+
+> **Luật chung:** thứ gì đã nằm trong file thì **gõ đường dẫn, đừng dán nội dung vào terminal**. Dán tốn đúng bằng lúc tôi tự đọc file, nhưng mất lịch sử và không sửa lại được.
 
 ## 8. Một thư mục tính năng có gì
 
 ```text
-tech_docs/research/<slug>/
-├── status.md     ← Claude Code viết, để hồi phục phiên web
-├── 00-desc.md       ← BẠN viết, bằng lời thường
-├── 01-brief.md       ← Web viết, câu hỏi khảo sát
-├── 02-findings.md    ← Claude Code viết, sự thật + bằng chứng
-├── 03-design.md      ← Web viết, phương án
-└── qa.md             ← nhật ký hỏi đáp lúc thi công
+tech_docs/research/
+├── 00-desc.md        ← BẠN viết nháp ở đây, chỉ tồn tại tới khi tôi dọn vào <slug>/
+└── <slug>/
+    ├── status.md      ← Claude Code viết, để hồi phục khi mất phiên
+    ├── 00-desc.md     ← bản đã chuẩn hoá, bạn duyệt trước khi khảo sát
+    ├── 01-brief.md    ← Claude Code viết, bạn duyệt: sắp đi tìm gì, đang tin gì
+    ├── 02-findings.md ← Claude Code viết, sự thật + bằng chứng file:line
+    ├── 03-design.md   ← Claude Code viết, phương án + đánh đổi; bạn tranh luận tại đây
+    └── qa.md          ← nhật ký hỏi đáp lúc thi công
 ```
 
 Bản chốt cuối cùng **không nằm ở đây** mà ở `backend/docs/tasks/`. Thư mục `research/` chỉ là nháp.
@@ -302,23 +389,25 @@ Bản chốt cuối cùng **không nằm ở đây** mà ở `backend/docs/tasks
 
 | Triệu chứng | Nguyên nhân | Sửa |
 |---|---|---|
-| Web bịa tên file, tên hàm không có thật | Chưa dán prompt giao thức, hoặc bản đồ đã cũ | Dán lại prompt §6; chạy cập nhật bản đồ (§3) |
-| Phải hỏi tới vòng ba mới đủ thông tin | Brief thiếu mục "Cần trích nguyên văn" | Bảo web viết kỹ mục đó trước khi bạn lưu file |
-| Claude Code đọc lan man, tốn token | Brief không đóng khung phạm vi | Thêm câu "chỉ đọc mảng X" vào brief |
+| Tài liệu nhắc tên file không có thật | Thứ Gemini nói được dán trần vào, không ai kiểm chứng | Luôn dán kèm nhãn `[TỪ GEMINI — CHƯA KIỂM CHỨNG]` (§6) |
+| Khảo sát đọc lan man, tốn token | Không đóng khung phạm vi | Thêm "chỉ đọc mảng X" vào câu giao việc, hoặc duyệt `01-brief.md` trước |
+| Hết hạn mức Claude giữa chừng | Dồn cả việc giảng giải lẫn việc đọc rộng vào Claude Code | Đẩy hai việc đó sang Gemini (§6) |
 | Không nhớ vì sao chọn cách này | Quyết định nằm trong chat, không nằm trong file | Mọi quyết định chép về "Quyết định đã chốt" của task doc |
-| Code xong nhưng khác với task doc | Thi công không bám "Quyết định đã chốt", hoặc doc sai mà không sửa | Gõ câu ⑤ để tự soát DoD; doc sai thì sửa doc trước rồi mới sửa code (§4 bước 7) |
+| Code xong nhưng khác với task doc | Thi công không bám "Quyết định đã chốt", hoặc doc sai mà không sửa | Gõ câu ⑧ để tự soát DoD; doc sai thì sửa doc trước rồi mới sửa code |
 | Người khác mở task doc thấy link chết | Task doc trỏ về `tech_docs/research/…` — họ không có repo đó | Chép nội dung vào task doc, xoá mọi đường dẫn `tech_docs/` ([`docs-convention.md`](../docs-convention.md) §3.1) |
 
 ## 10. Khi nào mở file luật
 
-[`2_web-code-handoff.md`](2_web-code-handoff.md) — mở khi cần:
+[`2_workflow-rules.md`](2_workflow-rules.md) — mở khi cần:
 
 | Cần gì | Mục |
 |---|---|
-| Prompt dài dán vào web | §6 |
 | Bảng chọn ref cho bản đồ | §3 |
+| Ranh giới dùng Gemini | §6 |
 | Khuôn `00-desc.md` | §8 |
-| Quy tắc upload file lên web | §11 |
+| Khuôn `01-brief.md` | §9 |
+| Khuôn `02-findings.md` | §10 |
+| Khuôn `03-design.md` | §17 |
 | Khuôn `qa.md` | §12 |
 | Khuôn `status.md` | §13 |
 | Luật thi công theo task doc | §16 |

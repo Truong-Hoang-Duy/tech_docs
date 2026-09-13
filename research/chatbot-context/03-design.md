@@ -66,7 +66,7 @@ Ngữ cảnh **không** được nhét vào mọi lượt hỏi của canvas —
 - Cách lấy dữ liệu (cả hai điểm chèn, dùng chung một hàm): lấy N tin nhắn gần nhất của `ChatSession` liên kết (`chat_messages` order by `created_at desc limit N`), cắt theo **số ký tự**, không tóm tắt bằng LLM ở v1 (tránh gọi provider thêm, tránh thêm điểm lỗi).
 - Truyền vào `run_editor_assistant` (`chat/editor_agent.py:765`) như một tham số mới, ví dụ `seed_context: str | None`, **không** ghi vào `canvas_chat_messages` như một message thật (tránh nó hiện ra trong UI như một lượt chat) — chỉ dùng để dựng prompt của đúng lượt gọi đó.
 - Chi phí thêm ở nhánh "mở lại": một truy vấn đọc `chat_messages` mỗi lần `GET` canvas session — chấp nhận được vì chỉ đọc DB, không gọi provider.
-- Giới hạn cứng (ví dụ biến môi trường mới `EDITOR_SEED_CONTEXT_MAX_CHARS`, đặt cạnh nhóm `EDITOR_*` đã có ở `repo-map.md` §7) — bắt buộc phải có, vì findings đã chỉ rõ ngân sách token của canvas từng gãy vì ước lượng sai (tài liệu 400k ký tự → `max_output_tokens` về 0). Cộng thêm lịch sử chat chính vào cùng ngân sách đó mà không giới hạn là lặp lại đúng sự cố đã có comment cảnh báo trong code.
+- Giới hạn cứng (ví dụ biến môi trường mới `EDITOR_SEED_CONTEXT_MAX_CHARS`, đặt cạnh nhóm `EDITOR_*` đã có ở `1_repo-map.md` §7) — bắt buộc phải có, vì findings đã chỉ rõ ngân sách token của canvas từng gãy vì ước lượng sai (tài liệu 400k ký tự → `max_output_tokens` về 0). Cộng thêm lịch sử chat chính vào cùng ngân sách đó mà không giới hạn là lặp lại đúng sự cố đã có comment cảnh báo trong code.
 
 **5. Nhánh geometry trực tiếp (early-return trong `execute_editor_assistant`, dòng ~1310)**
 

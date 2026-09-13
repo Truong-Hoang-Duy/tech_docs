@@ -77,6 +77,7 @@ Ba ràng buộc nội dung mà `TASK_HANDOFF.md` và `REVIEW_STANDARDS.md` nói 
 - **Không có trường người được giao** — "a task spec is not pre-assigned to a person".
 - **Mỗi khối việc theo mạch**: *khi nào xảy ra* → *nguyên nhân gốc* (`file:line`) → *bằng chứng* → *hành vi mong muốn* → *hướng đề xuất* (ghi rõ là gợi ý).
 - **DoD phải kiểm chứng được**: mỗi checkbox là một khẳng định cụ thể (lệnh + trạng thái mong đợi), và **gộp "test cái gì" vào DoD**, không để mục test rời.
+- **Mục DoD nào người phải tự kiểm thì mở đầu bằng `(kiểm tay)`**: thứ máy không tự khẳng định được (bố cục màn hình, nội dung file xuất ra, thử trên dữ liệu/thiết bị thật). Agent chạy test xong tick các mục còn lại, để nguyên mục `(kiểm tay)` và nói rõ người kiểm cần làm gì. Bỏ một mục DoD thì **xoá kèm ghi lý do ngay dưới mục DoD**, không để lửng `- [ ]`.
 
 **b) Kế hoạch triển khai — `docs/superpowers/plans/`** (143/143 file theo đúng khung này)
 
@@ -186,7 +187,7 @@ Ngôn ngữ: task doc FE viết **tiếng Việt** (`2026-06-24-…-frontend.md`
 - **Git**: [`tech_docs/rules/3_git-workflow-rules.md`](../rules/3_git-workflow-rules.md) — commit tài liệu dùng `docs(<scope>): …`, không tự commit/push, không thêm attribution AI. Áp cho cả hai repo.
 - **Không tự sinh file .md** ghi lại việc đã làm nếu người dùng không yêu cầu (cùng file trên, §1).
 - **Không tự tạo file trong `docs/superpowers/specs/` và `docs/audits/`** — hai loại này do người dùng (vai trò reviewer/kiểm duyệt) tự viết, trừ khi được yêu cầu rõ ràng. Khi cần mô tả việc cần làm, viết vào `docs/tasks/` (task spec, §1.2a) thay vì tự soạn spec hoặc audit.
-- **Khung báo cáo kỹ thuật**: [`tech_docs/rules/technical-spec-template.md`](../rules/technical-spec-template.md) — 10 mục tiếng Việt (Tổng quan → Câu hỏi mở), tự khai là "khung tham khảo, không phải form bắt buộc điền đủ 100%". Một số doc dài trong `docs/tasks/` và `docs/product/` theo khung này.
+- **Khung báo cáo kỹ thuật dạng dài** (`## 1. Tổng quan` → `## 13.`): một số doc cũ trong `docs/tasks/` và `docs/product/` theo khung này. Không còn mẫu dùng chung cho nó — doc mới viết theo task spec §1.2a, chỉ giữ khung dài khi sửa tiếp một file đã có sẵn.
 - **Nhánh**: [`backend/CLAUDE.md`](../../backend/CLAUDE.md) — giữ nhánh sau khi merge, ưu tiên `git merge --no-ff`, áp cho cả repo API lẫn `bookforge-fe`.
 
 ### 3.1 Docs của `backend/` và `frontend/` không được tham chiếu `tech_docs/`
@@ -198,7 +199,7 @@ Người clone repo backend **không có** thư mục `tech_docs/` trên máy, n
 
 - Đường dẫn `tech_docs/…`, và link tương đối vượt ra ngoài repo: `../tech_docs/…`, `../../tech_docs/…`.
 - Câu dẫn kiểu "xem `tech_docs/rules/…`", "theo bản đồ trong `tech_docs/overview/…`".
-- Nhắc tên các file nháp của quy trình nghiên cứu: `00-desc.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `status.md`, `repo-map.md`, `backend-features-all.md`.
+- Nhắc tên các file nháp của quy trình nghiên cứu: `00-desc.md`, `01-brief.md`, `02-findings.md`, `03-design.md`, `qa.md`, `status.md`, `1_repo-map.md`, `2_backend-features-all.md`.
 
 **Thay vì link thì chép nội dung.** Tài liệu phải đọc được trọn vẹn bởi người chỉ có repo đó — quyết định, ràng buộc, hợp đồng API cần thiết đều viết thẳng vào file.
 
@@ -242,7 +243,7 @@ Nội dung là gì?
 ## 5. Ngoại lệ & điểm không nhất quán (ghi nhận, không tự sửa)
 
 **5.1 `docs/tasks/` có hai khuôn mẫu không tương thích nhau.**
-Bản ngắn theo `TASK_HANDOFF.md` (`## Bối cảnh` → `## Việc cần làm` → `## DoD`, 50–140 dòng, ví dụ `2026-06-19-reindex-tier1-debounce.md`) và bản dài theo `tech_docs/rules/technical-spec-template.md` (`## 1. Tổng quan` → `## 13.`, 300–959 dòng, ví dụ `2026-08-12-chat-inline-images.md`).
+Bản ngắn theo `TASK_HANDOFF.md` (`## Bối cảnh` → `## Việc cần làm` → `## DoD`, 50–140 dòng, ví dụ `2026-06-19-reindex-tier1-debounce.md`) và bản dài dạng đặc tả (`## 1. Tổng quan` → `## 13.`, 300–959 dòng, ví dụ `2026-08-12-chat-inline-images.md`) — khung dài không còn mẫu dùng chung, xem §4.
 Ngoài ra `REVIEW_STANDARDS.md` yêu cầu **gộp "test cái gì" vào DoD**, nhưng `2026-06-19-reindex-tier1-debounce.md` vẫn để mục `## Cần test gì` rời — quy ước viết ra sau, file cũ chưa cập nhật.
 
 **5.2 Khối metadata đầu file có ít nhất bốn biến thể.**

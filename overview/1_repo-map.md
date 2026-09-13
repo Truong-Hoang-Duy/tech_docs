@@ -1,9 +1,9 @@
 # BookForge — Bản đồ tra cứu repo
 
 > **Đây là MỤC LỤC, không phải tài liệu thiết kế.** Mỗi mục một dòng, đủ để hỏi cho trúng chỗ, không đủ để kết luận về cách code chạy.
-> Dùng kèm [`backend-features-all.md`](backend-features-all.md) làm gói ngữ cảnh dán vào Claude Web — xem [`rules/claude/2_web-code-handoff.md`](../rules/claude/2_web-code-handoff.md) §3.
+> Dùng kèm [`2_backend-features-all.md`](2_backend-features-all.md) làm gói ngữ cảnh khi hỏi Gemini — xem [`rules/claude/2_workflow-rules.md`](../rules/claude/2_workflow-rules.md) §4.
 > Nguồn: `bookforge@a62910d` (origin/dev) · `bookforge-fe@71d6d8e` (origin/dev) — **2026-09-09**.
-> Đây là mốc để tính diff ở lần cập nhật sau; **ref quét do bạn chỉ định mỗi lần** — xem [`rules/claude/2_web-code-handoff.md`](../rules/claude/2_web-code-handoff.md) §3.
+> Đây là mốc để tính diff ở lần cập nhật sau; **ref quét do bạn chỉ định mỗi lần** — xem [`rules/claude/2_workflow-rules.md`](../rules/claude/2_workflow-rules.md) §3.
 > Đường dẫn BE tính từ gốc repo `bookforge`, FE tính từ gốc repo `bookforge-fe`.
 
 ---

@@ -2,7 +2,7 @@
 
 ## 1. Lần theo luồng thực thi (Codebase Trace)
 
-Dựa trên bản đồ `repo-map.md` và mã nguồn thực tế, luồng tạo sinh câu hỏi (Question Generation) hiện tại đang chạy qua các thành phần sau:
+Dựa trên bản đồ `1_repo-map.md` và mã nguồn thực tế, luồng tạo sinh câu hỏi (Question Generation) hiện tại đang chạy qua các thành phần sau:
 
 - **API Router (`services/api/src/bookforge_api/api/question_cards.py:687`)**:
   - Endpoint `POST /generate` được định nghĩa thông qua hàm `def generate(..., payload: QuestionCardGenerateRequest, ...)`.

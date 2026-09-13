@@ -4,6 +4,7 @@
 
 ## 1. Nguyên tắc chung
 
+- **Chỉ Claude Code được thao tác git.** Gemini là trợ lý tra cứu read-only: không add, không commit, không push, không checkout/stash ([`../gemini-assist.md`](../gemini-assist.md) §1).
 - **Không tự ý commit.**
 - **Không tự ý push.**
 - Chỉ thực hiện commit/push khi người dùng **xác nhận rõ ràng** (VD: "commit đi", "ok commit", "push lên đi", "ok push", "push commit").
