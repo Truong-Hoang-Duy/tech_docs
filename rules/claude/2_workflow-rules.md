@@ -80,6 +80,7 @@ Với `working`, tôi đọc thẳng thư mục làm việc, không tạo worktr
 
 Các bước:
 
+0. **Kiểm migration DB local theo §18** — trước cả bước 1, kể cả khi diff rỗng.
 1. `git -C <repo> fetch origin <nhánh>` — bỏ qua nếu ref là nhánh local hoặc `working`.
 2. Đọc SHA cơ sở ở header hai file map, chạy `git diff --stat <sha cơ sở>..<ref>` cho từng repo.
 3. **Diff rỗng cả hai repo** → chỉ sửa lại ngày trong header, báo "không đổi", dừng. Gần như 0 token.
@@ -544,6 +545,7 @@ Hết hạn mức Claude giữa chừng thì dán `status.md` cho Gemini để h
 - [ ] Không đưa file chứa khoá/token cho Gemini (§6, §11).
 - [ ] Không tự tạo file trong `specs/` hoặc `audits/`.
 - [ ] Thi công **bám đúng task doc** (§16), DoD được tick ngay trong file đó.
+- [ ] Đầu lượt đã kiểm migration DB local (§18): `alembic current` = head, hoặc đã sao lưu rồi chạy.
 ## 16. Thi công theo task doc
 
 Task doc là **hợp đồng**, không phải gợi ý. Ba luật riêng cho giai đoạn này:
@@ -553,6 +555,8 @@ Task doc là **hợp đồng**, không phải gợi ý. Ba luật riêng cho gia
 3. **Doc sai hoặc thiếu so với code thật → dừng, báo người dùng, sửa doc trước rồi mới code.** Không im lặng làm khác tài liệu: lệch giữa doc và code là thứ vài tuần sau không ai gỡ được.
 
 Ba luật còn lại đã nằm ở chỗ khác, nhắc để không quên:
+
+- **Đầu lượt thi công và lượt tự soát DoD: kiểm migration DB local theo §18** trước khi đọc task doc — DB lệch schema làm test/kiểm tay báo lỗi không liên quan tới task.
 
 - **Tick `- [x]` từng mục DoD ngay trong task doc** khi đạt, và sửa nội dung đã không còn đúng — không tạo file `.md` mới để báo cáo (`docs-convention.md` §6).
 - **Chỉ tick sau khi đã chạy và đọc kết quả thật**, không tick theo cảm giác. Mục mở đầu bằng `(kiểm tay)` thì để nguyên, nói rõ người dùng cần làm gì để nghiệm thu (`docs-convention.md` §1.2a).
@@ -606,3 +610,108 @@ Sáu luật khi viết file này:
 4. **Không viết code tính năng** ở bước này; minh hoạ tối đa 10 dòng.
 5. **Dừng chờ bạn chốt.** Không tự nhảy sang viết task doc, kể cả khi phương án đã rõ.
 6. **Cập nhật `status.md`** (§13) trước khi kết thúc lượt.
+
+## 18. Migration DB local — kiểm và chạy ngay trong phiên
+
+**Vì sao có mục này.** Ngày 2026-09-14, sau khi kéo nhánh `feature/qb-khung-cap3-nl-rest` mà chưa migrate, mở drawer "Tạo câu hỏi hàng loạt" bật toast
+"Có lỗi xảy ra — Đã xảy ra lỗi không mong muốn": model đã có cột `question_competency_frameworks.cap` (migration `0088_competency_cap`)
+nhưng DB SQLite local chưa có, nên `GET /api/question-competency-frameworks` trả 500 `internal_error`.
+Lỗi trông như do task đang làm, mất một lượt khảo sát mới ra.
+
+**Khi nào chạy:** đầu lượt, **trước việc chính**, mỗi khi bạn gõ câu ① ⑦ ⑧ ⑨ ⑩ ở [`1_start-here.md`](1_start-here.md) §7
+(cập nhật / sinh lại bản đồ, thi công, tự soát DoD, hồi phục phiên).
+Câu ②–⑥ chỉ viết tài liệu nghiên cứu, không chạy BE hay test nên bỏ qua. Bạn nói "kiểm migration" ở bất kỳ lúc nào thì cũng chạy.
+
+**Kiểm cái gì:** DB mà **thư mục làm việc** của repo backend đang dùng — thứ BE local của bạn thật sự chạy.
+Không phải ref quét bản đồ (§3 đọc ref qua worktree tạm, không `pull`).
+
+**Luôn chạy trong `backend/services/api`** — Alembic lấy địa chỉ DB từ `.env` ở đó, đường dẫn SQLite là tương đối.
+
+### Bước 1 — Xác định DB (không in cả `.env`)
+
+Chỉ đọc đúng hai dòng, che mật khẩu nếu có:
+
+```bash
+grep -hE "^(BOOKFORGE_ENV|BOOKFORGE_DATABASE_URL)=" .env | sed -E 's#(://[^:]+:)[^@]+@#\1***@#'
+```
+
+| `BOOKFORGE_DATABASE_URL` | Làm gì |
+|---|---|
+| `sqlite:///./…` (file local) | Theo bước 2–4, **tự chạy** |
+| `postgresql…@localhost` / `127.0.0.1` | Kiểm bước 2, **hỏi bạn trước khi chạy** (không có bản sao để chạy thử) |
+| Host khác (staging, prod, IP lạ) | **Không chạy gì**, chỉ báo |
+
+### Bước 2 — So `current` với `heads`
+
+```bash
+uv run alembic current
+uv run alembic heads
+```
+
+| Kết quả | Làm gì |
+|---|---|
+| `current` = head | Báo một dòng "migration: DB local đã ở `<revision>`", sang việc chính |
+| `heads` ra **hơn một** revision | Dừng, báo bạn — hai nhánh cùng thêm migration, cần migration gộp, không phải việc của phiên này |
+| `current` **rỗng** (DB không có bảng `alembic_version`) | Sang **bước 5**, không tự `stamp` |
+| `current` cũ hơn head | Sang bước 3 |
+
+### Bước 3 — Sao lưu, chạy thử trên bản sao, rồi chạy thật
+
+```bash
+uv run alembic history -r current:heads        # liệt kê migration sẽ chạy
+cp storage/bookforge.db storage/bookforge.db.bak-<YYYY-MM-DD>   # trùng tên thì thêm -HHMM
+cp storage/bookforge.db <scratchpad>/bookforge-copy.db
+BOOKFORGE_DATABASE_URL="sqlite:///<scratchpad>/bookforge-copy.db" uv run alembic upgrade head
+uv run alembic upgrade head                     # chỉ khi bản sao chạy sạch
+```
+
+- **Chạy thử trên bản sao lỗi** → dừng, **không** chạy thật, báo lỗi kèm tên migration hỏng.
+Hay gặp: BE dev tự `create_all` lúc khởi động nên tạo sẵn bảng mới, rồi migration `create_table` báo "already exists".
+- **`database is locked`** → nhờ bạn tắt BE (Ctrl+C) rồi tôi chạy lại lệnh cuối.
+
+### Bước 4 — Xác nhận và báo
+
+1. `uv run alembic current` phải in `(head)`.
+2. Chạy đoạn so model với DB (dán nguyên vào `<scratchpad>/schema_drift.py`, chạy `uv run python <scratchpad>/schema_drift.py`), phải chỉ in `xong`:
+
+```python
+import sqlalchemy as sa
+
+import bookforge_api.models  # noqa: F401
+from bookforge_api.core.db import Base, get_engine
+
+insp = sa.inspect(get_engine())
+tables = set(insp.get_table_names())
+for name, table in sorted(Base.metadata.tables.items()):
+    if name not in tables:
+        print('THIẾU BẢNG', name)
+        continue
+    cols = {c['name'] for c in insp.get_columns(name)}
+    missing = [c.name for c in table.columns if c.name not in cols]
+    if missing:
+        print('THIẾU CỘT', name, missing)
+print('xong')
+```
+
+3. Báo trong chat 3–5 dòng: đã chạy migration nào (`<từ>` → `<tới>`), file sao lưu nằm đâu, và **nhắc bật lại BE** nếu bạn đã tắt.
+
+### Bước 5 — DB chưa từng chạy Alembic (`current` rỗng)
+
+DB dev tạo bằng `create_all` không có `alembic_version`. `create_all` chỉ tạo **bảng mới**, không thêm **cột mới** vào bảng đã có — nên kéo code mới về là có thể lệch.
+`alembic upgrade head` thẳng sẽ chạy lại từ migration đầu tiên và hỏng.
+
+1. Chạy đoạn so model với DB ở bước 4.
+2. Tìm migration đầu tiên tạo ra bảng/cột bị thiếu (`grep` tên cột trong `alembic/versions/`) → mốc `stamp` là revision **ngay trước** nó.
+Không thiếu gì → mốc là head hiện tại.
+3. Đọc các migration từ mốc tới head, xác nhận chúng tự kiểm tồn tại trước khi thêm (`if 'cap' not in columns`) hoặc chỉ gọi hàm seed chạy lại được.
+4. Chạy thử trên bản sao: `stamp <mốc>` rồi `upgrade head`, kèm đoạn so model với DB.
+5. **Hỏi bạn trước khi làm trên DB thật** — chọn mốc là phán đoán, không phải lệnh máy. Bạn đồng ý thì sao lưu, `stamp <mốc>`, `upgrade head`, xác nhận như bước 4.
+
+Lần 2026-09-14: thiếu đúng cột `cap` → mốc `0087_reseed_khung_names` → `upgrade head` chạy 0088–0097; hai bảng khung được seed (27 khung năng lực, 92 khung kiến thức).
+
+### Không bao giờ
+
+- `alembic downgrade`, xoá DB, xoá file sao lưu.
+- Chạy migration lên DB không phải local.
+- Commit gì liên quan tới việc này — sao lưu và DB nằm trong `storage/`, không thuộc git.
+- Sửa file migration để nó chạy qua. Migration hỏng là lỗi của nhánh đã kéo về → báo bạn.

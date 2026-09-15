@@ -120,7 +120,7 @@ TUYỆT ĐỐI không tự sửa file — tôi sẽ đưa đề xuất của b�
 Mang về theo khối có nhãn (§3) rồi gõ: `Áp các đề xuất dưới đây vào <file>, cái nào không ổn thì nói rõ vì sao không áp.`
 
 ### G. Kiểm thử tay và soát danh sách DoD
-Hai prompt dùng sau khi code xong — nội dung đầy đủ nằm ở [`claude/1_start-here.md`](claude/1_start-here.md) §4 bước 7, để bạn dùng ngay tại chỗ cần:
+Hai prompt dùng sau khi code xong — nội dung đầy đủ nằm ở [`claude/1_start-here.md`](claude/1_start-here.md) §4 bước 8–9, để bạn dùng ngay tại chỗ cần:
 
 - `[HƯỚNG DẪN KIỂM THỬ TAY — CHỈ ĐỌC]` — biến mục DoD `(kiểm tay)` thành các bước bấm/chạy cụ thể cho người không rành kỹ thuật.
 - `[SOÁT DANH SÁCH DoD — CHỈ ĐỌC]` — mỗi mục đang chặn rủi ro gì, tốn bao nhiêu công, **ĐÁNG GIỮ / CÓ THỂ BỎ / TÁCH SANG TASK SAU**; và rủi ro nào chưa mục nào phủ.

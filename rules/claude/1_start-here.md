@@ -27,6 +27,9 @@ Nguyên tắc chi phí: **việc đọc rộng và việc giảng giải đẩy 
 | Sáng mở máy, chuẩn bị làm | §3 |
 | Bắt đầu một tính năng mới | §4, bước 1–6 |
 | Task doc đã có, muốn bắt tay làm | §4, **bước 7** |
+| Code xong, muốn biết đã đạt chưa | §4, bước 8 |
+| Cần tự bấm thử trên màn hình | §4, bước 9 |
+| Muốn commit, push, tạo PR | §4, bước 10 |
 | Đang code, gặp câu hỏi không hiểu | §5 |
 | Muốn đỡ tốn hạn mức Claude | §6 |
 
@@ -50,6 +53,7 @@ Cập nhật bản đồ từ <ref> theo §3 của tech_docs/rules/claude/2_work
 Kết quả: hai file [`overview/1_repo-map.md`](../../overview/1_repo-map.md) và [`overview/2_backend-features-all.md`](../../overview/2_backend-features-all.md) được cập nhật, kèm vài dòng **"hôm nay đổi gì"** in ra terminal.
 
 - Không có gì đổi → báo "không đổi" rồi dừng, gần như không tốn token.
+- **Có migration mới chưa chạy trên DB local** → tôi sao lưu DB, chạy thử trên bản sao, rồi chạy luôn và báo lại vài dòng. Chi tiết ở [`2_workflow-rules.md`](2_workflow-rules.md) §18.
 - Có đổi → liếc qua để biết ai vừa đụng vào đâu; khi hỏi Gemini thì dán mấy dòng đó kèm theo.
 
 ## 4. Bắt đầu một tính năng mới
@@ -180,9 +184,9 @@ Tôi kiểm lại phương án có khả thi không, rồi viết file giao vi�
 > **Task doc không được nhắc tới `tech_docs/`.** `bookforge`, `bookforge-fe`, `tech_docs` là ba repo riêng — người nhận việc chỉ có repo triển khai, không có thư mục nghiên cứu của bạn.
 > Nên task doc phải **chép nội dung cần thiết vào trong nó**, không link ngược về `research/`. Đây là ràng buộc cứng, xem [`docs-convention.md`](../docs-convention.md) §3.1.
 
-Trong task doc có mục **DoD** — danh sách điều kiện nghiệm thu. Tôi viết nó thành hai loại: mục **tự kiểm được** (có lệnh chạy + kết quả mong đợi) và mục **`(kiểm tay)`** (thứ máy không tự khẳng định được). Cách dùng nằm ở bước 7, sau khi code xong.
+Trong task doc có mục **DoD** — danh sách điều kiện nghiệm thu. Tôi viết nó thành hai loại: mục **tự kiểm được** (có lệnh chạy + kết quả mong đợi) và mục **`(kiểm tay)`** (thứ máy không tự khẳng định được). Cách dùng nằm ở bước 8 (tự kiểm) và bước 9 (kiểm tay), sau khi code xong.
 
-### Bước 7 — Giao việc: bảo Claude Code làm theo task doc
+### Bước 7 — Thi công: bảo Claude Code làm theo task doc
 
 Task doc viết xong **không tự chạy**. Bạn phải giao việc bằng một câu:
 
@@ -205,7 +209,10 @@ Hai repo là hai thư mục làm việc khác nhau, nên mở phiên Claude Code
 5. **Quyết định phát sinh giữa chừng** → ghi vào `qa.md` **và** chép về mục "Quyết định đã chốt" của task doc.
 6. **Không commit, không push khi bạn chưa cho phép.**
 
-#### Code xong rồi — soát DoD
+Trước khi đọc task doc, tôi còn **kiểm migration DB local** (§18 của file luật) — cả ở câu tự soát DoD ở bước 8.
+Kéo nhánh mới mà quên migrate thì màn hình báo lỗi 500 trông như lỗi của task, mất cả lượt đi tìm.
+
+### Bước 8 — Soát DoD: phần máy tự kiểm được
 
 **Cách bạn kiểm tra đã xong hay chưa:** mở task doc, đọc mục **DoD**. Mục nào chưa `- [x]` là chưa xong — không cần đọc code.
 
@@ -224,21 +231,9 @@ tech_docs/rules/claude/2_workflow-rules.md, tick mục đã đạt và nói rõ 
 mục nào phải bạn kiểm tay.
 ```
 
-Tôi chạy test, đọc kết quả thật rồi mới tick — **không tick theo cảm giác**. Mục `(kiểm tay)` tôi để nguyên và nói rõ bạn cần làm gì.
+Tôi chạy test, đọc kết quả thật rồi mới tick — **không tick theo cảm giác**. Mục `(kiểm tay)` tôi để nguyên và nói rõ bạn cần làm gì — phần đó sang bước 9.
 
-**Không biết kiểm tay thế nào?** Hỏi Gemini, đừng tốn lượt của tôi:
-
-```text
-[HƯỚNG DẪN KIỂM THỬ TAY — CHỈ ĐỌC]
-Dưới đây là các mục nghiệm thu (DoD) mà tôi phải tự kiểm bằng tay trong dự án BookForge.
-Với mỗi mục, viết cho tôi các bước bấm/chạy theo thứ tự: chuẩn bị dữ liệu gì,
-thao tác ở đâu, nhìn vào đâu để biết đạt, dấu hiệu nào là chưa đạt.
-Viết cho người không rành kỹ thuật. Không sửa file, không viết code.
-
-<dán các mục (kiểm tay)>
-```
-
-**Nghi ngờ một mục DoD có đáng làm không?** Cũng hỏi Gemini trước khi bỏ:
+**Nghi ngờ một mục DoD có đáng làm không?** Hỏi Gemini trước khi bỏ:
 
 ```text
 [SOÁT DANH SÁCH DoD — CHỈ ĐỌC]
@@ -253,7 +248,133 @@ Không sửa file, không viết code.
 
 Gemini trả lời trong chat; thấy hợp lý thì bảo tôi: `Bỏ mục DoD số 3 trong <file> vì <lý do>, ghi lý do vào ngay dưới mục DoD.` — **tôi là người sửa file**, và lý do bỏ phải nằm lại trong task doc để sau này còn biết vì sao.
 
-**Chỉ khi mọi mục đều `- [x]` thì task mới coi là đạt.** Mục bỏ đi phải được xoá kèm ghi lý do, không để lửng `- [ ]` mãi.
+**Chỉ khi mọi mục đều `- [x]` thì task mới coi là đạt** — cả mục tự kiểm (bước 8) lẫn mục kiểm tay (bước 9). Mục bỏ đi phải được xoá kèm ghi lý do, không để lửng `- [ ]` mãi.
+
+### Bước 9 — Kiểm tay: bạn bấm thử, Gemini soạn, tôi tick
+
+Làm sau bước 8, khi mục tự kiểm đã xanh. Bốn bước nhỏ — Gemini lo phần giảng và soạn chữ, tôi chỉ nhận báo cáo cuối để tick hoặc sửa:
+
+```text
+9.1 Gemini viết hướng dẫn + phiếu ghi   →   9.2 Bạn tự bấm, điền phiếu
+                                           ↓
+       9.4 Tôi tick / sửa / phân loại lỗi   ←   9.3 Gemini soạn báo cáo từ phiếu, bạn đọc lại rồi dán cho tôi
+```
+
+#### Trước khi bắt đầu
+
+Ba thứ làm hỏng kết quả mà không liên quan tới task:
+
+- BE và FE đang chạy **đúng nhánh** của task (BE trước, nếu task đụng cả hai phía).
+- DB local **đã migrate** — nhờ tôi `Kiểm migration DB local theo §18 của tech_docs/rules/claude/2_workflow-rules.md.` Lỗi 500 lúc mở màn hình thường là do đây.
+- Tải lại trang (Ctrl+Shift+R) sau khi đổi nhánh FE.
+
+#### 9.1 — Nhờ Gemini viết hướng dẫn và phiếu ghi
+
+```text
+[HƯỚNG DẪN KIỂM THỬ TAY — CHỈ ĐỌC]
+Dưới đây là các mục nghiệm thu (DoD) mà tôi phải tự kiểm bằng tay trong dự án BookForge.
+Với mỗi mục, viết cho tôi các bước bấm/chạy theo thứ tự: chuẩn bị dữ liệu gì,
+thao tác ở đâu, nhìn vào đâu để biết đạt, dấu hiệu nào là chưa đạt,
+và cần ghi lại bằng chứng gì (số liệu, status trong tab Network, ảnh chụp).
+Mục nào ghi "ghi nhận, không phải điều kiện đạt" thì nói rõ cần ghi con số/kết quả gì.
+Viết cho người không rành kỹ thuật. Không sửa file, không viết code.
+
+Cuối cùng in một PHIẾU GHI để tôi điền, mỗi mục một dòng:
+Mục <số> — <tóm tắt 1 dòng> | ĐẠT / CHƯA ĐẠT / KHÔNG KIỂM ĐƯỢC | Ghi chú / bằng chứng:
+
+<dán các mục (kiểm tay)>
+```
+
+#### 9.2 — Bạn tự làm, điền phiếu
+
+Chỉ điền cái **mắt thấy**. Mục nào không làm được (thiếu dữ liệu, BE chưa lên) thì ghi `KHÔNG KIỂM ĐƯỢC` kèm lý do — đừng đoán.
+Mục `CHƯA ĐẠT` thì chụp màn hình, và nếu có lỗi từ server thì mở tab Network → bấm request đỏ → chép **đường dẫn, status, `trace_id`** trong response.
+
+#### 9.3 — Nhờ Gemini soạn báo cáo từ phiếu
+
+Cùng một prompt cho cả kết quả tốt lẫn xấu:
+
+```text
+[SOẠN BÁO CÁO KIỂM TAY — CHỈ ĐỌC]
+Dưới đây là phiếu kết quả kiểm tay TÔI đã tự làm. Soạn lại thành báo cáo gửi cho agent code,
+đúng khuôn bên dưới. Chỉ dùng thông tin có trong phiếu — KHÔNG thêm kết quả,
+KHÔNG suy đoán nguyên nhân, KHÔNG viết như thể bạn đã tự kiểm. Mục nào phiếu ghi thiếu thì ghi "(thiếu)".
+Không sửa file, không viết code.
+
+Khuôn:
+[KẾT QUẢ KIỂM TAY — TÔI ĐÃ TỰ LÀM]
+Task doc: <đường dẫn task doc>
+Môi trường: BE nhánh <…>, FE nhánh <…>, ngày <YYYY-MM-DD>
+Tổng: <x> ĐẠT · <y> CHƯA ĐẠT · <z> KHÔNG KIỂM ĐƯỢC
+
+Mục <số> — <tóm tắt> — ĐẠT | CHƯA ĐẠT | KHÔNG KIỂM ĐƯỢC
+  Đã làm: <thao tác chính>
+  Thấy: <kết quả thực tế, con số, status>
+  (chỉ khi CHƯA ĐẠT) Mong đợi theo DoD: <…> · Bằng chứng: <ảnh / đường dẫn request / status / trace_id>
+
+Việc nhờ agent: theo §16 của tech_docs/rules/claude/2_workflow-rules.md —
+tick mục ĐẠT, ghi con số của mục "ghi nhận" vào ngay dưới mục đó;
+mục CHƯA ĐẠT thì phân loại nguyên nhân và báo lại trước khi sửa; mục KHÔNG KIỂM ĐƯỢC để nguyên.
+
+<dán phiếu đã điền>
+```
+
+**Đọc lại bản Gemini soạn trước khi dán** — sửa chỗ nó viết khác phiếu. Nhãn `[KẾT QUẢ KIỂM TAY — TÔI ĐÃ TỰ LÀM]` nghĩa là **bạn chịu trách nhiệm về nội dung**; tôi tick theo đó mà không hỏi lại.
+Đừng dán dưới nhãn `[TỪ GEMINI]`: Gemini không mở được trình duyệt, nên thấy nhãn đó tôi phải hỏi lại bạn có thật đã kiểm chưa rồi mới tick.
+
+#### 9.4 — Tôi làm gì với báo cáo
+
+| Kết quả | Tôi làm |
+|---|---|
+| **Đạt hết** | Tick từng mục `(kiểm tay)`, chép con số của mục "ghi nhận" vào ngay dưới mục đó, cập nhật `status.md`, rồi báo "DoD đủ" — sang bước 10 |
+| **Có mục CHƯA ĐẠT** | Không tick mục đó. Kiểm migration (§18) và môi trường trước, rồi xếp vào **một trong ba loại** bên dưới và báo bạn **trước khi sửa** |
+| **KHÔNG KIỂM ĐƯỢC** | Để nguyên `- [ ]`, ghi lý do một dòng ngay dưới mục; kiểm lại lần sau |
+
+Ba loại nguyên nhân khi có mục chưa đạt:
+
+| Loại | Ví dụ | Xử lý |
+|---|---|---|
+| **Lỗi code của task** | Payload thiếu trường, ô không reset khi mở lại | Tôi sửa trong phạm vi task, chạy lại test tự động, nhờ bạn kiểm lại **đúng mục đó** |
+| **DoD / task doc sai** | DoD đòi thứ mà "Quyết định đã chốt" không yêu cầu | Dừng, đề xuất sửa doc, bạn chốt rồi mới làm (§16 luật 3) |
+| **Không do task** | Lỗi 500 lúc mở màn hình vì DB chưa migrate; lỗi ở tính năng khác | Chỉ ra nguyên nhân kèm bằng chứng, **không sửa trong task này**; mục đó kiểm lại sau khi môi trường ổn |
+
+Sửa xong một mục thì chỉ cần kiểm lại mục đó — lặp lại 9.2 và 9.3 với phiếu của riêng mục ấy.
+
+### Bước 10 — Commit, push và PR
+
+Chỉ gõ khi DoD đã đủ `- [x]`. Tôi **không bao giờ tự commit hay push** — câu dưới đây chính là lời xác nhận rõ ràng mà [`3_git-workflow-rules.md`](3_git-workflow-rules.md) §1 đòi hỏi.
+
+Chọn **một** trong ba câu:
+
+```text
+Commit (chưa push) cho task backend/docs/tasks/<ngày>-<slug>.md,
+tuân thủ tech_docs/rules/claude/3_git-workflow-rules.md.
+```
+
+```text
+Commit và push cho task backend/docs/tasks/<ngày>-<slug>.md,
+tuân thủ tech_docs/rules/claude/3_git-workflow-rules.md.
+```
+
+```text
+Tạo PR vào dev cho nhánh của task backend/docs/tasks/<ngày>-<slug>.md,
+tuân thủ tech_docs/rules/claude/3_git-workflow-rules.md.
+```
+
+Câu thứ ba chỉ dùng khi nhánh **đã push**. Nó cần `gh` đã đăng nhập; không có thì tôi in sẵn tiêu đề + mô tả để bạn tự tạo trên GitHub.
+
+**Tôi làm theo thứ tự này** — liệt kê để bạn soát:
+
+1. **Soát DoD trước.** Còn mục `- [ ]` → dừng, liệt kê mục còn thiếu, hỏi bạn. Không commit dở dang.
+2. **Soát phạm vi.** `git status` / `git diff` phải khớp danh sách file trong task doc. File lạ → hỏi, không add. Add **từng file**, không `git add -A`.
+3. **Soát nhánh.** Đang ở `dev` → tạo nhánh mới, đặt tên theo task (task đụng cả hai phía thì BE và FE **cùng tên nhánh**).
+4. **Soát `.md`.** File `.md` sắp commit vào `bookforge` / `bookforge-fe` mà có chuỗi `tech_docs` → sửa trước.
+5. **Soạn message** theo `git log --oneline -10`: tiếng Anh, `<type>(<scope>): <việc đã làm>`, **không** `Co-Authored-By`, **không** nhắc AI.
+6. **Nhớ repo thứ hai.** Task doc nằm ở `bookforge`, nên kể cả task FE, phần tick DoD / sửa quyết định trong task doc là **một commit `docs(...)` riêng** trên nhánh BE của task.
+7. **Push** (chỉ với câu thứ hai). Nhánh chưa có trên `origin` → `push -u`; có rồi → chỉ đẩy thêm commit. Không `--force`, không `--no-verify` — hook hỏng thì báo lỗi, không lách.
+8. **Báo lại** bảng `repo | nhánh | commit | đã push?`, cập nhật `status.md`, và in **nháp mô tả PR**: tóm tắt thay đổi, cách đã kiểm, con số của mục "ghi nhận" trong DoD. Không attribution.
+
+Task đụng cả hai phía: PR BE **merge và deploy trước** PR FE, nếu FE gửi thứ mà BE cũ chưa nhận.
 
 ## 5. Đang code mà gặp câu hỏi
 
@@ -276,8 +397,9 @@ Gemini **chỉ đọc và trả lời trong chat** — không ghi file, không s
 | Trước khi khảo sát, phạm vi còn rộng | Quét khoanh vùng: "chức năng X đi qua những file nào" → dán danh sách về cho Claude Code đọc đúng chỗ |
 | Đọc `02-findings.md` mà thấy khó nuốt | Tóm tắt cho người không đọc code, giải nghĩa thuật ngữ, chỉ chỗ thiếu bằng chứng (§4 bước 4) |
 | Tài liệu viết lủng củng, muốn sửa | Gemini đề xuất `<đoạn gốc> → <đoạn đề xuất>`; **Claude Code là người ghi vào file** |
-| Mục DoD `(kiểm tay)` mà không biết kiểm thế nào | Viết các bước bấm/chạy cụ thể cho người không rành kỹ thuật (§4 bước 7) |
-| Nghi một mục DoD thừa | Đánh giá ĐÁNG GIỮ / CÓ THỂ BỎ / TÁCH SANG TASK SAU kèm lý do (§4 bước 7) |
+| Mục DoD `(kiểm tay)` mà không biết kiểm thế nào | Viết các bước bấm/chạy cụ thể kèm phiếu ghi kết quả (§4 bước 9.1) |
+| Kiểm tay xong, cần báo lại cho Claude Code | Soạn báo cáo từ phiếu bạn đã điền, dưới nhãn `[KẾT QUẢ KIỂM TAY — TÔI ĐÃ TỰ LÀM]` (§4 bước 9.3) |
+| Nghi một mục DoD thừa | Đánh giá ĐÁNG GIỮ / CÓ THỂ BỎ / TÁCH SANG TASK SAU kèm lý do (§4 bước 8) |
 | Cần kiến thức ngoài repo | Tra thư viện, API, chuẩn, cách người khác làm |
 | Đọc `03-design.md` hoặc câu hỏi của Claude Code mà không hiểu | Nhờ giảng lại bằng lời dễ hiểu, nêu 2 lựa chọn |
 | Task doc / design vừa viết xong | Nhờ phản biện trước khi bắt tay code |
@@ -345,13 +467,16 @@ theo docs-convention §1.2a và §5 của tech_docs/rules/claude/2_workflow-rule
 theo §16 của tech_docs/rules/claude/2_workflow-rules.md.
 ```
 
-**⑧ Tự soát DoD** — khi muốn biết đã xong tới đâu mà không phải đọc code (xem §4 bước 7).
+**⑧ Tự soát DoD** — khi muốn biết đã xong tới đâu mà không phải đọc code (xem §4 bước 8).
 
 ```text
 Đọc backend/docs/tasks/<ngày>-<slug>.md, tự kiểm từng mục DoD trong repo theo §16 của
 tech_docs/rules/claude/2_workflow-rules.md, tick mục đã đạt và nói rõ mục nào chưa,
 mục nào phải bạn kiểm tay.
 ```
+
+**⑧b Báo kết quả kiểm tay** — dán báo cáo Gemini soạn từ phiếu bạn điền (khuôn ở §4 bước 9.3), bắt đầu bằng nhãn `[KẾT QUẢ KIỂM TAY — TÔI ĐÃ TỰ LÀM]`.
+Tôi tick mục đạt; mục chưa đạt thì phân loại nguyên nhân và báo trước khi sửa.
 
 **⑨ Hồi phục sau khi mất phiên**
 
@@ -367,6 +492,15 @@ Sinh lại tech_docs/overview/1_repo-map.md từ <ref> theo §3 của
 tech_docs/rules/claude/2_workflow-rules.md.
 ```
 
+**⑪ Commit / push / PR** — chỉ khi DoD đã đủ. Chọn đúng một câu ở §4 bước 10 (chỉ commit · commit và push · tạo PR).
+
+```text
+Commit và push cho task backend/docs/tasks/<ngày>-<slug>.md,
+tuân thủ tech_docs/rules/claude/3_git-workflow-rules.md.
+```
+
+> **Migration DB local:** câu ① ⑦ ⑧ ⑨ ⑩ tự kiểm migration trước việc chính; có migration mới thì tôi sao lưu rồi chạy luôn (§18 của file luật). Ngoài mấy câu đó, gõ `Kiểm migration DB local theo §18 của tech_docs/rules/claude/2_workflow-rules.md.`
+>
 > **Luật chung:** thứ gì đã nằm trong file thì **gõ đường dẫn, đừng dán nội dung vào terminal**. Dán tốn đúng bằng lúc tôi tự đọc file, nhưng mất lịch sử và không sửa lại được.
 
 ## 8. Một thư mục tính năng có gì
@@ -411,4 +545,5 @@ Bản chốt cuối cùng **không nằm ở đây** mà ở `backend/docs/tasks
 | Khuôn `qa.md` | §12 |
 | Khuôn `status.md` | §13 |
 | Luật thi công theo task doc | §16 |
+| Kiểm và chạy migration DB local | §18 |
 | Checklist đầy đủ | §15 |

@@ -2,7 +2,7 @@
 
 > **Đây là MỤC LỤC, không phải tài liệu thiết kế.** Mỗi mục một dòng, đủ để hỏi cho trúng chỗ, không đủ để kết luận về cách code chạy.
 > Dùng kèm [`2_backend-features-all.md`](2_backend-features-all.md) làm gói ngữ cảnh khi hỏi Gemini — xem [`rules/claude/2_workflow-rules.md`](../rules/claude/2_workflow-rules.md) §4.
-> Nguồn: `bookforge@a62910d` (origin/dev) · `bookforge-fe@71d6d8e` (origin/dev) — **2026-09-09**.
+> Nguồn: `bookforge@ebd0693` (origin/dev) · `bookforge-fe@a09c30d` (origin/dev) — **2026-09-14**.
 > Đây là mốc để tính diff ở lần cập nhật sau; **ref quét do bạn chỉ định mỗi lần** — xem [`rules/claude/2_workflow-rules.md`](../rules/claude/2_workflow-rules.md) §3.
 > Đường dẫn BE tính từ gốc repo `bookforge`, FE tính từ gốc repo `bookforge-fe`.
 
@@ -422,7 +422,7 @@ Cờ chỉ bật bằng env, không có cấp theo tổ chức: `authorization_d
 
 ## 7. Biến môi trường
 
-**Backend** — `core/settings.py`, tiền tố **`BOOKFORGE_`** + tên trường viết hoa (VD trường `database_url` → `BOOKFORGE_DATABASE_URL`). Đọc từ `services/api/.env`. 183 trường, nhóm chính:
+**Backend** — `core/settings.py`, tiền tố **`BOOKFORGE_`** + tên trường viết hoa (VD trường `database_url` → `BOOKFORGE_DATABASE_URL`). Đọc từ `services/api/.env`. 188 trường, nhóm chính:
 
 | Nhóm | Trường tiêu biểu |
 |---|---|
@@ -437,7 +437,7 @@ Cờ chỉ bật bằng env, không có cấp theo tổ chức: `authorization_d
 | Chống nghẽn Gemini | `GEMINI_RPM_LIMIT`, `GEMINI_BURST`, `GEMINI_MAX_IN_FLIGHT`, `GEMINI_429_FALLBACK_COOLDOWN_MS` |
 | Chat & truy hồi | `CHAT_RETRIEVAL_*`, `CHAT_AGENT_REQUEST_LIMIT`, `CHAT_AGENT_TOOL_CALLS_LIMIT`, `CHAT_HISTORY_MAX_MESSAGES`, `CHAT_READ_*` |
 | Canvas / editor | `EDITOR_MODEL_TIMEOUT_SECONDS`, `EDITOR_TURN_TIMEOUT_SECONDS`, `EDITOR_DOCUMENT_MAX_WORDS`, `EDITOR_ENVELOPE_*` |
-| Trích đề thi | `EXAM_EXTRACT_PAGE_CEILING`, `EXAM_EXTRACT_WINDOW_PAGES`, `EXAM_EXTRACT_LLM_CONCURRENCY`, `EXAM_EXTRACT_JOB_TIMEOUT_SECONDS` |
+| Trích đề thi | `EXAM_EXTRACT_PAGE_CEILING` (300, trước 20), `EXAM_EXTRACT_WINDOW_PAGES`, `EXAM_EXTRACT_WINDOW_OVERLAP`, `EXAM_EXTRACT_LLM_CONCURRENCY`, `EXAM_EXTRACT_MAX_UPLOAD_BYTES`, `EXAM_EXTRACT_JOB_TIMEOUT_SECONDS`, `EXAM_EXTRACT_JOB_TIMEOUT_PER_PAGE_SECONDS`, `EXAM_EXTRACT_JOB_TIMEOUT_CAP_SECONDS` |
 | Trần cứng (hard limit) | `DEFAULT_MAX_UPLOAD_BYTES`, `UPLOAD_BYTES_CEILING`, `DOCUMENT_PAGES_CEILING`, `SLIDE_DECK_SLIDES_CEILING`, `QUESTION_SET_QUESTIONS_CEILING`, `SINGLE_TASK_TOKEN_CEILING_INFRA` |
 | RAG / knowledge | `KNOWLEDGE_ENABLED`, `KNOWLEDGE_INGESTION_URL`, `KNOWLEDGE_RETRIEVAL_URL`, `KNOWLEDGE_API_TOKEN`, `KNOWLEDGE_CHUNK_TOKEN_NUM`, `KNOWLEDGE_REINDEX_DEBOUNCE_SECONDS` |
 | Pháp lý | `LAW_ENABLED`, `LAW_SERVICE_URL`, `LAW_API_TOKEN`, `LAW_TOOL_TIMEOUT_SECONDS` |
