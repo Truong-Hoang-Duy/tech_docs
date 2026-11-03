@@ -4,23 +4,24 @@
 
 ## 1. Khuôn mẫu Báo cáo Quét & Điều phối: `tech_docs/audits/<slug>-audit.md`
 
-Đặt tại: `tech_docs/audits/<slug>-audit.md` (Ví dụ: `tech_docs/audits/ai-governance-wave-a-audit.md`)
+Đặt tại: `tech_docs/audits/<slug>-audit.md`
 
 ````markdown
-# Báo cáo Quét Spec & Điều phối Thực thi: <Tên Gói Spec>
+# Báo cáo Quét Spec & Điều phối Thực thi: <Tên Gói Spec / Tính năng>
 
-**Ngày khởi tạo:** YYYY-MM-DD · **Mã gói:** `<pkg-XX>` · **Phía tác động:** <BE | FE | Cả hai>
-**File Spec gốc:** `backend/docs/product/ai-governance-mvp/specs/<tên-file-pkg-XX.md>`
+**Ngày khởi tạo:** YYYY-MM-DD · **Mã gói / Phân hệ:** `<mã-gói-hoặc-tên-phân-hệ>` · **Phía tác động:** <BE | FE | Cả hai>
+**Tài liệu Spec gốc:** `<đường-dẫn-tới-file-spec>`
 **File Superpowers Plan:** `backend/docs/superpowers/plans/YYYY-MM-DD-<slug>.md`
 **Người quét & lập Plan:** <Gemini | Claude> · **Người duyệt Plan:** <Claude | Gemini>
 **Trạng thái:** <AUDITED | PLAN_DRAFTED | APPROVED | IN_PROGRESS | VERIFIED>
 
 ---
 
-## 1. Tóm tắt Phạm vi & Ràng buộc Bất biến (`T1`–`T10`)
+## 1. Tóm tắt Phạm vi & Ràng buộc Bất biến từ Spec
 - **Mục tiêu cốt lõi của gói:** <2–3 gạch đầu dòng tóm tắt đầu ra bắt buộc của gói Spec này>
-- **Các quyết định kỹ thuật (`T1`–`T10` / `D1`–`D6`) áp dụng trực tiếp:**
-  - `<Mã T/D>`: <Nội dung ràng buộc không được vi phạm>
+- **Các quyết định kỹ thuật & ràng buộc kiến trúc áp dụng trực tiếp:**
+  - <Quyết định / Ràng buộc 1>
+  - <Quyết định / Ràng buộc 2>
 
 ---
 
@@ -30,11 +31,11 @@
 
 | # | Hạng mục kiểm tra | Trong Spec đang ghi | Thực tế trên Codebase (`file:line`) | Cách hiệu chỉnh vào Superpowers Plan |
 |---|---|---|---|---|
-| 1 | **Alembic Migration** | VD: `0114_ai_governance_wave_a.py` | `0114` đã dùng bởi `0114_notifications.py` (`head = 0114`) | Đổi thành `0115_ai_governance_wave_a.py`, `down_revision = "0114_notifications"` |
+| 1 | **Alembic Migration** | VD: tạo migration số `<XXXX>` | Số `<XXXX>` đã dùng bởi `<file_migration_hiện_tại>` | Đổi thành `<XXXX+1>_<slug>.py`, `down_revision = "<head_hiện_tại>"` |
 | 2 | **ErrorCode & Catalog** | Thêm mã lỗi `...` vào `codes.py` | `test_errors_catalog.py` bắt buộc đồng bộ 4 file | Đưa vào Task 1 việc cập nhật đủ `codes.py`, `catalog.py`, `render_errors_doc.py`, `docs/ERRORS.md` |
 | 3 | **Chữ ký hàm / Schema** | ... | ... | ... |
 | 4 | **Env / Docker Compose** | ... | ... | ... |
-| 5 | **Giới hạn 300 dòng FE** | Sửa file `...` | File hiện tại đang có `N` dòng | Tách component con sang `partial/...` để giữ file ≤ 300 dòng |
+| 5 | **Giới hạn 300 dòng FE** | Sửa file `...` | File hiện tại đang có `N` dòng | Tách component/hook con sang `partial/...` để giữ file ≤ 300 dòng |
 
 ---
 
@@ -53,12 +54,12 @@
 
 ---
 
-## 4. Ma trận Ánh xạ Tiêu chí Nghiệm thu (`AC-XX-*` ➔ `Task N`)
+## 4. Ma trận Ánh xạ Tiêu chí Nghiệm thu (`AC` ➔ `Task N`)
 
-| Mã AC trong Spec | Nội dung yêu cầu nghiệm thu | Được xử lý tại Task nào trong Superpowers Plan? | File Test kiểm chứng |
+| Mã / Mục AC trong Spec | Nội dung yêu cầu nghiệm thu | Được xử lý tại Task nào trong Superpowers Plan? | File Test kiểm chứng |
 |---|---|---|---|
-| `AC-A-01` | ... | `Task 1`, `Task 3` | `services/api/tests/...` |
-| `AC-A-02` | ... | `Task 2`, `Task 5` | `services/api/tests/...` |
+| `<AC-01>` | ... | `Task 1`, `Task 3` | `services/api/tests/...` |
+| `<AC-02>` | ... | `Task 2`, `Task 5` | `services/api/tests/...` |
 
 ---
 
@@ -86,7 +87,7 @@
 
 ## 7. Kết quả Nghiệm thu Code (`Cross-Verify` bởi <Gemini | Claude>)
 - **Ngày nghiệm thu:** YYYY-MM-DD
-- **Đối chiếu `git status` / `git diff`:** <Khớp 100% các Task và tiêu chí `AC-XX-*` hay còn thiếu?>
+- **Đối chiếu `git status` / `git diff`:** <Khớp 100% các Task và tiêu chí nghiệm thu trong Spec hay còn thiếu?>
 - **Kết quả chạy lại cổng kiểm tra độc lập:**
   - Backend (`ruff`, `pytest`, `test_errors_catalog`): <PASS / FAIL>
   - Frontend (`tsc`, `vitest`, `build`, giới hạn ≤ 300 dòng/file): <PASS / FAIL>
@@ -108,11 +109,11 @@
 
 **Goal:** <Mô tả ngắn gọn 1–2 câu về mục tiêu cần đạt của gói triển khai này>
 
-**Architecture:** <Tóm tắt 3–5 dòng về kiến trúc giải pháp, các tầng thay đổi từ DB -> Service/Policy -> API -> Frontend UI, và các quyết định kỹ thuật T1..T10 được áp dụng>
+**Architecture:** <Tóm tắt 3–5 dòng về kiến trúc giải pháp, các tầng thay đổi từ DB -> Service/Policy -> API -> Frontend UI, và các quyết định kỹ thuật cốt lõi được áp dụng>
 
 **Tech Stack:** FastAPI, SQLAlchemy 2.0, Alembic, Pydantic v2, pytest (Backend); React 18, TypeScript, TanStack Query, TailwindCSS, Vitest (Frontend).
 
-**Spec:** `docs/product/ai-governance-mvp/specs/<tên-file-pkg-XX.md>` & `docs/product/ai-governance-mvp/TECHNICAL_ALIGNMENT_DECISIONS.md`
+**Spec:** `<đường-dẫn-tương-đối-trong-repo-backend-tới-file-spec>`
 
 ---
 
@@ -125,9 +126,9 @@
 
 ## Review Focus
 
-1. <Điểm trọng tâm cần kiểm soát số 1 — VD: Đảm bảo `ai_allowed=false` chặn tuyệt đối trước `enqueue_ingest` ở mọi ngả>
-2. <Điểm trọng tâm cần kiểm soát số 2 — VD: Đảm bảo Admin không đọc được nội dung tài liệu/prompt riêng tư của giáo viên>
-3. <Điểm trọng tâm cần kiểm soát số 3 — VD: Đảm bảo đủ 100% các tiêu chí nghiệm thu `AC-XX-*` trong Spec>
+1. <Điểm trọng tâm cần kiểm soát số 1 của gói công việc>
+2. <Điểm trọng tâm cần kiểm soát số 2 của gói công việc>
+3. <Điểm trọng tâm cần kiểm soát số 3 — Đảm bảo phủ đủ 100% các tiêu chí nghiệm thu trong Spec>
 
 ---
 

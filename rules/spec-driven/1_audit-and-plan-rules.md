@@ -1,18 +1,18 @@
 # Quy tắc Nghiệp vụ: Quét Spec (`specs/`) ➔ Lập `superpowers/plans/` ➔ Thi công Code
 
-Tài liệu này quy định quy trình làm việc bắt buộc cho **Gemini** và **Claude** đối với các dự án/phân hệ **đã có sẵn bộ đặc tả kỹ thuật (`specs/`)** trong `backend/docs/product/<module>/specs/` (điển hình là `backend/docs/product/ai-governance-mvp/specs/`).
+Tài liệu này quy định quy trình làm việc bắt buộc cho **Gemini** và **Claude** đối với mọi phân hệ hoặc tính năng lớn **đã có sẵn bộ đặc tả kỹ thuật (`specs/`)** trong repo (ví dụ: `backend/docs/product/<module>/specs/` hoặc tài liệu đặc tả tương đương).
 
 ---
 
 ## 1. Bản chất & Cấu trúc 2 File của Nghiệp vụ Spec-Driven
 
-Khác với luồng tính năng nhỏ lẻ thông thường (dùng `tech_docs/plans/<slug>/01-analysis.md` và `02-plan.md`), nghiệp vụ Spec-Driven đã có sẵn thiết kế sản phẩm và kiến trúc trong `specs/`. Vì vậy, tuyệt đối **không** lặp lại việc viết `01-analysis.md` hay `02-plan.md`, mà sử dụng **cặp 2 tài liệu chuyên biệt**:
+Khác với luồng tính năng nhỏ lẻ thông thường (dùng `tech_docs/plans/<slug>/01-analysis.md` và `02-plan.md`), ở nghiệp vụ Spec-Driven, bài toán sản phẩm và kiến trúc tổng thể đã được định nghĩa sẵn trong tài liệu Spec. Vì vậy, tuyệt đối **không** lặp lại việc viết `01-analysis.md` hay `02-plan.md`, mà sử dụng **cặp 2 tài liệu chuyên biệt**:
 
 1. **Báo cáo Quét & Điều phối Nội bộ (`tech_docs/audits/<slug>-audit.md`):**
    - Nằm trong repo `tech_docs`.
    - Đóng vai trò là **hồ sơ kiểm toán & điều phối giữa Gemini và Claude**, chứa:
      - Kết quả quét đối chiếu giữa tài liệu `specs/` và code thật trên nhánh `dev` hiện tại (*Spec-to-Code Drift*).
-     - Bảng ánh xạ 100% Tiêu chí Nghiệm thu (`AC-XX-*`, `T1`–`T10`) sang từng `Task N`.
+     - Bảng ánh xạ 100% Tiêu chí Nghiệm thu (Acceptance Criteria) và Quyết định Kiến trúc trong Spec sang từng `Task N`.
      - Biên bản Duyệt Plan chéo (`Cross-Review`), Nhật ký Thực thi (`Execution Log`), và Biên bản Nghiệm thu Code (`Cross-Verify`).
 2. **Kế hoạch Thi công Chuẩn Superpowers (`backend/docs/superpowers/plans/YYYY-MM-DD-<slug>.md`):**
    - Nằm trực tiếp trong repo `backend`.
@@ -25,12 +25,12 @@ Khác với luồng tính năng nhỏ lẻ thông thường (dùng `tech_docs/pl
 
 > **Nguyên tắc sống còn:** Tài liệu trong `specs/` được viết tại một thời điểm cố định, trong khi nhánh `dev` của `backend/` và `frontend/` liên tục có các PR mới hợp nhất vào. **Cấm tuyệt đối** dịch thẳng từ `specs/` sang `superpowers/plans/` khi chưa quét code thật.
 
-Khi nhận lệnh quét một gói Spec (VD: `pkg-01`, `pkg-02`, `pkg-03`), Agent phải mở code thật và kiểm tra đủ **7 hạng mục bắt buộc** sau đây để ghi vào `tech_docs/audits/<slug>-audit.md`:
+Khi nhận lệnh quét một gói Spec, Agent phải mở code thật và kiểm tra đủ **7 hạng mục bắt buộc** sau đây để ghi vào `tech_docs/audits/<slug>-audit.md`:
 
 ### 2.1 Kiểm tra Số thứ tự & Chuỗi kế thừa Alembic Migration (`Alembic Drift`)
 - Liệt kê các file mới nhất trong `backend/services/api/alembic/versions/`.
-- Đối chiếu số hiệu revision mà Spec đề xuất (ví dụ Spec ghi `0114_ai_governance_wave_a.py`) với `head` thực tế trên nhánh `dev` (ví dụ `0114_notifications.py` đã chiếm số `0114`).
-- Chốt chính xác tên file migration mới (VD: `0115_...`) và giá trị `down_revision` thật sự.
+- Đối chiếu số hiệu revision mà Spec đề xuất với `head` thực tế trên nhánh `dev` (vì có thể một PR khác vừa chiếm mất số hiệu đó).
+- Chốt chính xác tên file migration mới và giá trị `down_revision` thật sự.
 
 ### 2.2 Kiểm tra Tương thích SQLite Test & PostgreSQL (`DB Dialect Safety`)
 - Toàn bộ bài test tích hợp trong `backend/services/api/tests/` chạy trên **SQLite** (`conftest.py`), trong khi môi trường chạy thật dùng **PostgreSQL**.
@@ -54,14 +54,14 @@ Khi nhận lệnh quét một gói Spec (VD: `pkg-01`, `pkg-02`, `pkg-03`), Agen
 - Mở từng file BE và FE được nêu trong Spec để xác minh:
   - File đó đã tồn tại hay là file tạo mới?
   - Tên hàm, tham số đầu vào, kiểu trả về, dependency injection (`Depends(...)`), và schema Pydantic hiện tại ở dòng nào (`file:line`)?
-  - Có điểm gọi liên quan nào trong codebase bị Spec bỏ sót không? (Ví dụ: rà soát toàn bộ các nơi gọi `enqueue_ingest`, các nơi tạo `AIAction`, hoặc các nơi gọi upload tài liệu trên FE).
+  - Có điểm gọi liên quan nào trong codebase bị Spec bỏ sót không?
 
 ### 2.6 Kiểm tra Giới hạn 300 dòng/file & 100 dòng/hàm ở Frontend (`FE Convention Gate`)
 - Với mọi file trong `frontend/src/` dự kiến sửa đổi, đếm số dòng hiện tại của file đó.
 - Nếu file đã gần hoặc vượt **300 dòng** (hoặc hàm gần **100 dòng** theo `frontend/CONVENTION.md`), báo cáo Audit phải chỉ định rõ phương án tách component/hook phụ vào thư mục `partial/` hoặc `partials/` cùng cấp ngay từ đầu.
 
-### 2.7 Đối chiếu 10 Quyết định Kỹ thuật (`T1`–`T10`) & Ranh giới Bất biến (`pkg-05`)
-- Kiểm tra chéo với `TECHNICAL_ALIGNMENT_DECISIONS.md` và `pkg-05-phase2-horizon-and-architectural-invariants.md` để đảm bảo không vi phạm các chốt kiến trúc (như: không mở quyền cho Admin đọc file riêng tư của giáo viên ở `T1`/`T9`, không gửi file `ai_allowed=false` qua OCR/Vision/Embedding ở `T2`, không nhân đôi độ trễ LLM ở `T5`, lưu snapshot tên/hash tài liệu trong `ai_action_documents` ở `T8`).
+### 2.7 Đối chiếu các Quyết định Kiến trúc & Ranh giới Bất biến của Bộ Spec
+- Kiểm tra chéo với các tài liệu quyết định kỹ thuật hoặc nguyên tắc nền tảng đi kèm bộ Spec (ví dụ: `TECHNICAL_ALIGNMENT_DECISIONS.md`, các quy tắc bảo mật đa tổ chức, không giữ DB lock qua lời gọi mạng/LLM, hoặc các ranh giới giữ cho giai đoạn sau) để đảm bảo kế hoạch không phá vỡ bất biến kiến trúc.
 
 ---
 
@@ -76,26 +76,26 @@ Từ file Spec + Báo cáo `tech_docs/audits/<slug>-audit.md`, Agent 1 tạo fil
 2. **Thứ tự Chia Task (`Task 1..N`) Không Vòng lặp Phụ thuộc:**
    - Mỗi `Task N` là một lát cắt dọc nhỏ, có thể viết test và kiểm chứng độc lập trong 15–30 phút:
      - **Nhóm 1 (Hạ tầng & DB BE):** Migration Alembic + `db/models.py` + `ErrorCode` catalog + `core/config.py`.
-     - **Nhóm 2 (Core Policy / Guardrail / Service BE):** Logic phân quyền, kiểm tra `assert_ai_usable`, bộ phân loại guardrail, tính toán `provenance_type`, bảng nối truy vết.
-     - **Nhóm 3 (Routers / Workers / Exporters BE):** Gắn policy vào các endpoint, luồng ingest, luồng xuất file (`.docx`, `.pdf`, `.pptx`, `.csv`, `TestPaper`).
+     - **Nhóm 2 (Core Policy / Service / Domain Logic BE):** Các hàm xử lý nghiệp vụ cốt lõi, phân quyền, kiểm tra điều kiện.
+     - **Nhóm 3 (Routers / Workers / Exporters BE):** Gắn logic vào các API endpoint, background worker, hoặc luồng xuất file.
      - **Nhóm 4 (Frontend Types / API / Hooks):** Cập nhật kiểu dữ liệu `T*`, hàm `API*`, React Query hooks `useQuery*` / `useMutation*`.
-     - **Nhóm 5 (Frontend UI Components & Pages):** Hộp thoại khai báo upload, hộp thoại xác nhận guardrail, huy hiệu nguồn gốc, màn hình tra cứu/đối soát (đảm bảo ≤ 300 dòng/file).
-     - **Nhóm 6 (E2E & Release Gate Tests):** Bộ bài test nghiệm thu toàn trình theo `AC-XX-*`.
+     - **Nhóm 5 (Frontend UI Components & Pages):** Giao diện, hộp thoại, màn hình (đảm bảo ≤ 300 dòng/file).
+     - **Nhóm 6 (E2E & Acceptance Tests):** Bộ bài test nghiệm thu toàn trình theo các tiêu chí của Spec.
 3. **Cấu trúc Bắt buộc của Mỗi `Task N`:**
    - **`Files:`** Chỉ rõ `Create` / `Modify` / `Test` kèm đường dẫn tương đối chuẩn.
    - **`Interfaces:`** Nêu rõ chữ ký hàm/schema mà Task này sử dụng (`Consumes`) và tạo ra (`Produces`).
    - **Chu trình 4 bước TDD có ô tích `- [ ]`:**
-     - `- [ ] **Step 1: Viết bài test thất bại trong ...**` (Đưa sẵn khung code test cụ thể).
-     - `- [ ] **Step 2: Chạy test để xác nhận thất bại**` (Đưa sẵn lệnh `uv run pytest ...` hoặc `npm test ...` chính xác).
-     - `- [ ] **Step 3: Triển khai code tối thiểu trong ...**` (Mô tả chi tiết logic và đoạn code cốt lõi cần thêm/sửa).
-     - `- [ ] **Step 4: Chạy lại test & linter để xác nhận vượt qua**` (Đưa sẵn lệnh kiểm tra).
+     - `- [ ] **Step 1: Write failing test(s) in ...**` (Đưa sẵn khung code test cụ thể).
+     - `- [ ] **Step 2: Run test to verify it fails**` (Đưa sẵn lệnh `uv run pytest ...` hoặc `npm test ...` chính xác).
+     - `- [ ] **Step 3: Implement minimal code in ...**` (Mô tả chi tiết logic và đoạn code cốt lõi cần thêm/sửa).
+     - `- [ ] **Step 4: Run test & linter to verify it passes**` (Đưa sẵn lệnh kiểm tra).
 4. **Cập nhật Ma trận Ánh xạ:**
-   - Sau khi viết xong Plan, điền đầy đủ bảng **Ma trận Ánh xạ Tiêu chí Nghiệm thu (`AC-XX-*` ➔ `Task N`)** trong `tech_docs/audits/<slug>-audit.md` để chứng minh không sót bất kỳ yêu cầu nào của Spec.
+   - Sau khi viết xong Plan, điền đầy đủ bảng **Ma trận Ánh xạ Tiêu chí Nghiệm thu (`AC` ➔ `Task N`)** trong `tech_docs/audits/<slug>-audit.md` để chứng minh không sót bất kỳ yêu cầu nào của Spec.
 
 ### 3.2 Quy tắc Duyệt chéo Superpowers Plan (`Cross-Review` bởi Agent 2)
 
 Agent 2 (người đối diện với Agent 1) thực hiện kiểm duyệt độc lập theo 5 tiêu chí:
-1. **Độ phủ Spec & Quyết định `T1`–`T10`:** Có tiêu chí `AC-XX-*` hoặc quyết định `T*` nào bị bỏ quên hay hiểu sai trong các Task không?
+1. **Độ phủ Spec & Quyết định Kiến trúc:** Có tiêu chí nghiệm thu hoặc ràng buộc kỹ thuật nào trong Spec bị bỏ quên hay hiểu sai trong các Task không?
 2. **Độ chính xác với Code thật & Báo cáo Audit:** Các điểm lệch trong `tech_docs/audits/<slug>-audit.md` (số migration, `ErrorCode` catalog, chữ ký hàm, tách file FE ≤ 300 dòng) đã được đưa đầy đủ vào từng Task chưa?
 3. **Tính khả thi của Test (Step 1 & Step 2):** Code test mẫu trong từng Task có dùng đúng fixture thật của dự án (như `db_session`, `client`, `auth_headers` trong `conftest.py`) không, hay đang gọi fixture tưởng tượng?
 4. **Kiểm tra Cách ly `tech_docs`:** Quét toàn bộ file `backend/docs/superpowers/plans/YYYY-MM-DD-<slug>.md` để chắc chắn **không xuất hiện chuỗi `tech_docs`**.
