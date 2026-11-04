@@ -20,19 +20,32 @@ Giải thích ngắn gọn, dễ hiểu.
 
 ## 1. Tìm hiểu (AI A)
 
-**Việc thường / việc có spec:**
+**Việc thường:**
 ```text
 Đọc tech_docs/rules/README.md và mẫu 01-analysis trong tech_docs/rules/templates.md.
 Lấy code mới nhất (theo mục Git), tìm hiểu code thật và tạo tech_docs/plans/<slug>/01-analysis.md. Chưa sửa code.
-Loại việc: <thường | có spec>
-Spec (nếu có): <đường dẫn tới spec>
-Yêu cầu: <mô tả yêu cầu hoặc lỗi>
+Slug: <tên bạn chọn | để trống — AI tự đặt 2–3 chữ tiếng Anh theo mục 9 README và báo lại>
+Yêu cầu:
+- Lỗi: <ở màn hình nào, vai trò gì · bấm gì · thấy gì · mong đợi gì>
+- Hoặc tính năng: <ai dùng · muốn làm được gì · kết quả mong muốn · phần không làm>
+```
+
+**Việc có spec:**
+```text
+Đọc tech_docs/rules/README.md (mục 3.1) và mẫu 01-analysis trong tech_docs/rules/templates.md.
+Lấy code mới nhất (theo mục Git), kiểm tra spec với code thật và tạo tech_docs/plans/<slug>/01-analysis.md. Chưa sửa code.
+Kiểm tra cả spec có làm được không; chỗ nghi sai ghi lại để tôi chốt, không tự sửa spec.
+Slug: <tên bạn chọn | để trống — AI tự đặt 2–3 chữ tiếng Anh theo mục 9 README và báo lại>
+Spec: <đường dẫn tới spec>
+Phạm vi lần này: <cả gói | chỉ phần … | "Làm theo đúng spec">
+Lưu ý thêm (nếu có): <thứ tự ưu tiên, phần tạm chưa làm…>
 ```
 
 **Việc nhỏ (gộp bước 1 và 2):**
 ```text
 Đọc tech_docs/rules/README.md và mẫu 02-plan trong tech_docs/rules/templates.md.
 Lấy code mới nhất (theo mục Git), tìm hiểu code thật và lập thẳng tech_docs/plans/<slug>/02-plan.md (ghi hiện trạng vào mục 1). Chưa sửa code.
+Slug: <tên bạn chọn | để trống — AI tự đặt 2–3 chữ tiếng Anh theo mục 9 README và báo lại>
 Yêu cầu: <mô tả lỗi / yêu cầu nhỏ>
 ```
 

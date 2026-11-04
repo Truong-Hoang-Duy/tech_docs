@@ -29,9 +29,18 @@ Ba file của một việc nằm trong `tech_docs/plans/<slug>/`:
 - **Luồng hiện tại:** <từ điểm đầu đến điểm cuối>
 - **Chỗ cần sửa / nguyên nhân:** `<file>:<dòng>` — <giải thích>, kèm trích code ngắn (≤ 15 dòng)
 
-## 3. Chỗ spec khác code thật (chỉ với việc có spec)
+## 3. Kiểm tra spec (chỉ với việc có spec — xem README mục 3.1)
+### 3a. Chỗ spec khác code thật
 | Spec ghi | Code thật (`file:dòng`) | Cách chỉnh trong kế hoạch |
 |---|---|---|
+
+### 3b. Vấn đề của spec
+| Mục trong spec | Vấn đề | Mức (🔴 / 🟡 / 🟢) | Đề xuất | Bạn chốt |
+|---|---|---|---|---|
+
+### 3c. Góp ý gửi người viết spec
+<Đoạn ngắn bằng lời thường, liệt kê các điểm 🔴 / 🟡 để bạn chuyển cho người viết spec nếu cần. Hoặc "Không có">
+*(Việc thường: ghi "Không áp dụng" cho cả mục 3.)*
 
 ## 4. Điểm va chạm
 <Dữ liệu / cơ sở dữ liệu · giao tiếp backend ↔ frontend · phân quyền · quy ước code · test đang khoá hành vi cũ>

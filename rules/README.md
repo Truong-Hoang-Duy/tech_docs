@@ -56,7 +56,7 @@ Các file luật cũ được giữ ở [`archive/`](archive/) để tra cứu, 
 
 | | Việc nhỏ | Việc thường | Việc có spec |
 |---|---|---|---|
-| Bước 1 | Bỏ `01-analysis.md`, ghi hiện trạng thẳng vào mục 1 của `02-plan.md` | Tìm hiểu yêu cầu | **So spec với code thật**, ghi những chỗ spec đã cũ |
+| Bước 1 | Bỏ `01-analysis.md`, ghi hiện trạng thẳng vào mục 1 của `02-plan.md` | Tìm hiểu yêu cầu | **Kiểm tra spec**: còn khớp code không, có làm được không (mục 3.1) |
 | Bước 2 | Kế hoạch ngắn | Kế hoạch chia theo bước | Phần kế hoạch viết theo dạng superpowers (từng Task, 4 bước: viết test → thấy test hỏng → viết code → thấy test chạy đúng) |
 | Bước 7 | Chép bản ngắn | Chép kế hoạch | Chép kế hoạch |
 
@@ -65,6 +65,34 @@ Các file luật cũ được giữ ở [`archive/`](archive/) để tra cứu, 
 - Lấy code mới bị xung đột, hoặc đang có thay đổi dở dang.
 - Thực tế khác kế hoạch đến mức phải đổi hướng.
 - Cần một quyết định về nghiệp vụ mà tài liệu chưa trả lời.
+- Spec có điểm 🔴 (mục 3.1).
+
+### 3.1 Khi làm việc có spec
+
+**Nguyên tắc:** spec do người khác viết → **mặc định làm theo**. AI **không tự sửa file spec** và **không tự làm khác spec**. Chỗ nghi sai hoặc không làm được thì ghi ra, phân mức để **bạn chốt**. Mọi chỗ làm khác spec phải ghi vào "Quyết định đã chốt" của kế hoạch, kèm lý do và ai đồng ý.
+
+**Bước 1 kiểm spec theo 2 phần:**
+- **a. Spec còn khớp code không:** tên file, số thứ tự, tên hàm, cấu trúc dữ liệu spec nhắc tới có còn đúng với code hiện tại không.
+- **b. Spec có làm được không** — kiểm 7 điểm:
+  1. Tiêu chí nghiệm thu có đạt được **trong gói này** không, hay phụ thuộc gói khác?
+  2. Có tự mâu thuẫn, hoặc mâu thuẫn với spec / quyết định khác không?
+  3. Có làm hỏng chức năng đang chạy không?
+  4. Có bỏ sót trường hợp quan trọng không (dữ liệu cũ, người không có quyền, lỗi giữa chừng)?
+  5. Cách kiểm chứng spec đề ra có chạy được thật không?
+  6. Chỗ nào viết mơ hồ, hiểu được nhiều cách?
+  7. Có rủi ro về an toàn dữ liệu, bảo mật không?
+
+**Phân mức vấn đề của spec:**
+
+| Mức | Nghĩa | AI làm gì |
+|---|---|---|
+| 🔴 | Không làm được, hoặc sai rõ ràng | **Dừng**, hỏi bạn trước khi lập kế hoạch |
+| 🟡 | Làm được nhưng nên điều chỉnh | Đề xuất cách chỉnh, bạn chốt |
+| 🟢 | Chưa rõ nhưng nhỏ | Chọn cách hợp lý nhất, ghi lại để bạn biết |
+
+**Các bước sau kiểm tiếp:**
+- **Bước 3 — Duyệt chéo:** kế hoạch có làm đúng spec không · chỗ làm khác spec đã được bạn chốt chưa · AI A có bỏ sót vấn đề nào của spec không.
+- **Bước 5 — Nghiệm thu:** đối chiếu từng tiêu chí nghiệm thu của spec. Tiêu chí nào chỉ đạt một phần → ghi rõ và chuyển vào "Việc còn treo".
 
 ---
 
@@ -176,6 +204,8 @@ Bắt buộc với **mọi** việc, kể cả việc nhỏ — để bạn nhì
 ## 9. Đặt tên `<slug>`
 
 `<slug>` là tên định danh **duy nhất** của một việc, dùng chung cho: `tech_docs/plans/<slug>/`, `backend/docs/superpowers/plans/YYYY-MM-DD-<slug>.md` và nhánh `feat/<slug>` / `fix/<slug>`.
+
+**AI tự đặt slug** ở bước 1 nếu bạn chưa đặt: ngắn gọn **2–3 chữ tiếng Anh**, nói đúng việc đang làm. AI báo slug ngay đầu câu trả lời để bạn đổi nếu chưa ưng (chỉ đổi được trước khi sang bước 2).
 
 - **2–3 từ tiếng Anh**, viết thường, nối bằng `-` (chỉ gồm `a-z`, `0-9`, `-`).
 - Không tiếng Việt (kể cả không dấu), không khoảng trắng, không `_`.
