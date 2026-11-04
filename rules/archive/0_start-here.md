@@ -19,12 +19,13 @@
 
 Khi bạn muốn nắm một chức năng trong dự án đang hoạt động thế nào, có lỗi ngầm gì không trước khi quyết định làm:
 
-### Bước 1: Nhờ Agent 1 (nên dùng Gemini) khảo sát và giảng giải trong chat
+### Bước 1: Nhờ Agent 1 (nên dùng Gemini) kéo code mới nhất và khảo sát trong chat
 Copy dán vào **Gemini** (hoặc **Claude**):
 
 ```text
 Tôi đang muốn tìm hiểu chức năng: "<mô tả chức năng bằng lời thường, VD: tạo câu hỏi từ file PDF / xuất giáo án / gợi ý sửa trên Canvas>".
-Chưa tạo hay sửa file nào cả. Hãy khảo sát code thực tế ở cả frontend/ và backend/ rồi trả lời trực tiếp trong chat:
+Trước tiên, hãy kéo mã nguồn mới nhất từ nhánh chính (main / dev) của backend/, frontend/ và tech_docs/ về máy.
+Chưa tạo hay sửa file nào cả. Sau khi đã cập nhật code mới nhất, hãy khảo sát code thực tế ở cả frontend/ và backend/ rồi trả lời trực tiếp trong chat:
 1. Luồng hoạt động từ lúc người dùng bấm trên giao diện (FE) -> gọi API nào -> xử lý ở hàm nào dưới BE -> lưu vào bảng DB nào (kèm file:line cụ thể).
 2. Có cờ (feature flag) hay điều kiện phân quyền nào đang khoá chức năng này không?
 3. Những giới hạn hiện tại hoặc điểm dễ gây lỗi của luồng này là gì?
@@ -45,14 +46,15 @@ Nếu đọc xong Bước 1 bạn muốn bắt tay vào nâng cấp hoặc sửa
 
 ---
 
-### 🔹 BƯỚC 1: Phân tích hiện trạng & chốt hướng giải quyết (`01-analysis.md`)
+### 🔹 BƯỚC 1: Kéo code mới nhất & Phân tích hiện trạng (`01-analysis.md`)
 
 **1. Mở khung chat của `Agent 1`, dán câu này:**
-*(Bạn có thể tự đặt `<slug>` tiếng Anh ngắn gọn như `canvas-page-scroll`, hoặc để AI tự đặt)*
+*(Bạn có thể tự đặt `<slug>` chỉ 2–3 từ tiếng Anh như `canvas-page-scroll`, hoặc để AI tự đặt — quy tắc tại `3_git-and-conventions.md` §4)*
 
 ```text
 Đọc tech_docs/rules/1_workflow.md (§2.1) và tech_docs/rules/2_templates.md (§1).
-Hãy khảo sát code thực tế trong repo và tạo file phân tích tại tech_docs/plans/<slug>/01-analysis.md cho yêu cầu sau:
+Bước đầu tiên bắt buộc: Hãy kéo mã nguồn mới nhất từ nhánh chính (main / dev) của backend/, frontend/ và tech_docs/ về local.
+Sau khi code đã mới nhất, hãy khảo sát code thực tế trong repo và tạo file phân tích tại tech_docs/plans/<slug>/01-analysis.md cho yêu cầu sau:
 
 <Gõ mô tả yêu cầu hoặc triệu chứng lỗi của bạn vào đây bằng lời thường>
 ```
@@ -161,10 +163,11 @@ Commit và push các thay đổi của task trong tech_docs/plans/<slug>/02-plan
 
 Khi gặp lỗi nhỏ, rõ ràng (VD: sửa lỗi hiển thị, thêm 1 trường nhỏ, sửa điều kiện lọc), dùng **3 câu lệnh rút gọn** này (chỉ tạo duy nhất file `02-plan.md`):
 
-### 1. Gõ vào `Agent 1` (Phân tích + Lập thẳng `02-plan.md`):
+### 1. Gõ vào `Agent 1` (Kéo code mới nhất + Phân tích + Lập thẳng `02-plan.md`):
 ```text
 Đọc tech_docs/rules/1_workflow.md (§2.2) và tech_docs/rules/2_templates.md (§2).
-Khảo sát code thật và lập thẳng kế hoạch (gộp nguyên nhân gốc file:line vào mục 1) tại tech_docs/plans/<slug>/02-plan.md cho việc sau:
+Trước tiên, hãy kéo mã nguồn mới nhất từ nhánh chính (main / dev) của backend/, frontend/ và tech_docs/ về local.
+Sau đó khảo sát code thật và lập thẳng kế hoạch (gộp nguyên nhân gốc file:line vào mục 1) tại tech_docs/plans/<slug>/02-plan.md cho việc sau:
 
 <Mô tả lỗi / yêu cầu nhỏ>
 ```

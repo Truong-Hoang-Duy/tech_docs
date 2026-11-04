@@ -21,6 +21,8 @@ Trong mỗi task, Claude đảm nhận **1 trong 4 vai trò** theo yêu cầu c�
 ## 2. Quy tắc Hành xử của Claude ở từng Vai trò
 
 ### Vai trò 1: Khi Claude Phân tích & Lập Plan (`01-analysis.md` → `02-plan.md`)
+0. **Kéo mã nguồn mới nhất ngay tại Bước 1 (Bắt buộc):**
+   - Trước khi đọc code hay phân tích, bắt buộc kéo mã nguồn mới nhất từ nhánh chính (`main` / `dev`) của `backend/`, `frontend/`, và `tech_docs/` về local.
 1. **Phát huy lợi thế điều hướng biểu tượng (Serena MCP & Deep Code Inspection):**
    - Ưu tiên dùng Serena (`find_symbol`, `find_referencing_symbols`) để lần chính xác mọi nơi gọi hàm (call sites), kiểu dữ liệu và ràng buộc DB.
    - Đọc kỹ các test hiện có để nắm rõ hành vi mong đợi của module.
@@ -68,7 +70,8 @@ Khi Gemini đã viết `02-plan.md`, nhiệm vụ của Claude là **Kiểm đ�
 - **Giao Claude Phân tích & Lập Plan (2 bước):**
   ```text
   Theo tech_docs/rules/claude/rules.md (Vai trò 1) và tech_docs/rules/2_templates.md:
-  Hãy khảo sát code và tạo tech_docs/plans/<slug>/01-analysis.md cùng 02-plan.md cho yêu cầu:
+  Trước tiên hãy kéo mã nguồn mới nhất từ nhánh chính (main / dev) của backend/, frontend/ và tech_docs/ về local.
+  Sau đó khảo sát code và tạo tech_docs/plans/<slug>/01-analysis.md cùng 02-plan.md cho yêu cầu:
   <mô tả yêu cầu>
   ```
 - **Giao Claude Duyệt Plan của Gemini:**

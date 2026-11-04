@@ -6,23 +6,32 @@ Quy trình này được thiết kế để loại bỏ mọi bước giấy t�
 
 ## 1. Nguyên tắc Vàng
 
-1. **Đọc code thật ngay từ bước đầu:** Không viết tài liệu phỏng đoán khi chưa mở code. Mọi nhận định về hiện trạng hoặc nguyên nhân lỗi phải kèm `file:line`.
-2. **Đảo vai Kiểm duyệt (Maker ⇄ Reviewer):**
+1. **Kéo mã nguồn mới nhất trước khi chạy Bước 1:** Trước khi bắt đầu Bước 1 (hoặc ngay đầu Bước 1), bắt buộc phải kéo mã nguồn mới nhất từ nhánh chính (`main` / `dev`) của `backend/`, `frontend/`, và `tech_docs/` về local. Tuyệt đối không khảo sát hay lập Plan trên code cũ.
+2. **Đọc code thật ngay từ bước đầu:** Không viết tài liệu phỏng đoán khi chưa mở code. Mọi nhận định về hiện trạng hoặc nguyên nhân lỗi phải kèm `file:line`.
+3. **Đảo vai Kiểm duyệt (Maker ⇄ Reviewer):**
    - **Gemini lập Plan** → **Claude duyệt Plan** (hoặc ngược lại).
    - **Claude chạy Plan** → **Gemini nghiệm thu Code** (hoặc ngược lại).
-3. **Tối giản số lượng file (Tối đa 2 file / tính năng):**
+4. **Tối giản số lượng file (Tối đa 2 file / tính năng):**
    - Toàn bộ quá trình của một task nằm trong `tech_docs/plans/<slug>/` với tối đa 2 file: `01-analysis.md` và `02-plan.md`.
    - **`02-plan.md` là nguồn sự thật duy nhất (Single Source of Truth):** Chứa cả kế hoạch, ý kiến duyệt chéo, trạng thái tiến độ (`- [x]`), quyết định phát sinh, và kết quả nghiệm thu. Không tạo thêm `status.md`, `qa.md`, `00-desc.md`, hay `01-brief.md` rời rạc.
 
 ---
 
-## 2. Bước 1 — Phân tích & Khảo sát (`01-analysis.md`)
+## 2. Bước 1 — Kéo Code Mới Nhất, Phân tích & Khảo sát (`01-analysis.md`)
+
+### 2.0 Thao tác bắt buộc trước / ngay đầu Bước 1: Đồng bộ mã nguồn mới nhất
+Trước khi mở file khảo sát ở Bước 1, Agent A bắt buộc thực hiện:
+- Kiểm tra `git status` và kéo mã nguồn mới nhất từ nhánh chính trên remote về máy local cho cả 3 thư mục:
+  - `tech_docs/`: `git pull origin main`
+  - `backend/` và `frontend/`: cập nhật nhánh chính mới nhất (`git checkout main && git pull origin main` hoặc `git checkout dev && git pull origin dev` tuỳ nhánh tích hợp chính của repo).
+- Nếu working tree đang có thay đổi dở dang gây xung đột khi pull, dừng lại báo ngay cho người dùng trước khi làm tiếp.
 
 ### 2.1 Chế độ Chuẩn (Dành cho tính năng mới hoặc bug phức tạp, đụng nhiều file / cả BE + FE)
 
 1. **Đầu vào:** Bạn nêu yêu cầu hoặc mô tả lỗi bằng lời thường.
 2. **Thực hiện (Agent A — Gemini hoặc Claude):**
-   - Tự đặt `<slug>` ngắn gọn (`kebab-case`, 2–4 từ, ví dụ: `canvas-multi-page-review`, `export-exam-docx`).
+   - Thực hiện mục **2.0 (Kéo mã nguồn mới nhất về local)**.
+   - Tự đặt `<slug>` **chỉ 2–3 từ tiếng Anh** (`kebab-case`, ví dụ: `canvas-page-scroll`, `export-exam-docx`), tuân thủ [`3_git-and-conventions.md`](3_git-and-conventions.md) §4.
    - Mở repo (`backend/` và/hoặc `frontend/`) để truy vết luồng chạy thực tế.
    - Ghi kết quả vào `tech_docs/plans/<slug>/01-analysis.md` theo khuôn mẫu tại [`2_templates.md`](2_templates.md) §1:
      - **Mục tiêu & Phạm vi:** Phía tác động (`BE` / `FE` / `Cả hai`), phạm vi làm và không làm.
@@ -33,8 +42,8 @@ Quy trình này được thiết kế để loại bỏ mọi bước giấy t�
 
 ### 2.2 Chế độ Gọn — Fast-Track (Dành cho task nhỏ, bug đã rõ vị trí, sửa ≤ 3 file)
 
-- **Bỏ qua `01-analysis.md`.**
-- Agent A khảo sát code và viết thẳng vào `tech_docs/plans/<slug>/02-plan.md` (gộp mục *Hiện trạng & Nguyên nhân gốc* lên đầu file `02-plan.md`), sau đó chuyển thẳng sang bước Duyệt Plan (Mục 3.2).
+- **Bỏ qua `01-analysis.md`, nhưng vẫn bắt buộc chạy mục 2.0 (Kéo mã nguồn mới nhất về local) trước tiên.**
+- Agent A khảo sát code vừa cập nhật và viết thẳng vào `tech_docs/plans/<slug>/02-plan.md` (gộp mục *Hiện trạng & Nguyên nhân gốc* lên đầu file `02-plan.md`), sau đó chuyển thẳng sang bước Duyệt Plan (Mục 3.2).
 
 ---
 

@@ -18,26 +18,27 @@
 | **Đụng diện rộng nhiều điểm gọi (10–30 endpoints) hoặc nhiều màn hình/hộp thoại FE** | **Gemini** (quét toàn bộ repo rất nhanh, không sót điểm chạm) | **Claude** (soi kỹ chữ ký hàm, transaction lock, edge-case) | **Claude** chạy cụm Task BE ➔ **Gemini** chạy cụm Task FE |
 | **Gói Nghiệm thu / E2E / Rà soát UX & Copy giao diện** | **Gemini** | **Claude** | Chia theo nhóm bài test BE / FE |
 
-> **Cách đặt tên `<slug>`:** Dùng tiếng Anh ngắn gọn `kebab-case` đại diện cho gói Spec đang làm (ví dụ: `<ten-phan-he>-wave-a`, `<ten-tinh-nang>-phase-1`).
+> **Cách đặt tên `<slug>`:** **Chỉ 2–3 từ tiếng Anh** `kebab-case` đại diện cho gói Spec đang làm (ví dụ: `gov-foundation`, `gov-wave-a`). Không đặt slug dài; quy tắc đầy đủ tại [`../3_git-and-conventions.md`](../3_git-and-conventions.md) §4.
 
 ---
 
-## 🔹 BƯỚC 1: Quét kiểm tra Spec đối chiếu với Code thật (`Spec-to-Code Audit`)
+## 🔹 BƯỚC 1: Kéo code mới nhất & Quét kiểm tra Spec đối chiếu với Code thật (`Spec-to-Code Audit`)
 
-> **Mục đích:** Phát hiện mọi điểm lệch giữa tài liệu Spec và nhánh `dev` hiện tại (như trùng số thứ tự migration Alembic, thiếu đăng ký `ErrorCode` vào `catalog.py`, hàm/schema đã đổi chữ ký, hoặc file FE sắp vượt 300 dòng) **trước khi** viết Superpowers Plan.
+> **Mục đích:** Kéo mã nguồn mới nhất từ nhánh chính (`main` / `dev`) về máy trước, sau đó phát hiện mọi điểm lệch giữa tài liệu Spec và code thật hiện tại (như trùng số thứ tự migration Alembic, thiếu đăng ký `ErrorCode` vào `catalog.py`, hàm/schema đã đổi chữ ký, hoặc file FE sắp vượt 300 dòng) **trước khi** viết Superpowers Plan.
 
 **1. Mở khung chat của `Agent 1` (Gemini hoặc Claude), dán câu lệnh sau:**
 
 ```text
 Đọc tech_docs/rules/spec-driven/1_audit-and-plan-rules.md (§1, §2) và tech_docs/rules/spec-driven/2_superpowers-templates.md (§1).
-Hãy đọc kỹ tài liệu đặc tả mục tiêu tại:
+Bước đầu tiên bắt buộc: Hãy kéo mã nguồn mới nhất từ nhánh chính (main / dev) của backend/, frontend/ và tech_docs/ về local.
+Sau khi code đã mới nhất, hãy đọc kỹ tài liệu đặc tả mục tiêu tại:
 - File/thư mục Spec chính: <đường-dẫn-tới-file-spec-hoặc-thư-mục-spec>
 - Các tài liệu nguyên tắc/quyết định kỹ thuật đi kèm trong cùng bộ Spec (nếu có).
 
 Sau đó quét trực tiếp toàn bộ các file code thật liên quan trong backend/ và frontend/ để lập báo cáo kiểm tra độ lệch tại:
 tech_docs/audits/<slug>-audit.md
 
-Chưa tạo file superpowers plan và chưa sửa code. Hãy dừng lại và tóm tắt các điểm lệch quan trọng nhất phát hiện được giữa Spec và nhánh dev hiện tại.
+Chưa tạo file superpowers plan và chưa sửa code. Hãy dừng lại và tóm tắt các điểm lệch quan trọng nhất phát hiện được giữa Spec và nhánh chính hiện tại.
 ```
 
 **2. (Khuyên dùng) Nhờ `Agent 2` kiểm tra chéo bản Audit để không sót điểm chạm:**

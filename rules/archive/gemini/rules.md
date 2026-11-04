@@ -21,6 +21,8 @@ Trong mỗi task, Gemini đảm nhận **1 trong 4 vai trò** theo yêu cầu c�
 ## 2. Quy tắc Hành xử của Gemini ở từng Vai trò
 
 ### Vai trò 1: Khi Gemini Phân tích & Lập Plan (`01-analysis.md` → `02-plan.md`)
+0. **Kéo mã nguồn mới nhất ngay tại Bước 1 (Bắt buộc):**
+   - Trước khi đọc code hay phân tích, bắt buộc kéo mã nguồn mới nhất từ nhánh chính (`main` / `dev`) của `backend/`, `frontend/`, và `tech_docs/` về local.
 1. **Phát huy lợi thế quét rộng (Cross-Stack Awareness):**
    - Không chỉ nhìn vào 1 hàm đơn lẻ: hãy kiểm tra toàn bộ luồng từ giao diện (`frontend/src/`) qua API contract tới xử lý dưới `backend/services/api/`.
    - Với lỗi trên Editor/Canvas: luôn kiểm tra cả cấu trúc tài liệu nhiều trang (`page` nodes), trạng thái selection/cursor, và cơ chế lưu phiên bản.
@@ -66,7 +68,8 @@ Khi Claude đã viết `02-plan.md`, nhiệm vụ của Gemini là **Tìm điể
 - **Giao Gemini Phân tích & Lập Plan (2 bước):**
   ```text
   Theo tech_docs/rules/gemini/rules.md (Vai trò 1) và tech_docs/rules/2_templates.md:
-  Hãy khảo sát code và tạo tech_docs/plans/<slug>/01-analysis.md cùng 02-plan.md cho yêu cầu:
+  Trước tiên hãy kéo mã nguồn mới nhất từ nhánh chính (main / dev) của backend/, frontend/ và tech_docs/ về local.
+  Sau đó khảo sát code và tạo tech_docs/plans/<slug>/01-analysis.md cùng 02-plan.md cho yêu cầu:
   <mô tả yêu cầu>
   ```
 - **Giao Gemini Duyệt Plan của Claude:**

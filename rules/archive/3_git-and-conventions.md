@@ -6,25 +6,28 @@ Tài liệu này áp dụng bắt buộc cho cả **Gemini** và **Claude** khi 
 
 ## 1. Quy tắc Thao tác Git
 
-1. **Không tự ý Commit / Push / Đổi nhánh:**
+1. **Kéo mã nguồn mới nhất trước hoặc ngay tại Bước 1 (Bắt buộc):**
+   - Trước khi bắt đầu Bước 1 (khảo sát, phân tích `01-analysis.md`, lập `02-plan.md`, hoặc quét Spec lập `*-audit.md`), cả Gemini và Claude **bắt buộc phải kéo mã nguồn mới nhất từ nhánh chính (`main` / `dev`) về máy local** trên các repo liên quan (`backend/`, `frontend/`, `tech_docs/`).
+   - Chỉ khi mã nguồn ở máy local đã được đồng bộ mới nhất thì mới được phép chuyển sang các bước đọc code, phân tích, lập kế hoạch và thi công tiếp theo.
+2. **Không tự ý Commit / Push / Đổi nhánh khi đang làm:**
    - Cả Gemini và Claude **tuyệt đối không** tự chạy `git commit` hay `git push` khi người dùng chưa yêu cầu rõ ràng (VD: *"commit đi"*, *"commit và push"*).
    - Giữ thay đổi trên working tree để người dùng hoặc Agent đối diện thực hiện bước **Nghiệm thu Code chéo (Cross-Verify)**.
-2. **Quy tắc Nhánh (Branch):**
-   - Không code trực tiếp trên nhánh `dev`. Nếu đang ở `dev`, tạo nhánh mới có tên ngắn gọn theo tính năng (`feat/<slug>` hoặc `fix/<slug>`).
+3. **Quy tắc Nhánh (Branch):**
+   - Không code trực tiếp trên nhánh chính (`main` / `dev`). Khi bắt đầu viết code, tạo nhánh mới từ nhánh chính vừa pull mới nhất với tên ngắn gọn theo tính năng (`feat/<slug>` hoặc `fix/<slug>`).
    - Nếu task đụng cả hai repo (`backend/` và `frontend/`), đặt **cùng một tên nhánh** ở cả hai bên.
-   - Khi merge vào `dev`: ưu tiên `git merge --no-ff <branch>` và **giữ nguyên nhánh sau khi merge** (không chạy `git branch -d`).
-3. **Quy tắc Commit Message:**
+   - Khi merge vào nhánh chính: ưu tiên `git merge --no-ff <branch>` và **giữ nguyên nhánh sau khi merge** (không chạy `git branch -d`).
+4. **Quy tắc Commit Message:**
    - Ngôn ngữ: **Tiếng Anh**, ngắn gọn, trực diện.
    - Định dạng bắt buộc: `<type>(<scope>): <mô tả việc đã làm>`
      - `<type>`: `feat` | `fix` | `docs` | `test` | `refactor` | `merge`.
      - `<scope>`: tên module/khu vực bị thay đổi (VD: `api`, `chat`, `question-bank`, `editor`, `canvas`, `auth`, `ops`).
    - Trước khi commit, chạy `git log --oneline -10` trong repo đó để chọn `scope` nhất quán với lịch sử.
    - **Cấm tuyệt đối:** Không thêm dòng `Co-Authored-By`, không gắn watermark/attribution của AI (Claude, Gemini, Antigravity...) vào commit message hoặc mô tả PR.
-4. **Quy trình 5 bước khi được lệnh Commit:**
-   - **Bước 1:** Kiểm tra `02-plan.md` xem các mục DoD tự động đã `[x]` và kết luận nghiệm thu đã đạt chưa.
+5. **Quy trình 5 bước khi được lệnh Commit:**
+   - **Bước 1:** Kiểm tra `02-plan.md` (hoặc file `*-audit.md`) xem các mục DoD tự động đã `[x]` và kết luận nghiệm thu đã đạt chưa.
    - **Bước 2:** Chạy `git status` và `git diff` để rà soát phạm vi. Chỉ `git add` từng file thuộc phạm vi Plan (không `git add -A` mù quáng).
    - **Bước 3:** Nếu có file `.md` nằm trong `backend/` hoặc `frontend/`, kiểm tra chắc chắn không chứa chuỗi `tech_docs` (§3).
-   - **Bước 4:** Tạo commit theo đúng chuẩn mục 1.3.
+   - **Bước 4:** Tạo commit theo đúng chuẩn mục 1.4.
    - **Bước 5:** Chỉ `git push` khi có lệnh yêu cầu push rõ ràng.
 
 ---
@@ -73,3 +76,24 @@ Tài liệu này áp dụng bắt buộc cho cả **Gemini** và **Claude** khi 
   - Khi cần xuất tài liệu sang `backend/docs/tasks/` hoặc `backend/handoff/frontend/`, phải **chép toàn bộ nội dung kỹ thuật cần thiết vào trong file đó** để tài liệu tự đứng độc lập.
 - **Chiều ngược lại được phép:** Các file trong `tech_docs/plans/` và `tech_docs/rules/` được trỏ thẳng tới mọi đường dẫn trong `backend/` và `frontend/`.
 
+
+---
+
+## 4. Quy tắc Đặt tên `<slug>` (Hard Constraint)
+
+`<slug>` là tên định danh **duy nhất** của một task/gói Spec, dùng chung cho mọi nơi: `tech_docs/plans/<slug>/`, `tech_docs/audits/<slug>-audit.md`, `backend/docs/tasks/YYYY-MM-DD-<slug>.md`, `backend/docs/superpowers/plans/YYYY-MM-DD-<slug>.md` và nhánh `feat/<slug>` / `fix/<slug>`.
+
+- **Chỉ 2–3 từ tiếng Anh**, viết `kebab-case`, chữ thường, chỉ gồm `a-z`, `0-9` và `-`. Không quá 3 từ, không đặt slug dài.
+- **Không tiếng Việt** (kể cả không dấu), không khoảng trắng, không `_`, không ký tự đặc biệt.
+- **Không lặp thông tin đã có ở đường dẫn hoặc tiền tố:** không chứa ngày (`2026-11-03`), `feat`, `fix`, `task`, `plan`, `audit`, `spec`.
+- **Chọn danh từ cốt lõi**, bỏ từ mô tả phụ (`principles`, `and`, `decisions`, `improvements`...).
+- Khi cần dạng `snake_case` (VD: tên file migration Alembic `<revision>_<slug>.py`), chỉ đổi `-` thành `_`, giữ nguyên các từ.
+- Đặt slug **một lần** ở bước đầu tiên của task và không đổi về sau.
+
+| ✅ Đúng | ❌ Sai | Lý do sai |
+| :--- | :--- | :--- |
+| `canvas-page-scroll` | `canvas-multi-page-review-scroll-fix` | Quá 3 từ, chứa `fix` |
+| `export-exam-docx` | `xuat-de-thi-docx` | Tiếng Việt |
+| `gov-foundation` | `pkg-00-foundation-principles-and-decisions` | Quá dài, chứa từ phụ |
+| `gov-wave-a` | `ai-governance-wave-a-identity-roles-and-file-governance` | Quá dài |
+| `flow-ai-backend` | `2026-11-03-flow-ai` | Chứa ngày |

@@ -21,11 +21,14 @@ Khác với luồng tính năng nhỏ lẻ thông thường (dùng `tech_docs/pl
 
 ---
 
-## 2. Bước 1 — Quét Kiểm tra Spec đối chiếu với Code thật (`Spec-to-Code Audit`)
+## 2. Bước 1 — Kéo Code Mới Nhất & Quét Kiểm tra Spec đối chiếu với Code thật (`Spec-to-Code Audit`)
 
-> **Nguyên tắc sống còn:** Tài liệu trong `specs/` được viết tại một thời điểm cố định, trong khi nhánh `dev` của `backend/` và `frontend/` liên tục có các PR mới hợp nhất vào. **Cấm tuyệt đối** dịch thẳng từ `specs/` sang `superpowers/plans/` khi chưa quét code thật.
+> **Nguyên tắc sống còn:** Tài liệu trong `specs/` được viết tại một thời điểm cố định, trong khi nhánh chính (`main` / `dev`) của `backend/` và `frontend/` liên tục có các PR mới hợp nhất vào. **Cấm tuyệt đối** dịch thẳng từ `specs/` sang `superpowers/plans/` khi chưa kéo code mới nhất về và quét code thật.
 
-Khi nhận lệnh quét một gói Spec, Agent phải mở code thật và kiểm tra đủ **7 hạng mục bắt buộc** sau đây để ghi vào `tech_docs/audits/<slug>-audit.md`:
+### 2.0 Thao tác Bắt buộc ngay đầu Bước 1: Kéo mã nguồn mới nhất về local (`Git Sync`)
+Trước khi đọc Spec hay quét bất kỳ file nào trong repo, Agent bắt buộc phải kéo mã nguồn mới nhất từ nhánh chính (`main` / `dev`) về máy local cho cả `backend/`, `frontend/`, và `tech_docs/`. Nếu working tree đang bẩn gây xung đột khi pull, phải dừng lại báo ngay cho người dùng trước khi chạy tiếp.
+
+Sau khi mã nguồn đã mới nhất, Agent mở code thật và kiểm tra đủ **7 hạng mục bắt buộc** sau đây để ghi vào `tech_docs/audits/<slug>-audit.md`:
 
 ### 2.1 Kiểm tra Số thứ tự & Chuỗi kế thừa Alembic Migration (`Alembic Drift`)
 - Liệt kê các file mới nhất trong `backend/services/api/alembic/versions/`.
