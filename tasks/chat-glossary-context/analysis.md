@@ -50,7 +50,7 @@ Khi gọi vào máy chủ lấy tùy chọn trang Chat, máy chủ trả về đ
 
 ## 1. Mục tiêu và phạm vi
 - **Cần đạt (Chỉ sửa `backend`):**
-  1. Đóng gói 29 tệp dữ liệu từ điển SGK Schema v2.3 từ `review-station/data/glossary/units/*.json` (10 môn lớp 10–12, lọc sạch tên bộ sách/NXB qua `strip_brand_watermarks`) + bộ từ điển `"Chung (sư phạm, giáo dục)"` (`general`) vào SQLite + FTS5 (`data/school_glossary.jsonl.gz` → `school_glossary.sqlite` qua `services/school_glossary.py`).
+  1. Đưa 29 tệp dữ liệu từ điển SGK Schema v2.3 từ `review-station/data/glossary/units/*.json` (10 môn lớp 10–12, lọc sạch tên bộ sách/NXB qua `strip_brand_watermarks`) + bộ từ điển `"Chung (sư phạm, giáo dục)"` (`chung`) vào cơ sở dữ liệu chính qua **SQLAlchemy Models + Alembic Migration (`0127_school_glossary.py`) + hàm seed idempotent** (`models/school_glossary.py`, `services/school_glossary_seed.py`, `services/school_glossary.py`, `data/glossary/*.json`) theo đúng chuẩn của `models/question_bank.py:60-115` và `services/question_curriculum_seed.py:19-45`.
   2. Mở rộng API `GET /api/chat/modes` (`ChatModeOptionsResponse`), API phiên chat (`POST /api/chat/sessions`, `PATCH /api/chat/sessions/{session_id}`, `GET /api/chat/sessions/{session_id}`) và API gửi tin nhắn (`POST /api/chat/sessions/{session_id}/messages`, `/messages/stream`) để cung cấp danh mục và nhận/lưu `context_settings` (gồm `glossary` và `generative_rails`).
   3. Kết nối `context_settings` vào bộ kiểm soát quy tắc (`chat/governance.py`, `services/governance/policy_guard.py`, `services/school_rules.py`) và bơm ngữ cảnh thuật ngữ SGK vào `chat/adk_agent.py` cùng 5 Agent chuyên biệt (`phieu_dien_khuyet_agent.py`, `ma_tran_de_agent.py`, `de_kiem_tra_agent.py`, `dich_hoc_thuat_agent.py`, `infographic_agent.py`).
   4. Chuẩn bị đầy đủ nội dung kỹ thuật để ở bước hoàn tất (Giai đoạn 2) xuất **Tài liệu Handoff cho Frontend** theo đường dẫn bạn chỉ định.
@@ -64,8 +64,9 @@ Khi gọi vào máy chủ lấy tùy chọn trang Chat, máy chủ trả về đ
   1. **Nguồn dữ liệu Từ điển tại `review-station`:**
      - `review-station/glossary_station.py:94-163` và `review-station/dict_md.py:121-190`: Đọc 29 file JSON từ điển Schema v2.3 tại `review-station/data/glossary/units/*.json` (gồm `toan_10..12`, `ngu_van_10..12`, `vat_ly_10..12`, `hoa_10..12`, `sinh_10..12`, `lich_su_10..12`, `dia_10..12`, `gd_kt_va_pl_10,12`, `tieng_anh_10,12`, `tin_hoc_10`, `tin_hoc_khmt_11..12`, `tin_hoc_thud_12`).
      - Mỗi file gồm `dictionaries[]` (`conventions` — quy ước chương) và `terms[]` (`id`, `term`, `aliases`, `english`, `notation`, `meaning`, `usage_context`, `scope`, `source_status`, `location`).
-  2. **Kho tri thức mặc định hiện tại (`bookforge_default_kb.py`):**
-     - `backend/services/api/src/bookforge_api/services/bookforge_default_kb.py:140-185, 298-391, 628-660`: Đã có hàm `strip_brand_watermarks`, `parse_subject_and_grade` và cơ chế tự bung SQLite + FTS5 từ file nén `.jsonl.gz`, nhưng mới chỉ chứa 3 bảng `books`, `lessons`, `atomic_units`, chưa có dữ liệu từ điển Schema v2.3.
+  2. **Chuẩn Migration & Seed dữ liệu hệ thống trong DB chính (`question_curriculum_seed.py`, `alembic/versions/`):**
+     - `backend/services/api/src/bookforge_api/services/question_curriculum_seed.py:19-60` và `backend/services/api/alembic/versions/0083_curriculum_frameworks.py:440-450`, `0125_khung_kt_dedup_labels.py:113-174`: Dữ liệu danh mục hệ thống được đặt dạng JSON trong `bookforge_api/data/` và được tạo bảng + nạp (seed idempotent) trực tiếp vào cơ sở dữ liệu chính (PostgreSQL) thông qua Alembic migration.
+     - `backend/services/api/src/bookforge_api/services/bookforge_default_kb.py:140-185`: Đã có sẵn hàm `strip_brand_watermarks` và `parse_subject_and_grade` để chuẩn hóa tên môn/lớp và lọc sạch tên bộ sách/NXB.
   3. **API Chat & Schema hiện tại (`schemas/chat.py`, `models/document.py`, `api/chat.py`):**
      - `backend/services/api/src/bookforge_api/schemas/chat.py:16-46, 84-106, 169-177`:
        - `ChatModeOptionsResponse` (`schemas/chat.py:169-177`) trả về từ `GET /api/chat/modes` (`api/chat.py:2580-2606`) hiện có `assistant_name`, `modes`, `experts`, `agents`, `workspace_enabled`.
@@ -94,23 +95,21 @@ Không áp dụng (Cách 3: Việc thường — chưa có spec sẵn).
 1. **Test khóa cứng `GOVERNANCE_INSTRUCTION` khi gọi mặc định:**
    - `backend/services/api/tests/test_governance_instruction.py:25-28`, `test_chat_page_awareness.py:980`, và `test_expert_prompt.py:48, 117, 145` đều kiểm tra `assert instructions.startswith(GOVERNANCE_INSTRUCTION)`.
    - **Cách xử lý:** Khi `context_settings` là `None` hoặc giữ nguyên mặc định (bật đủ toàn bộ đường ray), `build_governance_instruction` trả về chuỗi bắt đầu bằng đúng `GOVERNANCE_INSTRUCTION` như cũ; chỉ khi người dùng chủ động tắt từng quy tắc trong `generative_rails` mới lọc bỏ đoạn quy tắc tương ứng. Khối ngữ cảnh từ điển `<school_glossary>` được nối ở phần dưới của `_agent_instruction` (`adk_agent.py:1934-1940`).
-2. **Test khóa cứng số lượng bản ghi trong `bookforge_default_kb.sqlite`:**
-   - `backend/services/api/tests/test_bookforge_default_kb.py:54-99` kiểm tra `books == 53`, `lessons == 1271` và quét `_FORBIDDEN_BRAND_RE`.
-   - **Cách xử lý:** Đóng gói từ điển thành bundle độc lập `backend/services/api/src/bookforge_api/data/school_glossary.jsonl.gz` và SQLite riêng `school_glossary.sqlite` trong `services/school_glossary.py`, dùng lại `strip_brand_watermarks` và `parse_subject_and_grade` của `bookforge_default_kb.py`.
-3. **Schema `ChatMessageCreateRequest` đặt `extra='forbid'` & OpenAPI contract test:**
-   - `backend/services/api/src/bookforge_api/schemas/chat.py:36` có `ConfigDict(extra='forbid')` và `test_api_contract_generator.py:14` kiểm tra `ChatModeOptionsResponse`.
-   - **Cách xử lý:** Thêm trường tùy chọn `context_settings: ChatContextSettings | None = None` vào `ChatMessageCreateRequest`, `ChatSessionCreateRequest`, `ChatSessionUpdateRequest`, `ChatSessionListItem`, và thêm `context_options: ChatContextOptions = Field(default_factory=...)` vào `ChatModeOptionsResponse` để hoàn toàn tương thích ngược.
-4. **Lưu `context_settings` theo phiên Chat mà không làm gãy DB hiện có:**
-   - Có thể lưu `context_settings` của phiên chat thông qua cột JSON hoặc tái sử dụng cấu trúc lưu trữ phiên chat hiện có kèm migration Alembic an toàn (`nullable=True`), hoặc kết hợp lưu trên `ChatSession` + nhận trực tiếp từ `ChatMessageCreateRequest.context_settings`.
+2. **Chuẩn hóa dữ liệu Từ điển và Seed qua Alembic Migration (không dùng file SQLite rời):**
+   - Dữ liệu từ điển hệ thống (166 chương từ điển + ~6.900 thuật ngữ của 10 môn THPT + bộ `chung`) cần nằm trong DB chính (PostgreSQL) thông qua bảng SQLAlchemy (`school_glossary_chapters`, `school_glossary_terms` trong `models/school_glossary.py`) và được tạo bảng + seed idempotent trong Alembic migration (`alembic/versions/0127_school_glossary.py`), tương tự `services/question_curriculum_seed.py:19-45`.
+   - Dùng `strip_brand_watermarks` (`services/bookforge_default_kb.py:140-185`) khi chuẩn bị dữ liệu JSON trong `bookforge_api/data/glossary/` để không rò rỉ tên bộ sách/NXB.
 
 ## 5. Phương án đề xuất (Backend & Cấu trúc Tài liệu Handoff cho Frontend)
 
-### 5.1. Kiến trúc Backend (`services/school_glossary.py` + `chat/` + `api/chat.py`)
-1. **Kho Từ điển SGK (`services/school_glossary.py` & `data/school_glossary.jsonl.gz`):**
-   - Nạp 29 file `review-station/data/glossary/units/*.json` + bộ từ điển `"Chung (sư phạm, giáo dục)"` (`id: "chung"`) vào `school_glossary.sqlite` (FTS5 trên `term`, `aliases`, `english`, `notation`, `meaning`).
-   - Hỗ trợ 2 chế độ truy xuất:
-     - **Theo bài học/chương (`lookup_lesson_glossary`)**: Khi xác định được môn, lớp, bài/chương (trong `phieu_dien_khuyet_agent.py`, `ma_tran_de_agent.py`, `infographic_agent.py`), trả về toàn bộ thuật ngữ của bài (`in_source`, `described`, `out_of_source`, `scope`) kèm `conventions` của chương.
-     - **Theo văn bản/câu hỏi (`lookup_text_glossary`)**: Khi dịch học thuật (`dich_hoc_thuat_agent.py`), rút câu hỏi đề kiểm tra (`de_kiem_tra_agent.py`) hoặc hỏi đáp tự do (`adk_agent.py`), đối sánh văn bản với các bộ từ điển đang bật để lấy Top 15–25 thuật ngữ khớp nhất.
+### 5.1. Kiến trúc Backend (`models/school_glossary.py` + `alembic/versions/` + `services/school_glossary.py` + `chat/` + `api/chat.py`)
+1. **Kho Từ điển SGK trong DB chính (`models/school_glossary.py`, `alembic/versions/0127_school_glossary.py`, `services/school_glossary.py`, `data/glossary/`):**
+   - Tạo 2 bảng trong DB chính qua migration Alembic `0127_school_glossary.py`:
+     - `school_glossary_chapters`: lưu thông tin từ điển cấp chương (`id`, `unit_key`, `subject_key`, `subject_name`, `grade`, `group_id`, `dictionary_file`, `title`, `lesson_ids_json`, `conventions_json`, `sort_order`).
+     - `school_glossary_terms`: lưu từng thuật ngữ (`id`, `chapter_id`, `unit_key`, `subject_key`, `subject_name`, `grade`, `lesson_id`, `lesson_number`, `term`, `term_fold`, `aliases_json`, `english`, `notation`, `meaning`, `usage_context`, `scope`, `source_status`, `section`, `sort_order`).
+   - Seed idempotent dữ liệu từ `bookforge_api/data/glossary/*.json` (29 file 10 môn THPT đã lọc sạch watermark + `chung.json`) ngay trong migration `0127_school_glossary.py` (dùng bulk insert để chạy nhanh trên cả PostgreSQL và bộ test).
+   - Hỗ trợ 2 chế độ truy xuất trong `SchoolGlossaryService`:
+     - **Theo bài học/chương (`lookup_lesson_glossary`)**: Khi xác định được môn, lớp, bài/chương (trong `phieu_dien_khuyet_agent.py`, `ma_tran_de_agent.py`, `infographic_agent.py`), truy vấn bảng `school_glossary_terms` + `school_glossary_chapters` trả về toàn bộ thuật ngữ của bài (`in_source`, `described`, `out_of_source`, `scope`) kèm `conventions` của chương.
+     - **Theo văn bản/câu hỏi (`lookup_text_glossary`)**: Khi dịch học thuật (`dich_hoc_thuat_agent.py`), rút câu hỏi đề kiểm tra (`de_kiem_tra_agent.py`) hoặc hỏi đáp tự do (`adk_agent.py`), đối sánh văn bản với các bộ từ điển đang bật trong DB để lấy Top 15–25 thuật ngữ khớp nhất.
 2. **Cơ chế bật/tắt Đường ray tạo sinh (`chat/governance.py`, `policy_guard.py`, `school_rules.py`):**
    - Mỗi quy tắc có sẵn được gắn mã định danh (`rule_id`), tiêu đề hiển thị (`label`), mô tả (`description`), trạng thái mặc định (`default_enabled: true`).
    - Khi `generative_rails.enabled == False` hoặc một `rule_id` không nằm trong `generative_rails.rule_ids`, hệ thống bỏ qua quy tắc đó trong system prompt, preflight check (nếu được phép tắt) và bước kiểm duyệt `school_rules`.
