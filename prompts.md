@@ -1,164 +1,42 @@
 # Câu lệnh mẫu
 
-Copy câu lệnh, thay `<slug>` và các chỗ `<...>`, rồi dán vào khung chat của agent đã chọn cho việc này. Mọi bước của một việc đều gửi cho cùng một agent.
+Copy câu lệnh, điền các chỗ `<...>`, rồi dán vào khung chat. Trong lúc đang làm, bạn chỉ cần nhắn trả lời tự nhiên bằng lời thường (không cần copy câu lệnh phụ).
 
 ---
 
-## 0. Chỉ tìm hiểu một chức năng (chưa làm gì)
+## 1. Bắt đầu công việc (Dùng cho cả 4 cách làm)
 
 ```text
-Lấy code mới nhất theo tech_docs/README.md mục 8, chưa tạo hay sửa file nào.
-Tìm hiểu chức năng: "<mô tả bằng lời thường>" rồi trả lời ngay trong chat:
-1. Luồng từ lúc người dùng bấm trên giao diện → gọi tới đâu ở backend → lưu vào đâu (kèm file:dòng).
-2. Có điều kiện phân quyền hay cờ bật/tắt nào đang khoá chức năng này không?
-3. Giới hạn hiện tại hoặc chỗ dễ lỗi là gì?
-Giải thích ngắn gọn, dễ hiểu.
-```
+Đọc tech_docs/README.md. Lấy code mới nhất (Phần I.3), chưa sửa code, tìm hiểu các file:dòng liên quan đến yêu cầu bên dưới.
+- Nếu tôi để trống "Cách làm": tóm tắt ngắn hiện trạng và khuyên tôi nên chọn cách nào trong 4 cách ở README Phần II ("Chỉ hỏi", "Làm nhanh", "Việc thường", hoặc "Việc có spec"), rồi chờ tôi chốt.
+- Khi đã có "Cách làm", thực hiện đúng quy trình của cách đó ở README Phần III:
+  + Chỉ hỏi (Cách 1): trả lời ngắn gọn luồng giao diện → backend → dữ liệu (kèm file:dòng), phân quyền/cờ khoá và chỗ dễ lỗi ngay trong chat; không tạo file.
+  + Làm nhanh (Cách 2): làm đúng 4 bước của Cách 2 ngay trong phiên này (tạo nhánh từ dev → sửa code + viết/chạy test → tự tạo dữ liệu thử & tự bấm thử → gửi checklist kiểm tay 4 mục theo Phần I.4 → chờ tôi báo OK rồi hỏi commit + push nhánh và merge vào dev); không tạo file trong tech_docs/tasks/.
+  + Việc thường (Cách 3): đọc thêm tech_docs/templates.md, thực hiện Giai đoạn 1 (tạo tech_docs/tasks/<slug>/analysis.md và báo tôi mục 0 kèm các điều cần quyết; khi tôi nhắn chốt trong chat thì lập luôn plan.md, tự kiểm 4 điều và chốt APPROVED).
+  + Việc có spec (Cách 4): hỏi tôi đường dẫn spec (nếu chưa có). Khi tôi nhắn đường dẫn vào phiên chat, ghi ngay vào hồ sơ (`analysis.md`, `plan.md`) để mọi bước sau tự động hiểu ngữ cảnh; đọc thêm tech_docs/spec-check.md và tech_docs/templates.md, thực hiện Giai đoạn 1 (kiểm 3 lớp vào analysis.md, báo tôi mục 0 kèm các điều cần quyết; khi tôi nhắn chốt trong chat thì lập luôn plan.md, tự kiểm 4 điều và chốt APPROVED).
 
----
-
-## 1. Tìm hiểu
-
-**Việc thường:**
-```text
-Đọc tech_docs/README.md và tech_docs/templates.md. Lấy code mới nhất (mục 8). Chưa sửa code.
-Trước khi tạo file, hỏi tôi: chỉ plan hay plan + spec, kèm một câu lời khuyên, rồi chờ tôi trả lời.
-- Chỉ plan: lập thẳng tech_docs/tasks/<slug>/plan.md (ghi hiện trạng vào mục 1), kiểm kế hoạch theo README mục 5 rồi báo tôi và dừng.
-- Plan + spec: tạo tech_docs/tasks/<slug>/analysis.md, viết mục 0 cho người không đọc code. Mở lại code và yêu cầu gốc để kiểm, rồi báo tôi ngắn gọn bằng lời thường và các điều cần tôi quyết.
-Slug: <tên bạn chọn | để trống: AI tự đặt theo README mục 9 và báo lại>
-Yêu cầu:
-- Lỗi: <ở màn hình nào, vai trò gì · bấm gì · thấy gì · mong đợi gì>
-- Hoặc tính năng: <ai dùng · muốn làm được gì · kết quả mong muốn · phần không làm>
-```
-
-**Việc có spec:**
-```text
-Đọc tech_docs/README.md, tech_docs/spec-check.md và mẫu analysis trong tech_docs/templates.md. Lấy code mới nhất (mục 8) và tạo tech_docs/tasks/<slug>/analysis.md. Chưa sửa code.
-Kiểm spec theo 3 lớp của spec-check.md, nghiệp vụ trước. Chỗ nghi sai ghi lại để tôi chốt, không tự sửa spec.
-Viết mục 0 cho người không đọc code: spec này sẽ làm gì. Mở lại code và spec để kiểm, rồi báo tôi ngắn gọn bằng lời thường và các điều cần tôi quyết.
-Slug: <tên bạn chọn | để trống: AI tự đặt theo README mục 9 và báo lại>
-Spec: <đường dẫn tới spec>
-Tài liệu gốc (nếu có): <đường dẫn | để trống: chỉ dùng spec>
-Phạm vi lần này: <cả gói | chỉ phần … | "Làm theo đúng spec">
-Lưu ý thêm (nếu có): <thứ tự ưu tiên, phần tạm chưa làm…>
-```
-
-**Chốt sau khi đọc mục 0 của `analysis.md`:**
-```text
-Chốt các điều trong mục "Bạn cần quyết" của tech_docs/tasks/<slug>/analysis.md:
-- <điều 1>: <a | b | theo lời khuyên của bạn | cách khác: …>
-- <điều 2>: <…>
-Điều nào tôi không nêu: làm theo lời khuyên của bạn.
-Ghi vào "Bạn chốt" và cập nhật analysis.md. Chưa lập kế hoạch.
+Yêu cầu: <mô tả việc cần làm, lỗi cần sửa, hoặc câu hỏi>
+Cách làm (tuỳ chọn): <để trống để AI khuyên | Chỉ hỏi | Làm nhanh | Việc thường | Việc có spec>
 ```
 
 ---
 
-## 2–3. Lập kế hoạch và kiểm kế hoạch
+## 2. Code, Kiểm thử & Hoàn tất (Chỉ dùng cho Cách 3 & Cách 4 — mở phiên chat mới khi `plan.md` đã `APPROVED`)
 
 ```text
-Đọc tech_docs/README.md (mục 4, 5), mẫu plan trong tech_docs/templates.md và tech_docs/tasks/<slug>/analysis.md.
-Lập kế hoạch vào tech_docs/tasks/<slug>/plan.md. Chưa sửa code.
-Chia Task theo phần tôi bấm thử được, mỗi Task có tiêu chí đạt. Không viết sẵn code trong kế hoạch.
-Đưa mọi điều tôi đã chốt vào "Quyết định đã chốt". Việc có spec: làm thêm theo spec-check.md mục 3.
-Xong thì kiểm 4 điều ở README mục 5 bằng cách mở code và chạy lệnh thật, sửa chỗ sai.
-Hết chỗ sai và hết việc cần tôi quyết thì chốt APPROVED; ngược lại giữ DRAFT.
-Báo tôi bằng lời thường: đã sửa gì, còn bao nhiêu việc cần tôi quyết. Dừng ở đây.
-```
+Đọc tech_docs/README.md và hồ sơ trong tech_docs/tasks/<slug>/ (plan.md đã APPROVED).
+Thực hiện Giai đoạn 2 (Code & Hoàn tất) theo đúng README Phần III:
+1. Tạo nhánh từ dev mới nhất theo README Phần I.3.
+2. Làm lần lượt từng Task trong plan.md: sửa code → chạy test → tự tạo sẵn dữ liệu thử & tự bấm thử → ghi kết quả vào Nhật ký của plan.md, rồi dừng và hướng dẫn tôi kiểm tay ngay trong phiên chat theo checklist 4 mục (Phần I.4). Chờ tôi nhắn OK mới sang Task tiếp theo.
+3. Khi tất cả các Task đều đã OK: tự động đọc lại diff và chạy toàn bộ kiểm tra như CI (nghiệm thu), hướng dẫn tôi kiểm thêm các kịch bản biên (nếu có); tiếp theo ở Cách 3 thì hỏi tôi muốn tạo plan, spec hay cả 2 và lưu ở thư mục nào trong backend/ (tôi xác nhận mới tạo), còn ở Cách 4 thì cập nhật file spec gốc; cuối cùng hỏi tôi có đồng ý commit + push nhánh và merge vào dev không.
 
-**Sau khi bạn quyết các việc còn lại:**
-```text
-Tôi chốt: <điều 1: …> · <điều 2: …>.
-Cập nhật tech_docs/tasks/<slug>/plan.md theo các điều này, mở lại code kiểm phần vừa sửa.
-Hết chỗ sai và hết việc cần tôi quyết thì chốt APPROVED. Báo tôi và dừng, chưa sửa code.
+Slug công việc (hoặc để trống nếu chỉ có 1 việc đang APPROVED): <tên slug>
 ```
 
 ---
 
-## 4. Làm (mở phiên mới)
+## 3. Cứu hộ (Khi mất phiên chat hoặc hôm sau làm tiếp Cách 3 / Cách 4)
 
 ```text
-Đọc tech_docs/README.md (mục 4, 6, 8, 11) và tech_docs/tasks/<slug>/plan.md đã APPROVED.
-Trước khi sửa code, làm đúng các bước ở README mục 8. Có thay đổi dở dang thì dừng, báo tôi.
-Làm lần lượt từng Task, bắt đầu từ <Task 1 | Task X>. Mỗi Task: code, chạy kiểm tra, tự bấm thử theo tiêu chí, ghi kết quả vào manual-test.md và Nhật ký, rồi dừng và hướng dẫn tôi kiểm.
-Chỉ sang Task sau khi tôi báo đạt. Không tự sửa tiêu chí hay xóa test. Không commit.
-```
-
-**Task đạt:**
-```text
-Task <số> đạt. Đánh dấu [x] và làm Task tiếp theo.
-```
-
-**Task không đạt:**
-```text
-Task <số>, bước <số>: <thấy gì>. (Kèm ảnh nếu có.)
-Tìm nguyên nhân, ghi vào manual-test.md. <Được phép sửa | Chưa sửa, báo tôi trước>.
-```
-
-**Khi AI dừng lại hỏi giữa chừng:**
-```text
-Làm theo hướng <X>. Ghi vào mục Quyết định phát sinh trong plan.md rồi làm tiếp.
-```
-
----
-
-## 5. Nghiệm thu
-
-```text
-Cập nhật nhánh theo origin/dev mới nhất. Đọc lại toàn bộ diff, đối chiếu từng thay đổi với tech_docs/tasks/<slug>/plan.md và từng nghiệp vụ ở mục 3.0 của analysis.md (nếu có).
-Chạy lại toàn bộ kiểm tra như CI và ghi kết luận vào mục Nghiệm thu của plan.md, dán lệnh và dòng kết quả cuối.
-```
-
----
-
-## 6. Kiểm tay toàn bộ
-
-```text
-Đọc tech_docs/README.md mục 6. Thêm vào manual-test.md các kịch bản chung liên quan (kịch bản của Task giữ nguyên). Việc có spec: phủ các nghiệp vụ ở mục 3.0 của analysis.md.
-Tự bấm thử mọi kịch bản trước (không có công cụ điều khiển trình duyệt thì báo tôi), rồi hướng dẫn tôi từng kịch bản một. Chưa sửa code khi tôi chưa cho phép.
-```
-
-**Kiểm xong:**
-```text
-Tôi đã kiểm xong, các kịch bản đều Đạt. Ghi kết quả và Số đo, đổi trạng thái plan.md sang VERIFIED.
-```
-
----
-
-## 7. Lưu spec và commit
-
-**Việc thường, chỉ plan:**
-```text
-Đọc tech_docs/README.md mục 7, 8. Commit <(chưa push) | và push> các thay đổi của việc này, message ghi rõ lý do. Ghi mã commit vào mục Commit của tech_docs/tasks/<slug>/plan.md.
-```
-
-**Việc thường, plan + spec:**
-```text
-Đọc tech_docs/README.md mục 7, 8 và mẫu spec ngắn trong tech_docs/templates.md.
-Tạo spec backend/docs/superpowers/specs/YYYY-MM-DD-<slug>.md, ghi đúng những gì đã làm thật.
-Báo tôi spec vừa tạo và chờ tôi đồng ý, rồi mới commit <(chưa push) | và push>. Ghi đường dẫn spec và mã commit vào mục Commit của plan.md.
-```
-
-**Việc có spec:**
-```text
-Đọc tech_docs/README.md mục 8 và tech_docs/spec-check.md mục 4. Cập nhật spec <đường dẫn spec> theo đúng mục đó.
-Báo tôi danh sách chỗ đã sửa và chờ tôi đồng ý, rồi mới commit <(chưa push) | và push>. Ghi các chỗ sửa spec và mã commit vào mục Commit của plan.md.
-```
-
----
-
-## Cứu hộ (mất phiên chat, đổi máy, hôm sau làm tiếp)
-
-```text
-Đọc các file trong tech_docs/tasks/<slug>/, kiểm tra git status và git log gần đây ở backend/ và frontend/,
-rồi tóm tắt trong 5 dòng: đang ở bước nào, đã xong gì, việc tiếp theo cần làm ngay là gì.
-```
-
----
-
-## Xem lại luật (sau khoảng 10 việc)
-
-```text
-Đọc tech_docs/README.md và mục Số đo trong các plan.md ở tech_docs/tasks/. Điền số lần phải sửa sau merge từ git log.
-Tóm tắt các số đo, chỉ ra bước nào tốn thời gian mà không bắt được lỗi, và đề xuất bỏ hoặc sửa gì. Chưa sửa luật khi tôi chưa đồng ý.
+Đọc tech_docs/README.md và các file trong tech_docs/tasks/<slug>/, kiểm tra git status và git log gần đây ở backend/ và frontend/, rồi tóm tắt trong 5 dòng: đang ở giai đoạn/Task nào, đã xong gì, việc tiếp theo cần làm ngay là gì.
 ```

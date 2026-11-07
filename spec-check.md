@@ -1,10 +1,12 @@
-# Kiểm và cập nhật spec
+# Kiểm và cập nhật spec (Chỉ dùng cho Cách 4: Việc có spec)
 
-Chỉ dùng cho **việc có spec**. Cách làm chung xem [`README.md`](README.md).
+> **Ranh giới áp dụng:** File này **chỉ dùng cho Cách 4 (Việc có spec)** trong [`README.md`](README.md). **Cách 1 (Chỉ hỏi)**, **Cách 2 (Làm nhanh)** và **Cách 3 (Việc thường)** không dùng file này.
 
-**Nguyên tắc:** spec do người khác viết nên **mặc định làm theo**. AI **không tự sửa file spec** trong các bước 1–6 và **không tự làm khác spec**. Chỗ nghi sai hoặc không làm được thì ghi ra, phân mức để **bạn chốt**. Mọi chỗ làm khác spec phải ghi vào "Quyết định đã chốt" của `plan.md`, kèm lý do và ai đồng ý. Đến bước 7, những chỗ đã chốt được sửa vào file spec (mục 4).
+**Nguyên tắc:**
+- Khi bạn nhắn đường dẫn spec vào phiên chat ở Giai đoạn 1, AI ghi ngay đường dẫn đó vào đầu `analysis.md` và `plan.md`; từ đó ở mọi bước sau AI tự động lấy đường dẫn spec và ngữ cảnh từ hồ sơ mà không hỏi lại bạn.
+- Spec do người khác viết nên **mặc định làm theo**. AI **không tự sửa file spec** khi đang tìm hiểu và code, và **không tự làm khác spec**. Chỗ nghi sai hoặc không làm được thì ghi ra, phân mức để **bạn chốt**. Mọi chỗ làm khác spec phải ghi vào "Quyết định đã chốt" của `plan.md`, kèm lý do và ai đồng ý. Khi hoàn tất ở cuối Giai đoạn 2, những chỗ đã chốt được sửa vào file spec (mục 4).
 
-## 1. Bước 1: kiểm theo 3 lớp, đúng thứ tự
+## 1. Giai đoạn 1 (Tìm hiểu): kiểm theo 3 lớp, đúng thứ tự
 
 **Lớp 1 — Nghiệp vụ** (ghi vào mục 3.0 của `analysis.md`):
 - **Nguồn nghiệp vụ:** thường chỉ có spec. Spec dẫn tới tài liệu gốc, hoặc bạn đưa thêm tài liệu thì đọc cả những tài liệu đó. Không tự suy thêm nghiệp vụ ngoài các nguồn này.
@@ -41,14 +43,12 @@ Chỉ dùng cho **việc có spec**. Cách làm chung xem [`README.md`](README.m
 
 Mọi nghiệp vụ loại **Mở rộng / Đổi** và mọi điểm 🔴 / 🟡 cần chốt đều phải đưa lên "Bạn cần quyết" ở mục 0.
 
-## 3. Các bước sau
+## 3. Khi lập kế hoạch và code (Cuối Giai đoạn 1 & Giai đoạn 2)
 
-- **Bước 2:** mỗi Task làm theo thứ tự viết test → thấy test hỏng → viết code → thấy test đúng. Không thêm nghiệp vụ chưa được chốt.
-- **Bước 3:** từng nghiệp vụ ở mục 3.0 có Task tương ứng · chỗ làm khác spec đã được bạn chốt.
-- **Bước 5:** đối chiếu từng nghiệp vụ ở mục 3.0 và từng tiêu chí nghiệm thu của spec. Chỉ đạt một phần thì ghi rõ và chuyển vào "Việc còn treo".
-- **Bước 6:** kịch bản phủ các nghiệp vụ ở mục 3.0; loại **Mở rộng / Đổi** phải có kịch bản riêng.
+- **Lập và kiểm `plan.md`:** từng nghiệp vụ ở mục 3.0 phải có Task tương ứng · chỗ làm khác spec đã được bạn chốt · mỗi Task làm theo thứ tự viết test → thấy test hỏng → viết code → thấy test đúng.
+- **Nghiệm thu & Kiểm tay:** đối chiếu từng nghiệp vụ ở mục 3.0 và từng tiêu chí nghiệm thu của spec (chỉ đạt một phần thì ghi rõ và chuyển vào "Việc còn treo"). Kịch bản kiểm tay phủ các nghiệp vụ ở mục 3.0; loại **Mở rộng / Đổi** phải có kịch bản riêng.
 
-## 4. Bước 7: cập nhật spec
+## 4. Khi hoàn tất (Cuối Giai đoạn 2): cập nhật spec
 
 Nếu chỉ kế hoạch ghi chỗ làm khác spec mà file spec để nguyên, người khác kiểm theo spec sẽ tưởng code sai.
 
@@ -56,5 +56,5 @@ Nếu chỉ kế hoạch ghi chỗ làm khác spec mà file spec để nguyên, 
 - **Sửa gì:** (1) "Quyết định đã chốt" làm khác spec hoặc bổ sung điều spec chưa nói; (2) tham chiếu sai đã nêu ở mục 3a của `analysis.md`; (3) "Quyết định phát sinh" ở bước 4 có làm khác spec.
 - **Không sửa gì khác:** giữ ngôn ngữ, định dạng, cách đánh số. Tiêu chí nghiệm thu chưa đạt thì **giữ nguyên**, chỉ ghi vào "Lịch sử thay đổi" là chưa đạt.
 - **Không bao giờ sửa** văn bản gốc của PO (ví dụ `raw-extracts/`, `sources/`).
-- **Ghi lại:** cuối spec thêm hoặc nối tiếp mục "Lịch sử thay đổi": ngày · `<slug>` · từng thay đổi kèm lý do · ai chốt. Không nhắc `tech_docs`, `analysis.md`, `plan.md`, `manual-test.md`.
+- **Ghi lại:** cuối spec thêm hoặc nối tiếp mục "Lịch sử thay đổi": ngày · `<slug>` · từng thay đổi kèm lý do · ai chốt. Không nhắc `tech_docs`, `analysis.md`, `plan.md`.
 - **Spec khác bị ảnh hưởng:** liệt kê ra báo bạn, chỉ sửa khi bạn đồng ý.

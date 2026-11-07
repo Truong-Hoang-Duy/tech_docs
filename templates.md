@@ -1,13 +1,16 @@
-# Khung tài liệu
+# Khung tài liệu (Chỉ dùng cho Cách 3: Việc thường & Cách 4: Việc có spec)
+
+> **Ranh giới áp dụng:** File này **chỉ dùng cho Cách 3 (Việc thường) và Cách 4 (Việc có spec)** trong [`README.md`](README.md). **Cách 1 (Chỉ hỏi)** và **Cách 2 (Làm nhanh)** không tạo bất kỳ file nào trong `tech_docs/tasks/`.
 
 Viết bằng **tiếng Việt**, ngắn gọn, giữ nguyên tên hàm / biến / đường dẫn trong dấu `` ` ``. Mục nào không có nội dung thì ghi "Không có".
 
 Hồ sơ của một việc nằm trong `tech_docs/tasks/<slug>/`:
-1. [`analysis.md`](#1-analysismd--tìm-hiểu) — tìm hiểu (chỉ plan thì không có)
+1. [`analysis.md`](#1-analysismd--tìm-hiểu) — tìm hiểu
 2. [`plan.md`](#2-planmd--kế-hoạch-và-hồ-sơ) — kế hoạch và hồ sơ
-3. [`manual-test.md`](#3-manual-testmd--kiểm-tay) — kiểm tay
 
-Việc chọn plan + spec tạo thêm [một spec ngắn trong `backend/`](#4-spec-ngắn-trong-backend) ở bước 7.
+*(Hướng dẫn kiểm tay gửi trực tiếp trong phiên chat theo `README.md` Phần I.4, không tạo file riêng).*
+
+**Cách 3 (Việc thường)** ở cuối Giai đoạn 2 sẽ hỏi bạn muốn tạo **plan**, **spec** hay **cả 2** và lưu ở thư mục nào trong `backend/` (bạn xác nhận mới tạo; xem khung ở [mục 3](#3-tài-liệu-lưu-trong-backend)). Còn **Cách 4** thì cập nhật vào file spec có sẵn theo [`spec-check.md`](spec-check.md).
 
 ---
 
@@ -18,7 +21,7 @@ Việc chọn plan + spec tạo thêm [một spec ngắn trong `backend/`](#4-sp
 ````markdown
 # Tìm hiểu: <tên việc>
 
-**Ngày:** YYYY-MM-DD · **Agent:** <Claude | Gemini> · **Cách làm:** <plan + spec | có spec> · **Phía:** <BE | FE | Cả hai>
+**Ngày:** YYYY-MM-DD · **Cách làm:** <Cách 3: Việc thường | Cách 4: Việc có spec> · **Phía:** <BE | FE | Cả hai>
 **Mốc code:** backend `<mã commit>` · frontend `<mã commit>`
 **Spec (nếu có):** `<đường dẫn>`
 
@@ -87,16 +90,15 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
 ````markdown
 # Kế hoạch: <tên việc>
 
-**Ngày:** YYYY-MM-DD · **Cách làm:** <chỉ plan | plan + spec | có spec> · **Phía:** <BE | FE | Cả hai> · **Agent:** <Claude | Gemini>
+**Ngày:** YYYY-MM-DD · **Cách làm:** <Cách 3: Việc thường | Cách 4: Việc có spec> · **Phía:** <BE | FE | Cả hai>
 **Trạng thái:** <DRAFT | APPROVED | IN_PROGRESS | NEEDS_FIX | VERIFIED | COMMITTED>
 **Mốc code:** backend `<mã commit>` · frontend `<mã commit>` · **Nhánh:** `feat/<slug>`
 
 ## 1. Mục tiêu và quyết định đã chốt
 - **Mục tiêu:** <2–3 dòng>
-- **Hiện trạng** (chỉ khi không có `analysis.md`): <nguyên nhân kèm `file:dòng`>
 - **Quyết định đã chốt** (không tự đổi khi làm):
   1. <…>
-- **Spec trong backend:** `<đường dẫn>` (plan + spec: `docs/superpowers/specs/YYYY-MM-DD-<slug>.md`, tạo ở bước 7 · chỉ plan: "Không có")
+- **Tài liệu trong `backend/`:** `<đường dẫn>` (Cách 3: chốt khi hoàn tất · Cách 4: đường dẫn spec gốc)
 
 ## 2. Các Task (mỗi Task là một phần bạn bấm thử được)
 ### Task 1: <phần chức năng, nói theo góc nhìn người dùng>
@@ -111,7 +113,7 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
 - [ ] Toàn bộ kiểm tra như CI đều đúng: `<các lệnh lấy từ file CI>`
 - [ ] <tiêu chí riêng của việc này>
 
-## 4. Kiểm kế hoạch (bước 3)
+## 4. Kiểm kế hoạch
 - **`file:dòng`, tên hàm có thật:** <đã kiểm / đã sửa gì>
 - **Lệnh kiểm tra chạy được:** <đã chạy>
 - **Mục tiêu, nghiệp vụ, điều đã chốt đều có Task:** <đủ / đã bổ sung gì>
@@ -124,7 +126,7 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
 - **Kết quả từng Task:** `<lệnh đã chạy>` → `<dòng kết quả cuối>`
 
 ## 6. Nghiệm thu
-- **Ngày:** YYYY-MM-DD · **Nhánh đã cập nhật theo:** `origin/dev` @ `<mã commit>`
+- **Ngày:** YYYY-MM-DD
 - **Thay đổi so với kế hoạch:** <khớp / lệch chỗ nào>
 - **Từng nghiệp vụ (`analysis.md` mục 3.0, nếu có):** <đạt hết / chưa đạt: …>
 - **Chạy lại toàn bộ kiểm tra:** `<lệnh>` → `<kết quả>`
@@ -132,11 +134,11 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
 - **Kết luận:** `VERIFIED` | `NEEDS_FIX` (kèm `file:dòng` cần sửa)
 
 ## 7. Kiểm tay
-- **Kết quả:** <Đạt hết / còn kịch bản nào chưa đạt> (chi tiết ở `manual-test.md`)
+- **Kết quả:** <Đạt hết / còn kịch bản nào chưa đạt> (hướng dẫn và xác nhận trực tiếp trong phiên chat)
 
 ## 8. Commit
-- **Spec trong backend:** `<đường dẫn>` — <plan + spec: tạo mới | có spec: các chỗ đã sửa | chỉ plan: "Không có">
-- **Mã commit:** backend `<…>` · frontend `<…>` · **Đã push:** <có / chưa>
+- **Tài liệu trong `backend/`:** `<đường dẫn>` — <Cách 3: tạo mới plan / spec / cả 2 / không tạo | Cách 4: các chỗ đã sửa trong spec>
+- **Mã commit:** backend `<…>` · frontend `<…>` · **Đã push và merge `dev`:** <có / chưa>
 
 ## 9. Việc còn treo
 - <Hoặc "Không có">
@@ -149,34 +151,9 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
 
 ---
 
-## 3. `manual-test.md` — Kiểm tay
+## 3. Tài liệu lưu trong `backend/` (Khi hoàn tất Cách 3 — theo xác nhận của bạn)
 
-Chỉ nằm trong `tech_docs`. Mỗi Task một kịch bản, **chép nguyên tiêu chí từ `plan.md`, không tự sửa**. Bước 6 thêm các kịch bản chung.
-
-````markdown
-# Kiểm tay: <tên việc>
-
-## Chuẩn bị
-<Những gì cần có trước khi kiểm>
-
-## Kịch bản 1: <Task 1>
-1. **Mở màn hình:** <đi tới đâu, thấy tiêu đề gì>
-2. **Thao tác:** <bấm / điền / chọn / tải lên, đúng thứ tự và đúng chữ trên màn hình>
-3. **✅ Đúng khi thấy:** <kết quả nhìn thấy được>
-4. **❌ Sai nếu thấy:** <dấu hiệu lỗi>
-
-Kết quả — AI: ☐ Đạt ☐ Không đạt · Bạn: ☐ Đạt ☐ Không đạt · Ghi chú: <…>
-
-## Bảng kết quả
-| Kịch bản | AI | Bạn | Ghi chú |
-|---|---|---|---|
-````
-
----
-
-## 4. Spec ngắn trong `backend/`
-
-Lưu ở `backend/docs/superpowers/specs/YYYY-MM-DD-<slug>.md`, khoảng một trang. Chỉ ghi điều code không tự nói được; ghi đúng những gì đã làm thật. **Không** nhắc `tech_docs`, `analysis.md`, `plan.md`, `manual-test.md`.
+Chỉ tạo khi bạn xác nhận loại tài liệu (**plan**, **spec** hoặc **cả 2**) và **thư mục lưu** (ví dụ `backend/docs/superpowers/plans/YYYY-MM-DD-<slug>.md`, `backend/docs/superpowers/specs/YYYY-MM-DD-<slug>.md` hoặc thư mục bạn chọn). Chỉ ghi điều code không tự nói được; ghi đúng những gì đã làm thật. **Không** nhắc `tech_docs`, `analysis.md`, `plan.md`.
 
 ````markdown
 # <Tên việc>
