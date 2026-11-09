@@ -1,7 +1,7 @@
 # Kế hoạch: Hoàn thiện Backend AI Quick Edit (Từ điển Sư phạm, Đường ray Tạo sinh & Hậu kiểm Thuật ngữ)
 
 **Ngày:** 2026-11-08 · **Cách làm:** Cách 3: Việc thường · **Phía:** BE
-**Trạng thái:** IN_PROGRESS
+**Trạng thái:** VERIFIED
 **Mốc code:** backend `48a28e31` · frontend `fbd52874` · **Nhánh:** `feat/canvas-quick-edit`
 
 ## 1. Mục tiêu và quyết định đã chốt
@@ -10,12 +10,12 @@
   1. **Chỉ làm ở phía Backend (`backend/`), còn giao diện (`frontend/`) kéo từ working tree mới nhất (`fbd52874`) về và giữ nguyên:** Tận dụng trực tiếp vùng hiển thị *"Đã giữ nguyên: ..."* (`preserved_terms`) và khung cảnh báo (`warnings`) đã có sẵn trên giao diện bảng xem trước chuẩn Figma.
   2. **Tự động tra cứu Từ điển Sư phạm & SGK ở phía sau:** Luôn bao gồm bộ từ điển *Chung (sư phạm, GDPT 2018)* kết hợp với bộ từ điển môn học/khối lớp suy luận từ `doc_metadata`, hồ sơ `Document` trong DB (`title`, `document_type`, `metadata_json`) và nội dung đoạn văn; đồng thời giữ nguyên lớp `DefaultPedagogicalDictionary` làm stub rỗng để tương thích ngược với các unit test gọi trực tiếp.
   3. **Bảo vệ thuật ngữ cho cả 5 công cụ (bao gồm `spellcheck`) và tách mã cảnh báo `terms_changed`:** Ngăn `spellcheck` sửa nhầm thuật ngữ chuyên môn đã khóa, hỗ trợ `spellcheck` khi có yêu cầu tinh chỉnh (`instruction` / `previous_suggestion`) hoặc retry, và tách riêng cảnh báo `terms_changed` (*"Thuật ngữ chuyên môn có thể đã bị thay đổi: ..."*) khỏi `names_changed`.
-- **Tài liệu trong `backend/`:** Chốt khi hoàn tất Giai đoạn 3 (theo xác nhận của bạn).
+- **Tài liệu trong `backend/`:** Đã tạo ở cả 2 nơi (`backend/docs/superpowers/specs/2026-11-09-canvas-quick-edit-design.md`, `backend/docs/superpowers/plans/2026-11-09-canvas-quick-edit.md`).
 
 ## 2. Các Task (mỗi Task là một phần bạn bấm thử được)
 
 ### Task 1: Kết nối Từ điển Sư phạm & SGK, chuẩn hóa từ đồng nghĩa và tự động làm giàu ngữ cảnh tài liệu
-- [ ] **Xong** · **Bạn đã kiểm:** chưa
+- [x] **Xong** · **Bạn đã kiểm:** đạt
 - **Thao tác để kiểm:** Mở một tài liệu trên trình soạn thảo Canvas (ví dụ tài liệu có tiêu đề *"Giáo án Sinh học 10 - Bài 5"* hoặc đoạn văn có thuật ngữ *"quang hợp"*, *"lục lạp"*, *"năng lực đặc thù"*), bôi đen đoạn văn → bấm chuột phải → **Công cụ AI** → chọn **Chỉnh diễn đạt** hoặc **Rút gọn**.
 - **✅ Đúng khi thấy:** Bảng xem trước hiện kết quả biên tập giữ nguyên thuật ngữ SGK chuẩn và dòng thông tin bên dưới hiện rõ *"Đã giữ nguyên: quang hợp, lục lạp..."*; nếu đoạn văn chứa từ đồng nghĩa trong từ điển, chỉ dẫn gửi cho AI có kèm gợi ý chuẩn hóa về thuật ngữ chuẩn.
 - **❌ Sai nếu thấy:** Dòng *"Đã giữ nguyên"* chỉ hiện số liệu/tên riêng mà không nhận diện được thuật ngữ SGK hoặc sư phạm có trong đoạn chọn.
@@ -26,7 +26,7 @@
   - `backend/services/api/tests/test_quick_edit_rails.py:114-126` & `backend/services/api/tests/test_assistant_quick_edit.py:381-394` — Bổ sung unit test và integration test kiểm tra nhận diện thuật ngữ SGK theo môn/lớp, gợi ý chuẩn hóa từ đồng nghĩa (`aliases`), và tự động suy luận môn/lớp từ `Document.title` / `Document.metadata_json`.
 
 ### Task 2: Đưa công cụ Sửa chính tả (`spellcheck`) vào hàng rào bảo vệ thuật ngữ & tách cảnh báo `terms_changed`
-- [ ] **Xong** · **Bạn đã kiểm:** chưa
+- [x] **Xong** · **Bạn đã kiểm:** đạt
 - **Thao tác để kiểm:** Quét chọn một đoạn văn có lỗi chính tả kèm thuật ngữ chuyên môn (ví dụ *"Quá trình quang hợp diễn ra ở lục lạp trong tế bào thực vât."*) → bấm chuột phải → **Công cụ AI** → chọn **Sửa chính tả**; sau đó thử chọn **Rút gọn** trên đoạn có thuật ngữ chuyên môn.
 - **✅ Đúng khi thấy:** Công cụ **Sửa chính tả** chỉ sửa từ sai chính tả (*"vât"* → *"vật"*), giữ nguyên tuyệt đối thuật ngữ chuyên môn (*"quang hợp"*, *"lục lạp"*) và liệt kê vào *"Đã giữ nguyên: ..."*; nếu AI làm mất thuật ngữ chuyên môn khi biên tập, khung cảnh báo vàng hiện rõ *"Thuật ngữ chuyên môn có thể đã bị thay đổi: ..."* (mã `terms_changed`).
 - **❌ Sai nếu thấy:** **Sửa chính tả** sửa nhầm thuật ngữ chuyên môn/kí hiệu nằm trong danh sách bảo vệ, hoặc khi mất thuật ngữ lại báo nhầm mã `names_changed` chung với tên riêng.
@@ -38,12 +38,12 @@
   - `backend/services/api/tests/test_quick_edit_rails.py:288-378` & `backend/services/api/tests/test_assistant_quick_edit.py:123-147, 253-278` — Bổ sung test kiểm tra cảnh báo `terms_changed`, chống sửa nhầm thuật ngữ trong `spellcheck`, và luồng tinh chỉnh/retry của `spellcheck`.
 
 ## 3. Điều kiện hoàn thành
-- [ ] Toàn bộ kiểm tra như CI của `backend/services/api` đều đúng:
-  - `cd /Users/truonghoangduy/Documents/Project/bookforge/backend/services/api && uv run ruff check .`
-  - `cd /Users/truonghoangduy/Documents/Project/bookforge/backend/services/api && uv run ruff format --check .`
-  - `cd /Users/truonghoangduy/Documents/Project/bookforge/backend/services/api && uv run pytest tests/test_quick_edit_rails.py tests/test_assistant_quick_edit.py tests/test_school_glossary.py`
-- [ ] Cả 5 công cụ AI Quick Edit đều nhận diện đúng thuật ngữ từ `SchoolGlossaryService` (`preserved_terms`), gợi ý chuẩn hóa từ đồng nghĩa (`aliases`), làm giàu ngữ cảnh môn/lớp từ `Document` trong DB, và cảnh báo `terms_changed` khi thuật ngữ chuyên môn bị biến đổi.
-- [ ] Không có bất kỳ thay đổi nào trong `frontend/` (giữ nguyên mốc `fbd52874`) và không lọt chữ `tech_docs`, `analysis.md`, `plan.md` vào `backend/`.
+- [x] Toàn bộ kiểm tra như CI của `backend/services/api` đều đúng:
+  - `cd d:\Project\bookforge\backend\services\api && uv run ruff check .` → `All checks passed!`
+  - `cd d:\Project\bookforge\backend\services\api && uv run ruff format --check .` → `1151 files already formatted`
+  - `cd d:\Project\bookforge\backend\services\api && uv run pytest tests/test_quick_edit_rails.py tests/test_assistant_quick_edit.py tests/test_school_glossary.py tests/test_pydantic_text_provider.py -n 0 -q`
+- [x] Cả 5 công cụ AI Quick Edit đều nhận diện đúng thuật ngữ từ `SchoolGlossaryService` (`preserved_terms`), gợi ý chuẩn hóa từ đồng nghĩa (`aliases`), làm giàu ngữ cảnh môn/lớp từ `Document` trong DB, và cảnh báo `terms_changed` khi thuật ngữ chuyên môn bị biến đổi.
+- [x] Không có bất kỳ thay đổi nào trong `frontend/` (giữ nguyên mốc `fbd52874`) và không lọt chữ `tech_docs`, `analysis.md`, `plan.md` vào `backend/`.
 
 ## 4. Kiểm kế hoạch
 - **`file:dòng`, tên hàm có thật:** Đã đọc và đối chiếu từng dòng tại `services/quick_edit_rails.py:165-194, 325-442, 476-525, 655-712, 745-780`, `api/assistant_tools.py:92-109, 634-709`, `services/school_glossary.py:188-301, 408-708`, `llm/editor_tools.py:314-320`, `tests/test_quick_edit_rails.py:1-382`, `tests/test_assistant_quick_edit.py:1-513`.
@@ -59,28 +59,36 @@
 - **Kết quả từng Task:**
   - **Task 1:**
     - Lệnh kiểm tự động: `cd /Users/truonghoangduy/Documents/Project/bookforge/backend/services/api && uv run pytest tests/test_quick_edit_rails.py tests/test_assistant_quick_edit.py -k "dictionary or glossary or metadata" -n 0 -q` → `7 passed, 77 deselected, 8 warnings in 7.52s`
-    - Dữ liệu mẫu & tự kiểm: Đã tạo tài liệu mẫu `14a43664-12a6-4180-a2a6-54beae7f9dbe` (*"Giáo án Sinh học 10 - Bài 12: Quang hợp ở thực vật"*) cho tài khoản `owner@example.com` và gọi thử trực tiếp `POST /api/assistant-tools/quick-edit` (`tool='refine'`) → kết quả `status='ok'`, `preserved_terms=['quang hợp', 'lục lạp', 'tế bào', 'năng lượng']`, và câu chứa `KHBD`, `PHT` được chuẩn hóa thành `Kế hoạch bài dạy (KHBD) và Phiếu học tập (PHT)` kèm `preserved_terms=['KHBD', 'PHT', 'yêu cầu cần đạt', 'năng lực đặc thù']`.
+    - Dữ liệu mẫu & tự kiểm: Đã tạo tài liệu mẫu `02f339e9-bb45-419c-b85e-5b043d1c248b` (*"Giáo án Sinh học 10 - Bài 12: Quang hợp ở thực vật"*) cho tài khoản `owner@example.com` và gọi thử trực tiếp `POST /api/assistant-tools/quick-edit` (`tool='refine'`) → kết quả `status='ok'`, `preserved_terms=['quang hợp', 'lục lạp', 'tế bào', 'năng lượng']`, và câu chứa `KHBD`, `PHT` được chuẩn hóa thành `Kế hoạch bài dạy (KHBD) và Phiếu học tập (PHT)` kèm `preserved_terms=['KHBD', 'PHT', 'yêu cầu cần đạt', 'năng lực đặc thù']`.
+  - **Task 2:**
+    - Lệnh kiểm tự động: `cd d:\Project\bookforge\backend\services\api && uv run pytest tests/test_quick_edit_rails.py tests/test_assistant_quick_edit.py -n 0 -q` → `88 passed, 1 warning in 29.28s`.
+    - Kiểm tra lint & format: `uv run ruff check ...` và `uv run ruff format --check ...` → `All checks passed!`.
 
 ## 6. Nghiệm thu
-- **Ngày:** Chờ thực hiện ở Giai đoạn 2
-- **Thay đổi so với kế hoạch:** Chờ thực hiện ở Giai đoạn 2
+- **Ngày:** 2026-11-09
+- **Thay đổi so với kế hoạch:** Bổ sung định tuyến `prefer_responses=True` trong `pydantic_text_provider.py` khi gọi structured output (`SpellcheckResult`) trên OpenAI để tương thích với model `gpt-5.6-luna`.
 - **Từng nghiệp vụ (`analysis.md` mục 3.0, nếu có):** Không áp dụng (Cách 3)
-- **Chạy lại toàn bộ kiểm tra:** Chờ thực hiện ở Giai đoạn 2
-- **Không lọt chữ `tech_docs` vào backend / frontend:** Chờ thực hiện ở Giai đoạn 2
-- **Kết luận:** Chờ thực hiện ở Giai đoạn 2
+- **Chạy lại toàn bộ kiểm tra:**
+  - `uv run ruff check .` → `All checks passed!`
+  - `uv run ruff format --check .` → `1151 files already formatted`
+  - `uv run pytest tests/test_quick_edit_rails.py tests/test_assistant_quick_edit.py tests/test_school_glossary.py tests/test_pydantic_text_provider.py -n 0 -q` → `109 passed`
+- **Không lọt chữ `tech_docs` vào backend / frontend:** Đã kiểm `git diff origin/dev | Select-String -Pattern "tech_docs|analysis\.md|plan\.md"` → 0 kết quả; `frontend/` giữ nguyên không đổi.
+- **Kết luận:** Đạt 100% tiêu chí nghiệm thu (`VERIFIED`).
 
 ## 7. Kiểm tay
-- **Kết quả:** Chờ thực hiện ở Giai đoạn 3
+- **Kết quả:** Bạn đã kiểm tay đạt cả **Task 1** (`Chỉnh diễn đạt` khóa thuật ngữ SGK & chuẩn hóa từ đồng nghĩa) và **Task 2** (`Sửa chính tả` và `Rút gọn` bảo vệ thuật ngữ chuyên môn, tách cảnh báo `terms_changed`).
 
 ## 8. Commit
-- **Tài liệu trong `backend/`:** Chờ chốt ở Giai đoạn 3
-- **Mã commit:** backend `74f74e2f` (nhánh `origin/feat/canvas-quick-edit`, đã push Task 1) · frontend `fbd52874` (không đổi) · **Đã push và merge `dev`:** đã push nhánh `origin/feat/canvas-quick-edit`, chờ xong Task 2 mới merge `dev`
+- **Tài liệu trong `backend/`:**
+  - `backend/docs/superpowers/specs/2026-11-09-canvas-quick-edit-design.md`
+  - `backend/docs/superpowers/plans/2026-11-09-canvas-quick-edit.md`
+- **Mã commit:** backend `74f74e2f`, `596f7b67` (merge commit trên `dev`: `6d2b73a8`) · frontend `fbd52874` (không đổi) · **Đã push và merge `dev`:** có (`origin/feat/canvas-quick-edit` & `origin/dev`)
 
 ## 9. Việc còn treo
 - Không có
 
 ## 10. Số đo
-- **Bắt đầu:** 2026-11-08 · **Merge:** Chờ hoàn tất
+- **Bắt đầu:** 2026-11-08 · **Merge:** 2026-11-09
 - **Số lỗi bạn bắt được khi kiểm tay:** 0
 - **Số lần phải sửa sau merge:** 0
 
