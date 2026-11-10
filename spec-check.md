@@ -45,8 +45,8 @@ Mọi nghiệp vụ loại **Mở rộng / Đổi** và mọi điểm 🔴 / �
 
 ## 3. Khi lập kế hoạch và code (Cuối Giai đoạn 1 & Giai đoạn 2)
 
-- **Lập và kiểm `plan.md`:** từng nghiệp vụ ở mục 3.0 phải có Task tương ứng · chỗ làm khác spec đã được bạn chốt · mỗi Task làm theo thứ tự viết test → thấy test hỏng → viết code → thấy test đúng.
-- **Nghiệm thu & Kiểm tay:** đối chiếu từng nghiệp vụ ở mục 3.0 và từng tiêu chí nghiệm thu của spec (chỉ đạt một phần thì ghi rõ và chuyển vào "Việc còn treo"). Kịch bản kiểm tay phủ các nghiệp vụ ở mục 3.0; loại **Mở rộng / Đổi** phải có kịch bản riêng.
+- **Lập và kiểm `plan.md`:** từng nghiệp vụ ở mục 3.0 phải có Task tương ứng · chỗ làm khác spec đã được bạn chốt · mỗi Task làm theo thứ tự viết test → thấy test hỏng → viết code → thấy test đúng, kèm chủ động suy luận test thêm cả về logic Backend lẫn giao diện/hiển thị theo `README.md` mục I.4 (không gài cứng kịch bản test vào prompt/code).
+- **Nghiệm thu & Kiểm tay (sau khi xong hết các Task):** đối chiếu từng nghiệp vụ ở mục 3.0 và từng tiêu chí nghiệm thu của spec (chỉ đạt một phần thì ghi rõ và chuyển vào "Việc còn treo"). Hướng dẫn kiểm tay hoàn chỉnh trên UI ở cuối Giai đoạn 2 phải phủ hết các nghiệp vụ ở mục 3.0 cùng các điểm suy luận thêm (logic, giao diện, ký hiệu toán học, kịch bản biên, tách rõ phần cố định 100% và phần văn bản do LLM sinh tương đối); loại **Mở rộng / Đổi** phải có kịch bản riêng.
 
 ## 4. Khi hoàn tất (Cuối Giai đoạn 2): cập nhật spec
 

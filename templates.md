@@ -100,12 +100,13 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
   1. <…>
 - **Tài liệu trong `backend/`:** `<đường dẫn>` (Cách 3: chốt khi hoàn tất · Cách 4: đường dẫn spec gốc)
 
-## 2. Các Task (mỗi Task là một phần bạn bấm thử được)
+## 2. Các Task (làm liền mạch hết các Task rồi mới kiểm tay tổng thể trên UI)
 ### Task 1: <phần chức năng, nói theo góc nhìn người dùng>
-- [ ] **Xong** · **Bạn đã kiểm:** <chưa | đạt>
-- **Thao tác để kiểm:** <đi tới đâu, bấm gì; hoặc "Không bấm thử được" kèm lý do>
-- **✅ Đúng khi thấy:** <kết quả nhìn thấy được>
+- [ ] **Xong (AI đã tự test & bấm thử)**
+- **Thao tác tự kiểm:** <đi tới đâu, bấm gì hoặc gọi API gì để kiểm>
+- **✅ Đúng khi thấy:** <tách rõ: (1) Phần cố định/cấu trúc phải khớp 100% (trạng thái UI, nhãn, định dạng, công thức toán học); (2) Phần câu chữ do LLM sinh đối chiếu tương đối theo ý nghĩa & quy tắc>
 - **❌ Sai nếu thấy:** <dấu hiệu lỗi>
+- **Điểm suy luận tự test thêm:** <logic backend, dữ liệu biên, đồng bộ các luồng, bố cục giao diện hợp lý chưa, hiển thị ký hiệu toán học/định dạng, câu thử biến thiên không trùng ví dụ trong prompt...>
 - **Kiểm tra tự động:** `<lệnh>` (việc có spec: viết test → thấy hỏng → viết code → thấy đúng)
 - **File và thay đổi:** `<file>:<dòng>` — <làm gì, xử lý trường hợp biên nào>
 
@@ -133,8 +134,8 @@ Chỉ nằm trong `tech_docs`, không chép sang `backend/`. Kế hoạch chỉ 
 - **Không lọt chữ `tech_docs` vào backend / frontend:** <đã kiểm>
 - **Kết luận:** `VERIFIED` | `NEEDS_FIX` (kèm `file:dòng` cần sửa)
 
-## 7. Kiểm tay
-- **Kết quả:** <Đạt hết / còn kịch bản nào chưa đạt> (hướng dẫn và xác nhận trực tiếp trong phiên chat)
+## 7. Kiểm tay (Trên UI hoàn chỉnh sau khi xong hết các Task)
+- **Kết quả:** <Đạt hết / còn kịch bản nào chưa đạt> (hướng dẫn kiểm tra toàn bộ chức năng, logic, giao diện, ký hiệu toán học và kịch bản biên trực tiếp trong phiên chat)
 
 ## 8. Commit
 - **Tài liệu trong `backend/`:** `<đường dẫn>` — <Cách 3: tạo mới plan / spec / cả 2 / không tạo | Cách 4: các chỗ đã sửa trong spec>
